@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity(name = "users")
-public class Users {
+public class User {
 
     @Id
     private String email;
