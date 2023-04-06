@@ -14,8 +14,8 @@ public class User {
     private String email;
 
     @Basic
-    private String hash;
+    private byte[] hash;
 
     @Basic
-    private String salt;
+    private byte[] salt;
 }
