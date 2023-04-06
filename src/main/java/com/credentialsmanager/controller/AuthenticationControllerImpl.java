@@ -3,7 +3,6 @@ package com.credentialsmanager.controller;
 import com.credentialsmanager.dto.AuthenticationDto;
 import com.credentialsmanager.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
