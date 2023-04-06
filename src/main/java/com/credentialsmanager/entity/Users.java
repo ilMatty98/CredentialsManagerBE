@@ -1,7 +1,9 @@
 package com.credentialsmanager.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
@@ -9,7 +11,6 @@ import lombok.Data;
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String email;
 
     @Basic
