@@ -21,7 +21,7 @@
         <postgres.version>42.3.8</postgres.version>
         <validation.version>2.0.1.Final</validation.version>
         <maven.version>3.8.1</maven.version>
-        <swagger.version>1.7.0</swagger.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <h2.version>2.1.214</h2.version>
         <liquibase.version>4.20.0</liquibase.version>
     </properties>
@@ -41,10 +41,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,29 +106,17 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- validation -->
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>${validation.version}</version>
-        </dependency>
-
         <!-- hibernate -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
-        <!-- swagger -->
+        <!-- springdoc -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-security</artifactId>
-            <version>${swagger.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
