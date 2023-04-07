@@ -18,14 +18,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${encryption.salt.size}")
     private int saltSize;
 
-    @Value("${encryption.hash.size}")
-    private int hashSize;
+    @Value("${encryption.argon2id.size}")
+    private int argon2idSize;
 
-    @Value("${encryption.hash.interation}")
-    private int hashInterarion;
+    @Value("${encryption.argon2id.iterations}")
+    private int argon2idIterations;
 
-    @Value("${encryption.hash.algorithm}")
-    private String hashAlgorithm;
+    @Value("${encryption.argon2id.memoryKB}")
+    private int argon2idMemoryKB;
+
+    @Value("${encryption.argon2id.parallelism}")
+    private int argon2idParallelism;
 
     private final UsersRepository usersRepository;
 
@@ -37,11 +40,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (usersRepository.existsById(authenticationDto.getEmail()))
             throw new BadRequestException(MessageUtils.ERROR_01.getMessage());
 
-        var salt = AuthenticationUtils.getSalt(saltSize);
-        var hash = AuthenticationUtils.getHash(authenticationDto.getPassword(), salt, hashInterarion, hashSize, hashAlgorithm);
+        var salt = AuthenticationUtils.generateSalt(saltSize);
+        var hash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
+                argon2idIterations, argon2idMemoryKB, argon2idParallelism);
+
 
         usersRepository.save(authenticationMapper.dtotoUser(authenticationDto, salt, hash));
         return authenticationDto;
     }
-
 }

@@ -24,6 +24,7 @@
         <springdoc.version>2.1.0</springdoc.version>
         <h2.version>2.1.214</h2.version>
         <liquibase.version>4.20.0</liquibase.version>
+        <bouncycastle.version>1.70</bouncycastle.version>
     </properties>
 
     <dependencies>
@@ -62,6 +63,14 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- bouncy castle -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+
 
         <!-- liquibase -->
         <dependency>
