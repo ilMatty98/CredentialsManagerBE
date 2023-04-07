@@ -6,13 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/authentication")
@@ -20,7 +14,17 @@ import java.security.spec.InvalidKeySpecException;
 public interface AuthenticationController {
 
     @PostMapping("/signIn")
-    @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Dto not correct")})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "SignIn successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
     AuthenticationDto signIn(@Parameter(description = "Dto to create a new user")
-                             @Valid @RequestBody AuthenticationDto authenticationDto) throws NoSuchAlgorithmException, InvalidKeySpecException;
+                             @Valid @RequestBody AuthenticationDto authenticationDto);
+
+    @GetMapping("/logIn")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "LogIn successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
+    AuthenticationDto logIn(@Parameter(description = "Dto to log in")
+                            @Valid @RequestBody AuthenticationDto authenticationDto);
 }

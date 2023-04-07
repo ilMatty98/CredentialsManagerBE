@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum MessageUtils {
 
     ERROR_00("Generic error"),
-    ERROR_01("Email already present");
+    ERROR_01("Email already registered"),
+    ERROR_02("Invalid credentials");
 
     private final String label;
 

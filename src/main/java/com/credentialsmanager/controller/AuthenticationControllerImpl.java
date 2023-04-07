@@ -25,4 +25,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         }
         return output;
     }
+
+    @Override
+    public AuthenticationDto logIn(AuthenticationDto authenticationDto) {
+        AuthenticationDto output;
+        try {
+            output = authenticationService.logIn(authenticationDto);
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
+        return output;
+    }
 }
