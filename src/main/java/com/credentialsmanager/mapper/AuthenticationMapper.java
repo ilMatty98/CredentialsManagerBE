@@ -7,15 +7,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.sql.Timestamp;
 import java.util.Base64;
 
 @Mapper(config = AppMapperConfig.class)
 public interface AuthenticationMapper {
 
-    @Mapping(source = "salt", target = "salt", qualifiedByName = "base64Encoding")
-    @Mapping(source = "hash", target = "hash", qualifiedByName = "base64Encoding")
-    @Mapping(source = "authenticationDto.email", target = "email")
-    User dtotoUser(AuthenticationDto authenticationDto, byte[] salt, byte[] hash);
+    @Mapping(target = "timestampCreation", source = "timestamp")
+    @Mapping(target = "timestampLastAccess", source = "timestamp")
+    @Mapping(target = "email", source = "authenticationDto.email")
+    @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
+    @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
+    User saveNewUser(AuthenticationDto authenticationDto, byte[] salt, byte[] hash, Timestamp timestamp);
 
     @Named("base64Encoding")
     default String base64Encoding(byte[] input) {

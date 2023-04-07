@@ -15,6 +15,13 @@
             <column name="salt" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="timestamp_creation" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_last_access" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="text"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

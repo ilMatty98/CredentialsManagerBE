@@ -13,6 +13,8 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 
@@ -50,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var hash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        usersRepository.save(authenticationMapper.dtotoUser(authenticationDto, salt, hash));
+        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, hash, Timestamp.from(Instant.now())));
         return authenticationDto;
     }
 
