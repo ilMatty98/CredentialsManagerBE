@@ -4,7 +4,7 @@ import com.credentialsmanager.dto.AuthenticationDto;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
-import com.credentialsmanager.repository.UsersRepository;
+import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
 import com.credentialsmanager.utils.MessageUtils;
 import jakarta.transaction.Transactional;
@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${encryption.argon2id.parallelism}")
     private int argon2idParallelism;
 
-    private final UsersRepository usersRepository;
+    private final UserRepository usersRepository;
 
     private final AuthenticationMapper authenticationMapper;
 
@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var hash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, hash, Timestamp.from(Instant.now())));
+        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, hash, getCurrentTimestamp()));
         return authenticationDto;
     }
 
@@ -70,6 +70,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!Arrays.equals(storedHash, currenthash))
             throw new UnauthorizedException(MessageUtils.ERROR_02.getMessage());
 
+        user.setTimestampLastAccess(getCurrentTimestamp());
+        usersRepository.save(user);
+
         return new AuthenticationDto();
+    }
+
+    private static Timestamp getCurrentTimestamp() {
+        return Timestamp.from(Instant.now());
     }
 }
