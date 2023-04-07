@@ -1,6 +1,7 @@
 package com.credentialsmanager.configuration.exception;
 
 import com.credentialsmanager.exception.BadRequestException;
+import com.credentialsmanager.exception.GenericErrorException;
 import com.credentialsmanager.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ class CustomControllerAdvice {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(Exception e) {
         var status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);
+    }
+
+    @ExceptionHandler(GenericErrorException.class)
+    public ResponseEntity<ErrorResponse> handleGenericErrorException(Exception e) {
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(new ErrorResponse(status, e.getMessage()), status);
     }
 }

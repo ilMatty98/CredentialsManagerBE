@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MessageUtils {
 
-    ERROR_00("Errore generico"),
+    ERROR_00("Generic error"),
     ERROR_01("Email already present");
 
     private final String label;
