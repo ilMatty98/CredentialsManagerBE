@@ -7,16 +7,33 @@ import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
 import com.credentialsmanager.utils.MessageUtils;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +95,61 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
+    }
+
+
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+        SecretKey chiaveCodice = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        SecretKey chiaveDB = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        outputStream.write( chiaveCodice.getEncoded() );
+        outputStream.write( chiaveDB.getEncoded()  );
+
+        byte chiaveCompleta[] = outputStream.toByteArray( );
+
+        String secretString = Encoders.BASE64.encode(chiaveCompleta);
+
+        System.out.println("--------------------------------------------");
+        System.out.println(secretString);
+
+
+        String jwt = createJwtSignedHMAC(secretString);
+        System.out.println("--------------------------------------------");
+        System.out.println("TOken: " +jwt);
+
+
+        Jws<Claims> token = parseJwt(jwt, secretString);
+
+        System.out.println(token.getBody());
+    }
+
+
+    public static Jws<Claims> parseJwt(String jwtString, String secret) {
+        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS512.getJcaName());
+
+        Jws<Claims> jwt = Jwts.parserBuilder()
+                .setSigningKey(hmacKey)
+                .build()
+                .parseClaimsJws(jwtString);
+
+        return jwt;
+    }
+
+
+    public static String createJwtSignedHMAC(String secret) {
+        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS512.getJcaName());
+
+        Instant now = Instant.now();
+        String jwtToken = Jwts.builder()
+                .claim("name", "Jane Doe")
+                .claim("email", "jane@example.com")
+                .setSubject("jane")
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plus(5L, ChronoUnit.MINUTES)))
+                .signWith(hmacKey)
+                .compact();
+
+        return jwtToken;
     }
 }
