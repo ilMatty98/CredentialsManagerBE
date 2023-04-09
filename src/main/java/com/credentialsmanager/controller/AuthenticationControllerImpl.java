@@ -1,6 +1,7 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.dto.AuthenticationDto;
+import com.credentialsmanager.dto.TokenJwtDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
 import com.credentialsmanager.service.AuthenticationService;
@@ -27,8 +28,8 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public AuthenticationDto logIn(AuthenticationDto authenticationDto) {
-        AuthenticationDto output;
+    public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
+        TokenJwtDto output;
         try {
             output = authenticationService.logIn(authenticationDto);
         } catch (CustomException customException) {
@@ -37,5 +38,10 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new GenericErrorException(e);
         }
         return output;
+    }
+
+    @Override
+    public boolean validateJwt(TokenJwtDto tokenJwtDto) {
+        return false;
     }
 }

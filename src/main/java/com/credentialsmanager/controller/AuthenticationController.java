@@ -1,6 +1,7 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.dto.AuthenticationDto;
+import com.credentialsmanager.dto.TokenJwtDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,6 +26,13 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "LogIn successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
-    AuthenticationDto logIn(@Parameter(description = "Dto to log in")
+    TokenJwtDto logIn(@Parameter(description = "Dto to log in")
                             @Valid @RequestBody AuthenticationDto authenticationDto);
+
+    @GetMapping("/validateJwt")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "LogIn successfully")})
+    @Deprecated(since = "Only for test")
+    boolean validateJwt(@Parameter(description = "Dto to validate token jwt")
+                      @Valid @RequestBody TokenJwtDto tokenJwtDto);
 }

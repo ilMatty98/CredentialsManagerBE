@@ -1,16 +1,19 @@
 package com.credentialsmanager.service;
 
 import com.credentialsmanager.dto.AuthenticationDto;
+import com.credentialsmanager.dto.TokenJwtDto;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
 import com.credentialsmanager.utils.MessageUtils;
+import com.credentialsmanager.utils.TokenJwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoder;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
@@ -19,21 +22,15 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Key;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +50,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Value("${encryption.argon2id.parallelism}")
     private int argon2idParallelism;
+
+    @Value("${token.key.part1}")
+    private String tokenKeyPart1;
+
+    @Value("${token.expiration-minutes}")
+    private long tokenExpiration;
 
     private final UserRepository usersRepository;
 
@@ -75,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @SneakyThrows
-    public AuthenticationDto logIn(AuthenticationDto authenticationDto) {
+    public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
         var user = usersRepository.findById(authenticationDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02.getMessage()));
 
@@ -87,10 +90,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!Arrays.equals(storedHash, currenthash))
             throw new UnauthorizedException(MessageUtils.ERROR_02.getMessage());
 
+        var tokenKeyPart2 = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+        //TODO: criptare la chiave prima di trasformarla in base64
         user.setTimestampLastAccess(getCurrentTimestamp());
+        user.setToken(TokenJwtUtils.base64Encoding(tokenKeyPart2.getEncoded()));
         usersRepository.save(user);
 
-        return new AuthenticationDto();
+        var claims = new HashMap<String, Object>();
+        claims.put("email", user.getEmail());
+        claims.put("key1", tokenKeyPart1);
+        claims.put("key2", tokenKeyPart2);
+
+        var token = TokenJwtUtils.generateTokenJwt(tokenKeyPart1, tokenKeyPart2, tokenExpiration, claims);
+        return new TokenJwtDto(token);
     }
 
     private static Timestamp getCurrentTimestamp() {
@@ -98,15 +111,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException {
         SecretKey chiaveCodice = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+        System.out.println(Encoders.BASE64.encode(chiaveCodice.getEncoded()));
         SecretKey chiaveDB = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        outputStream.write( chiaveCodice.getEncoded() );
-        outputStream.write( chiaveDB.getEncoded()  );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(chiaveCodice.getEncoded());
+        outputStream.write(chiaveDB.getEncoded());
 
-        byte chiaveCompleta[] = outputStream.toByteArray( );
+        byte[] chiaveCompleta = outputStream.toByteArray();
 
         String secretString = Encoders.BASE64.encode(chiaveCompleta);
 
@@ -116,7 +131,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String jwt = createJwtSignedHMAC(secretString);
         System.out.println("--------------------------------------------");
-        System.out.println("TOken: " +jwt);
+        System.out.println("TOken: " + jwt);
 
 
         Jws<Claims> token = parseJwt(jwt, secretString);
