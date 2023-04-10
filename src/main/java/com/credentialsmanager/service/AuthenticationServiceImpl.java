@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public AuthenticationDto signIn(AuthenticationDto authenticationDto) {
         if (usersRepository.existsById(authenticationDto.getEmail()))
-            throw new BadRequestException(MessageUtils.ERROR_01.getMessage());
+            throw new BadRequestException(MessageUtils.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
         var hash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
@@ -66,7 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @SneakyThrows
     public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
         var user = usersRepository.findById(authenticationDto.getEmail())
-                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02.getMessage()));
+                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02));
 
         var storedHash = Base64.getDecoder().decode(user.getHash());
         var salt = Base64.getDecoder().decode(user.getSalt());
@@ -74,7 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         if (!Arrays.equals(storedHash, currenthash))
-            throw new UnauthorizedException(MessageUtils.ERROR_02.getMessage());
+            throw new UnauthorizedException(MessageUtils.ERROR_02);
 
         var tokenKey = TokenJwtUtils.generateSecretKey().getEncoded();
 
@@ -93,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var email = TokenJwtUtils.getSubject(tokenJwtDto.token());
         if (email == null) return false;
         var user = usersRepository.findById(email)
-                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03.getMessage()));
+                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03));
 
         return TokenJwtUtils.validateTokenJwt(tokenJwtDto.token(), base64Decoding(user.getToken()));
     }

@@ -7,11 +7,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MessageUtils {
 
-    ERROR_00("Generic error"),
-    ERROR_01("Email already registered"),
-    ERROR_02("Invalid credentials"),
-    ERROR_03("Invalid Token Jwt");
+    ERROR_00(0, "Generic error"),
+    ERROR_01(1, "Email already registered"),
+    ERROR_02(2, "Invalid credentials"),
+    ERROR_03(3, "Invalid Token Jwt");
 
+    private final int errorCode;
     private final String label;
 
     public String getMessage(Object... replacement) {

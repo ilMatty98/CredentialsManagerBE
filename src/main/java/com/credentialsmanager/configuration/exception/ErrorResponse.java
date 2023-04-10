@@ -14,6 +14,7 @@ public class ErrorResponse {
     private int code;
     private String status;
     private String message;
+    private int errorMessage;
 
     public ErrorResponse() {
         timestamp = new Date();
@@ -24,5 +25,13 @@ public class ErrorResponse {
         this.code = httpStatus.value();
         this.status = httpStatus.name();
         this.message = message;
+    }
+
+    public ErrorResponse(HttpStatus httpStatus, String message, int errorMessage) {
+        this();
+        this.code = httpStatus.value();
+        this.status = httpStatus.name();
+        this.message = message;
+        this.errorMessage = errorMessage;
     }
 }

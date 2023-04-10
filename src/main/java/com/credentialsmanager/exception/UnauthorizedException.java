@@ -1,12 +1,13 @@
 package com.credentialsmanager.exception;
 
+import com.credentialsmanager.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class UnauthorizedException extends CustomException {
 
-    public UnauthorizedException(String message) {
-        super(message);
-        log.error(message);
+    public UnauthorizedException(MessageUtils messageUtils) {
+        super(messageUtils);
+        log.error(messageUtils.getMessage());
     }
 }
