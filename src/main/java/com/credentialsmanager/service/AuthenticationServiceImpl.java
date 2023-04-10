@@ -105,14 +105,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @SneakyThrows
     public boolean validateJwt(TokenJwtDto tokenJwtDto) {
+        var email = TokenJwtUtils.getSubject(tokenJwtDto.getToken());
+        var user = usersRepository.findById(email)
+                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02.getMessage()));
+
+        var tokenKeyPart2 = TokenJwtUtils.base64Decoding(user.getToken());
+        var byteArray = TokenJwtUtils.appendTwoByteArray(TokenJwtUtils.base64Decoding(tokenKeyPart1), tokenKeyPart2);
+        var hmacKey = new SecretKeySpec(byteArray, SignatureAlgorithm.HS512.getJcaName());
+
         return false;
     }
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
-
 
     public static void main(String[] args) throws IOException {
         SecretKey chiaveCodice = Keys.secretKeyFor(SignatureAlgorithm.HS512);
