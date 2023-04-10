@@ -1,5 +1,6 @@
 package com.credentialsmanager.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +21,7 @@ public class TokenJwtUtils {
 
     @SneakyThrows
     public static String generateTokenJwt(String tokenKeyPart1, SecretKey tokenKeyPart2, long tokenExpiration,
-                                          Map<String, Object> claims) {
+                                          String subjetc, Map<String, Object> claims) {
         var byteArray = new ByteArrayOutputStream();
         byteArray.write(Base64.getDecoder().decode(tokenKeyPart1));
         byteArray.write(tokenKeyPart2.getEncoded());
@@ -29,6 +30,7 @@ public class TokenJwtUtils {
         var now = Instant.now();
 
         return Jwts.builder()
+                .setSubject(subjetc)
                 .addClaims(claims)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plus(tokenExpiration, ChronoUnit.MINUTES)))
@@ -48,6 +50,20 @@ public class TokenJwtUtils {
         } catch (JwtException ex) {
             return false;
         }
+    }
+
+    public static String getSubject(String jwtString) {
+        String subject;
+        try {
+            subject = Jwts.parserBuilder()
+                    .build()
+                    .parseClaimsJws(jwtString)
+                    .getBody()
+                    .getSubject();
+        } catch (Exception e) {
+            subject = null;
+        }
+        return subject;
     }
 
     public String base64Encoding(byte[] input) {

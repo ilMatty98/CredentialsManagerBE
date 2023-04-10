@@ -13,7 +13,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Encoder;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
@@ -30,7 +29,10 @@ import java.security.Key;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -97,13 +99,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setToken(TokenJwtUtils.base64Encoding(tokenKeyPart2.getEncoded()));
         usersRepository.save(user);
 
-        var claims = new HashMap<String, Object>();
-        claims.put("email", user.getEmail());
-        claims.put("key1", tokenKeyPart1);
-        claims.put("key2", tokenKeyPart2);
-
-        var token = TokenJwtUtils.generateTokenJwt(tokenKeyPart1, tokenKeyPart2, tokenExpiration, claims);
+        var token = TokenJwtUtils.generateTokenJwt(tokenKeyPart1, tokenKeyPart2, tokenExpiration, user.getEmail(),
+                new HashMap<>());
         return new TokenJwtDto(token);
+    }
+
+    @Override
+    public boolean validateJwt(TokenJwtDto tokenJwtDto) {
+        return false;
     }
 
     private static Timestamp getCurrentTimestamp() {

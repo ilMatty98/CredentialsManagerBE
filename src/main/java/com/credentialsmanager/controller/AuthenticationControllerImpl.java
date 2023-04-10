@@ -16,32 +16,34 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Override
     public AuthenticationDto signIn(AuthenticationDto authenticationDto) {
-        AuthenticationDto output;
         try {
-            output = authenticationService.signIn(authenticationDto);
+            return authenticationService.signIn(authenticationDto);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {
             throw new GenericErrorException(e);
         }
-        return output;
     }
 
     @Override
     public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
-        TokenJwtDto output;
         try {
-            output = authenticationService.logIn(authenticationDto);
+            return authenticationService.logIn(authenticationDto);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {
             throw new GenericErrorException(e);
         }
-        return output;
     }
 
     @Override
     public boolean validateJwt(TokenJwtDto tokenJwtDto) {
-        return false;
+        try {
+            return authenticationService.validateJwt(tokenJwtDto);
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
     }
 }

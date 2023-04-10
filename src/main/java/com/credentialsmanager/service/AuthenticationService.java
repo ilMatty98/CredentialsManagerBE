@@ -10,4 +10,6 @@ public interface AuthenticationService {
     AuthenticationDto signIn(AuthenticationDto authenticationDto);
 
     TokenJwtDto logIn(AuthenticationDto authenticationDto);
+
+    boolean validateJwt(TokenJwtDto tokenJwtDto);
 }
