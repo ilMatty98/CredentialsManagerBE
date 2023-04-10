@@ -9,29 +9,16 @@ import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
 import com.credentialsmanager.utils.MessageUtils;
 import com.credentialsmanager.utils.TokenJwtUtils;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.Key;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 
 @Service
@@ -52,9 +39,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Value("${encryption.argon2id.parallelism}")
     private int argon2idParallelism;
-
-    @Value("${token.key.part1}")
-    private String tokenKeyPart1;
 
     @Value("${token.expiration-minutes}")
     private long tokenExpiration;
@@ -92,90 +76,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!Arrays.equals(storedHash, currenthash))
             throw new UnauthorizedException(MessageUtils.ERROR_02.getMessage());
 
-        var tokenKeyPart2 = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        var tokenKey = TokenJwtUtils.generateSecretKey().getEncoded();
 
         //TODO: criptare la chiave prima di trasformarla in base64
         user.setTimestampLastAccess(getCurrentTimestamp());
-        user.setToken(TokenJwtUtils.base64Encoding(tokenKeyPart2.getEncoded()));
+        user.setToken(base64Encoding(tokenKey));
         usersRepository.save(user);
 
-        var token = TokenJwtUtils.generateTokenJwt(tokenKeyPart1, tokenKeyPart2, tokenExpiration, user.getEmail(),
-                new HashMap<>());
+        var token = TokenJwtUtils.generateTokenJwt(tokenKey, tokenExpiration, user.getEmail(), new HashMap<>());
         return new TokenJwtDto(token);
     }
 
     @Override
     @SneakyThrows
     public boolean validateJwt(TokenJwtDto tokenJwtDto) {
-        var email = TokenJwtUtils.getSubject(tokenJwtDto.getToken());
+        var email = TokenJwtUtils.getSubject(tokenJwtDto.token());
+        if (email == null) return false;
         var user = usersRepository.findById(email)
-                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02.getMessage()));
+                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03.getMessage()));
 
-        var tokenKeyPart2 = TokenJwtUtils.base64Decoding(user.getToken());
-        var byteArray = TokenJwtUtils.appendTwoByteArray(TokenJwtUtils.base64Decoding(tokenKeyPart1), tokenKeyPart2);
-        var hmacKey = new SecretKeySpec(byteArray, SignatureAlgorithm.HS512.getJcaName());
-
-        return false;
+        return TokenJwtUtils.validateTokenJwt(tokenJwtDto.token(), base64Decoding(user.getToken()));
     }
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
 
-    public static void main(String[] args) throws IOException {
-        SecretKey chiaveCodice = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-
-        System.out.println(Encoders.BASE64.encode(chiaveCodice.getEncoded()));
-        SecretKey chiaveDB = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputStream.write(chiaveCodice.getEncoded());
-        outputStream.write(chiaveDB.getEncoded());
-
-        byte[] chiaveCompleta = outputStream.toByteArray();
-
-        String secretString = Encoders.BASE64.encode(chiaveCompleta);
-
-        System.out.println("--------------------------------------------");
-        System.out.println(secretString);
-
-
-        String jwt = createJwtSignedHMAC(secretString);
-        System.out.println("--------------------------------------------");
-        System.out.println("TOken: " + jwt);
-
-
-        Jws<Claims> token = parseJwt(jwt, secretString);
-
-        System.out.println(token.getBody());
+    private static String base64Encoding(byte[] input) {
+        return Base64.getEncoder().encodeToString(input);
     }
 
-
-    public static Jws<Claims> parseJwt(String jwtString, String secret) {
-        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS512.getJcaName());
-
-        Jws<Claims> jwt = Jwts.parserBuilder()
-                .setSigningKey(hmacKey)
-                .build()
-                .parseClaimsJws(jwtString);
-
-        return jwt;
-    }
-
-
-    public static String createJwtSignedHMAC(String secret) {
-        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS512.getJcaName());
-
-        Instant now = Instant.now();
-        String jwtToken = Jwts.builder()
-                .claim("name", "Jane Doe")
-                .claim("email", "jane@example.com")
-                .setSubject("jane")
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(5L, ChronoUnit.MINUTES)))
-                .signWith(hmacKey)
-                .compact();
-
-        return jwtToken;
+    private static byte[] base64Decoding(String input) {
+        return Base64.getDecoder().decode(input);
     }
 }

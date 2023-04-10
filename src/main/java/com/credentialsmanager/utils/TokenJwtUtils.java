@@ -3,16 +3,14 @@ package com.credentialsmanager.utils;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,11 +18,8 @@ import java.util.Map;
 public class TokenJwtUtils {
 
     @SneakyThrows
-    public static String generateTokenJwt(String tokenKeyPart1, SecretKey tokenKeyPart2, long tokenExpiration,
-                                          String subjetc, Map<String, Object> claims) {
-        var byteArray = appendTwoByteArray(base64Decoding(tokenKeyPart1), tokenKeyPart2.getEncoded());
-
-        var hmacKey = new SecretKeySpec(byteArray, SignatureAlgorithm.HS512.getJcaName());
+    public static String generateTokenJwt(byte[] key, long tokenExpiration, String subjetc, Map<String, Object> claims) {
+        var hmacKey = new SecretKeySpec(key, SignatureAlgorithm.HS512.getJcaName());
         var now = Instant.now();
 
         return Jwts.builder()
@@ -36,15 +31,8 @@ public class TokenJwtUtils {
                 .compact();
     }
 
-    public static byte[] appendTwoByteArray(byte[] array1, byte[] array2) throws IOException {
-        var byteArray = new ByteArrayOutputStream();
-        byteArray.write(array1);
-        byteArray.write(array2);
-        return byteArray.toByteArray();
-    }
-
-    public static boolean validateTokenJwt(String jwtString, String key) {
-        var hmacKey = new SecretKeySpec(base64Decoding(key), SignatureAlgorithm.HS512.getJcaName());
+    public static boolean validateTokenJwt(String jwtString, byte[] key) {
+        var hmacKey = new SecretKeySpec(key, SignatureAlgorithm.HS512.getJcaName());
 
         try {
             Jwts.parserBuilder()
@@ -57,25 +45,13 @@ public class TokenJwtUtils {
         }
     }
 
+    @SuppressWarnings("java:S1874")
     public static String getSubject(String jwtString) {
-        String subject;
-        try {
-            subject = Jwts.parserBuilder()
-                    .build()
-                    .parseClaimsJws(jwtString)
-                    .getBody()
-                    .getSubject();
-        } catch (Exception e) {
-            subject = null;
-        }
-        return subject;
+        var withoutSignature = jwtString.substring(0, jwtString.lastIndexOf('.') + 1);
+        return Jwts.parser().parseClaimsJwt(withoutSignature).getBody().getSubject();
     }
 
-    public String base64Encoding(byte[] input) {
-        return Base64.getEncoder().encodeToString(input);
-    }
-
-    public byte[] base64Decoding(String input) {
-        return Base64.getDecoder().decode(input);
+    public SecretKey generateSecretKey() {
+        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 }

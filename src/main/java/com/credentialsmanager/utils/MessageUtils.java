@@ -9,7 +9,8 @@ public enum MessageUtils {
 
     ERROR_00("Generic error"),
     ERROR_01("Email already registered"),
-    ERROR_02("Invalid credentials");
+    ERROR_02("Invalid credentials"),
+    ERROR_03("Invalid Token Jwt");
 
     private final String label;
 
