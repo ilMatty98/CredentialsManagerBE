@@ -21,7 +21,7 @@ public interface AuthenticationController {
     AuthenticationDto signIn(@Parameter(description = "Dto to create a new user")
                              @Valid @RequestBody AuthenticationDto authenticationDto);
 
-    @GetMapping("/logIn")
+    @PostMapping("/logIn")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "LogIn successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
