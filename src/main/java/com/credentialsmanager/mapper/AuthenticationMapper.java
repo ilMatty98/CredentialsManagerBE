@@ -17,8 +17,8 @@ public interface AuthenticationMapper {
     @Mapping(target = "timestampLastAccess", source = "timestamp")
     @Mapping(target = "email", source = "authenticationDto.email")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
-    @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
-    User saveNewUser(AuthenticationDto authenticationDto, byte[] salt, byte[] hash, Timestamp timestamp);
+    @Mapping(target = "payload", source = "payload", qualifiedByName = "base64Encoding")
+    User saveNewUser(AuthenticationDto authenticationDto, byte[] salt, byte[] payload, Timestamp timestamp);
 
     @Named("base64Encoding")
     default String base64Encoding(byte[] input) {

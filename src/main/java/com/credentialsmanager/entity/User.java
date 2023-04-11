@@ -17,10 +17,10 @@ public class User {
     private String email;
 
     @Basic
-    private String hash;
+    private String salt;
 
     @Basic
-    private String salt;
+    private String payload;
 
     @Basic
     @Column(name = "timestamp_creation")

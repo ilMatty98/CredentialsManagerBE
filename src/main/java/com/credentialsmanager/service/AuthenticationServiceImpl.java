@@ -55,10 +55,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadRequestException(MessageUtils.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
-        var hash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
+        var payload = AuthenticationUtils.generateArgon2id(authenticationDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, hash, getCurrentTimestamp()));
+        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, payload, getCurrentTimestamp()));
         return authenticationDto;
     }
 
@@ -68,12 +68,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = usersRepository.findById(authenticationDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02));
 
-        var storedHash = Base64.getDecoder().decode(user.getHash());
+        var storedPayload = Base64.getDecoder().decode(user.getPayload());
         var salt = Base64.getDecoder().decode(user.getSalt());
-        var currenthash = AuthenticationUtils.generateArgon2id(authenticationDto.getPassword(), salt, argon2idSize,
+        var currentPayload = AuthenticationUtils.generateArgon2id(authenticationDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        if (!Arrays.equals(storedHash, currenthash))
+        if (!Arrays.equals(storedPayload, currentPayload))
             throw new UnauthorizedException(MessageUtils.ERROR_02);
 
         var tokenKey = TokenJwtUtils.generateSecretKey().getEncoded();

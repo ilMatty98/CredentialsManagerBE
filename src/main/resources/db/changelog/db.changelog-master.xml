@@ -9,7 +9,7 @@
             <column name="email" type="varchar(100)">
                 <constraints primaryKey="true" primaryKeyName="users_id_pk"/>
             </column>
-            <column name="hash" type="text">
+            <column name="payload" type="text">
                 <constraints nullable="false"/>
             </column>
             <column name="salt" type="text">
