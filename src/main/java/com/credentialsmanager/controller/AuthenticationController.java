@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/authentication")
 @Tag(name = "Authentication")
+@CrossOrigin("*")
 public interface AuthenticationController {
 
     @PostMapping("/signUp")
