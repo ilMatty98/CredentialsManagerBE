@@ -15,9 +15,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @Override
-    public AuthenticationDto signIn(AuthenticationDto authenticationDto) {
+    public AuthenticationDto signUp(AuthenticationDto authenticationDto) {
         try {
-            return authenticationService.signIn(authenticationDto);
+            return authenticationService.signUp(authenticationDto);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {

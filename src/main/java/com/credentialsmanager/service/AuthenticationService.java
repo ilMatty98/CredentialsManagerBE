@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthenticationService {
 
-    AuthenticationDto signIn(AuthenticationDto authenticationDto);
+    AuthenticationDto signUp(AuthenticationDto authenticationDto);
 
     TokenJwtDto logIn(AuthenticationDto authenticationDto);
 

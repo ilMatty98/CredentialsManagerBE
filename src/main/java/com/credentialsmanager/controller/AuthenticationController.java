@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication")
 public interface AuthenticationController {
 
-    @PostMapping("/signIn")
+    @PostMapping("/signUp")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "SignIn successfully"),
+            @ApiResponse(responseCode = "200", description = "SignUp successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
-    AuthenticationDto signIn(@Parameter(description = "Dto to create a new user")
+    AuthenticationDto signUp(@Parameter(description = "Dto to create a new user")
                              @Valid @RequestBody AuthenticationDto authenticationDto);
 
     @PostMapping("/logIn")

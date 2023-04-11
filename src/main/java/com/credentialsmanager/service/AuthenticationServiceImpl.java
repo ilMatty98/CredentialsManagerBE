@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @SneakyThrows
     @Transactional
-    public AuthenticationDto signIn(AuthenticationDto authenticationDto) {
+    public AuthenticationDto signUp(AuthenticationDto authenticationDto) {
         if (usersRepository.existsById(authenticationDto.getEmail()))
             throw new BadRequestException(MessageUtils.ERROR_01);
 
