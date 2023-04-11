@@ -80,7 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //TODO: criptare la chiave prima di trasformarla in base64
         user.setTimestampLastAccess(getCurrentTimestamp());
-        user.setToken(base64Encoding(tokenKey));
+        user.setTokenKey(base64Encoding(tokenKey));
         usersRepository.save(user);
 
         var token = TokenJwtUtils.generateTokenJwt(tokenKey, tokenExpiration, user.getEmail(), new HashMap<>());
@@ -95,7 +95,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = usersRepository.findById(email)
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03));
 
-        return TokenJwtUtils.validateTokenJwt(tokenJwtDto.token(), base64Decoding(user.getToken()));
+        return TokenJwtUtils.validateTokenJwt(tokenJwtDto.token(), base64Decoding(user.getTokenKey()));
     }
 
     private static Timestamp getCurrentTimestamp() {
