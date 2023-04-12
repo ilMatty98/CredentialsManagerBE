@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,8 +20,8 @@ public interface AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "SignUp successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
-    void signUp(@Parameter(description = "Dto to create a new user")
-                @Valid @RequestBody RegistrationDto registrationDto);
+    ResponseEntity<Object> signUp(@Parameter(description = "Dto to create a new user")
+                                  @Valid @RequestBody RegistrationDto registrationDto);
 
     @PostMapping("/logIn")
     @ApiResponses(value = {
