@@ -1,7 +1,7 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.AuthenticationDto;
-import com.credentialsmanager.dto.TokenJwtDto;
+import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.RegistrationDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
 import com.credentialsmanager.service.AuthenticationService;
@@ -15,9 +15,10 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @Override
-    public AuthenticationDto signUp(AuthenticationDto authenticationDto) {
+    public void signUp(RegistrationDto registrationDto) {
         try {
-            return authenticationService.signUp(authenticationDto);
+            authenticationService.signUp(registrationDto);
+            //TODO far tornare un 201
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {
@@ -26,9 +27,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
+    public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
         try {
-            return authenticationService.logIn(authenticationDto);
+            return authenticationService.logIn(requestLoginDto);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {
@@ -37,9 +38,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public boolean validateJwt(TokenJwtDto tokenJwtDto) {
+    public boolean validateJwt(String tokenJwt) {
         try {
-            return authenticationService.validateJwt(tokenJwtDto);
+            return authenticationService.validateJwt(tokenJwt);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {

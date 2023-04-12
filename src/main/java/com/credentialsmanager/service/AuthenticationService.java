@@ -1,15 +1,15 @@
 package com.credentialsmanager.service;
 
-import com.credentialsmanager.dto.AuthenticationDto;
-import com.credentialsmanager.dto.TokenJwtDto;
+import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.RegistrationDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthenticationService {
 
-    AuthenticationDto signUp(AuthenticationDto authenticationDto);
+    void signUp(RegistrationDto registrationDto);
 
-    TokenJwtDto logIn(AuthenticationDto authenticationDto);
+    LoginDto.Response logIn(LoginDto.Request requestLoginDto);
 
-    boolean validateJwt(TokenJwtDto tokenJwtDto);
+    boolean validateJwt(String tokenJwt);
 }

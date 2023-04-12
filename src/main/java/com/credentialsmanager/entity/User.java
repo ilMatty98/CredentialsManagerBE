@@ -23,6 +23,10 @@ public class User {
     private String payload;
 
     @Basic
+    @Column(name = "protected_symmetric_key")
+    private String protectedSymmetricKey;
+
+    @Basic
     @Column(name = "timestamp_creation")
     private Timestamp timestampCreation;
 

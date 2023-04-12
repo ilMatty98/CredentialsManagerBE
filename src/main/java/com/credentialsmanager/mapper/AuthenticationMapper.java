@@ -1,7 +1,8 @@
 package com.credentialsmanager.mapper;
 
 import com.credentialsmanager.configuration.mapper.AppMapperConfig;
-import com.credentialsmanager.dto.AuthenticationDto;
+import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.RegistrationDto;
 import com.credentialsmanager.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,13 +16,24 @@ public interface AuthenticationMapper {
 
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
-    @Mapping(target = "email", source = "authenticationDto.email")
+    @Mapping(target = "email", source = "registrationDto.email")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
     @Mapping(target = "payload", source = "payload", qualifiedByName = "base64Encoding")
-    User saveNewUser(AuthenticationDto authenticationDto, byte[] salt, byte[] payload, Timestamp timestamp);
+    @Mapping(target = "protectedSymmetricKey", source = "registrationDto.protectedSymmetricKey")
+    User newUser(RegistrationDto registrationDto, byte[] salt, byte[] payload, Timestamp timestamp);
+
+    @Mapping(target = "token", source = "token")
+    @Mapping(target = "protectedSymmetricKey", source = "protectedSymmetricKey")
+    LoginDto.Response newLoginDto(String protectedSymmetricKey, String token);
 
     @Named("base64Encoding")
     default String base64Encoding(byte[] input) {
         return Base64.getEncoder().encodeToString(input);
     }
+
+    @Named("base64Decoding")
+    default byte[] base64Decoding(String input) {
+        return Base64.getDecoder().decode(input);
+    }
+
 }

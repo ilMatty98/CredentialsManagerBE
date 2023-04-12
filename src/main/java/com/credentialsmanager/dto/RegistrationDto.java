@@ -6,7 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class AuthenticationDto {
+public class RegistrationDto {
 
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     @NotBlank(message = "Email cannot be blank")
@@ -14,5 +14,8 @@ public class AuthenticationDto {
 
     @NotBlank(message = "MasterPasswordHash cannot be blank")
     private String masterPasswordHash;
+
+    @NotBlank(message = "ProtectedSymmetricKey cannot be blank")
+    private String protectedSymmetricKey;
 
 }

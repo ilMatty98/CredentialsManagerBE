@@ -1,7 +1,7 @@
 package com.credentialsmanager.service;
 
-import com.credentialsmanager.dto.AuthenticationDto;
-import com.credentialsmanager.dto.TokenJwtDto;
+import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.RegistrationDto;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
@@ -50,27 +50,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @SneakyThrows
     @Transactional
-    public AuthenticationDto signUp(AuthenticationDto authenticationDto) {
-        if (usersRepository.existsById(authenticationDto.getEmail()))
+    public void signUp(RegistrationDto registrationDto) {
+        if (usersRepository.existsById(registrationDto.getEmail()))
             throw new BadRequestException(MessageUtils.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
-        var payload = AuthenticationUtils.generateArgon2id(authenticationDto.getMasterPasswordHash(), salt, argon2idSize,
+        var payload = AuthenticationUtils.generateArgon2id(registrationDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        usersRepository.save(authenticationMapper.saveNewUser(authenticationDto, salt, payload, getCurrentTimestamp()));
-        return authenticationDto;
+        usersRepository.save(authenticationMapper.newUser(registrationDto, salt, payload, getCurrentTimestamp()));
     }
 
     @Override
     @SneakyThrows
-    public TokenJwtDto logIn(AuthenticationDto authenticationDto) {
-        var user = usersRepository.findById(authenticationDto.getEmail())
+    public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
+        var user = usersRepository.findById(requestLoginDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02));
 
         var storedPayload = Base64.getDecoder().decode(user.getPayload());
         var salt = Base64.getDecoder().decode(user.getSalt());
-        var currentPayload = AuthenticationUtils.generateArgon2id(authenticationDto.getMasterPasswordHash(), salt, argon2idSize,
+        var currentPayload = AuthenticationUtils.generateArgon2id(requestLoginDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         if (!Arrays.equals(storedPayload, currentPayload))
@@ -80,33 +79,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //TODO: criptare la chiave prima di trasformarla in base64
         user.setTimestampLastAccess(getCurrentTimestamp());
-        user.setTokenKey(base64Encoding(tokenKey));
+        user.setTokenKey(authenticationMapper.base64Encoding(tokenKey));
         usersRepository.save(user);
 
         var token = TokenJwtUtils.generateTokenJwt(tokenKey, tokenExpiration, user.getEmail(), new HashMap<>());
-        return new TokenJwtDto(token);
+        return authenticationMapper.newLoginDto(user.getProtectedSymmetricKey(), token);
     }
 
     @Override
     @SneakyThrows
-    public boolean validateJwt(TokenJwtDto tokenJwtDto) {
-        var email = TokenJwtUtils.getSubject(tokenJwtDto.token());
+    public boolean validateJwt(String tokenJwt) {
+        var email = TokenJwtUtils.getSubject(tokenJwt);
         if (email == null) return false;
         var user = usersRepository.findById(email)
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03));
 
-        return TokenJwtUtils.validateTokenJwt(tokenJwtDto.token(), base64Decoding(user.getTokenKey()));
+        return TokenJwtUtils.validateTokenJwt(tokenJwt, authenticationMapper.base64Decoding(user.getTokenKey()));
     }
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
-    }
-
-    private static String base64Encoding(byte[] input) {
-        return Base64.getEncoder().encodeToString(input);
-    }
-
-    private static byte[] base64Decoding(String input) {
-        return Base64.getDecoder().decode(input);
     }
 }
