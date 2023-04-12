@@ -12,7 +12,7 @@
             <column name="salt" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="payload" type="text">
+            <column name="hash" type="text">
                 <constraints nullable="false"/>
             </column>
             <column name="protected_symmetric_key" type="text">

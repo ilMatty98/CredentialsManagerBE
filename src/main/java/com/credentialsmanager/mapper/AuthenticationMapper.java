@@ -18,9 +18,9 @@ public interface AuthenticationMapper {
     @Mapping(target = "timestampLastAccess", source = "timestamp")
     @Mapping(target = "email", source = "registrationDto.email")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
-    @Mapping(target = "payload", source = "payload", qualifiedByName = "base64Encoding")
+    @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
     @Mapping(target = "protectedSymmetricKey", source = "registrationDto.protectedSymmetricKey")
-    User newUser(RegistrationDto registrationDto, byte[] salt, byte[] payload, Timestamp timestamp);
+    User newUser(RegistrationDto registrationDto, byte[] salt, byte[] hash, Timestamp timestamp);
 
     @Mapping(target = "token", source = "token")
     @Mapping(target = "protectedSymmetricKey", source = "protectedSymmetricKey")

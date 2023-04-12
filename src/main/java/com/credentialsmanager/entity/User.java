@@ -20,7 +20,7 @@ public class User {
     private String salt;
 
     @Basic
-    private String payload;
+    private String hash;
 
     @Basic
     @Column(name = "protected_symmetric_key")
