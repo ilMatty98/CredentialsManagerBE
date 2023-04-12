@@ -83,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         usersRepository.save(user);
 
         var token = TokenJwtUtils.generateTokenJwt(tokenKey, tokenExpiration, user.getEmail(), new HashMap<>());
-        return authenticationMapper.newLoginDto(user.getProtectedSymmetricKey(), token);
+        return authenticationMapper.newLoginDto(user, token);
     }
 
     @Override
