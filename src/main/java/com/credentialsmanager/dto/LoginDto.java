@@ -27,5 +27,7 @@ public abstract class LoginDto {
         private String token;
 
         private String protectedSymmetricKey;
+
+        private String initializationVector;
     }
 }

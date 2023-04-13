@@ -14,15 +14,17 @@ import java.util.Base64;
 @Mapper(config = AppMapperConfig.class)
 public interface AuthenticationMapper {
 
+    @Mapping(target = "email", source = "registrationDto.email")
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
-    @Mapping(target = "email", source = "registrationDto.email")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
     @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
+    @Mapping(target = "initializationVector", source = "registrationDto.initializationVector", qualifiedByName = "base64EncodingString")
     @Mapping(target = "protectedSymmetricKey", source = "registrationDto.protectedSymmetricKey", qualifiedByName = "base64EncodingString")
     User newUser(RegistrationDto registrationDto, byte[] salt, byte[] hash, Timestamp timestamp);
 
     @Mapping(target = "token", source = "token")
+    @Mapping(target = "initializationVector", source = "user.initializationVector", qualifiedByName = "base64DecodingString")
     @Mapping(target = "protectedSymmetricKey", source = "user.protectedSymmetricKey", qualifiedByName = "base64DecodingString")
     LoginDto.Response newLoginDto(User user, String token);
 

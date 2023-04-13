@@ -18,4 +18,7 @@ public class RegistrationDto {
     @NotBlank(message = "ProtectedSymmetricKey cannot be blank")
     private String protectedSymmetricKey;
 
+    @NotBlank(message = "InitializationVector cannot be blank")
+    private String initializationVector;
+
 }

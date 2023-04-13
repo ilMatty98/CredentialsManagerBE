@@ -18,6 +18,9 @@
             <column name="protected_symmetric_key" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="initialization_vector" type="text">
+                <constraints nullable="false"/>
+            </column>
             <column name="timestamp_creation" type="timestamp">
                 <constraints nullable="false"/>
             </column>

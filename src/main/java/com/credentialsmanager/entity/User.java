@@ -27,6 +27,10 @@ public class User {
     private String protectedSymmetricKey;
 
     @Basic
+    @Column(name = "initialization_vector")
+    private String initializationVector;
+
+    @Basic
     @Column(name = "timestamp_creation")
     private Timestamp timestampCreation;
 
