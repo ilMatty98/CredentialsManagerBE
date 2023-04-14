@@ -11,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/authentication")
 @Tag(name = "Authentication")
-@CrossOrigin("*")
+@RequestMapping("/v1/authentication")
 public interface AuthenticationController {
 
     @PostMapping("/signUp")
