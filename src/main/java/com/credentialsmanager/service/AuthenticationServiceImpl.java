@@ -1,5 +1,6 @@
 package com.credentialsmanager.service;
 
+import com.credentialsmanager.dto.EmailDto;
 import com.credentialsmanager.dto.LoginDto;
 import com.credentialsmanager.dto.RegistrationDto;
 import com.credentialsmanager.exception.BadRequestException;
@@ -49,6 +50,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${token.private-key}")
     private String tokenPrivateKey;
 
+    private final EmailService emailService;
+
     private final UserRepository usersRepository;
 
     private final AuthenticationMapper authenticationMapper;
@@ -85,6 +88,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         usersRepository.save(user);
 
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
+
+        emailService.sendEmail(new EmailDto(user.getEmail(), "Accesso rilevato in", "Accesso in bla bla bla"));
+
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
 
