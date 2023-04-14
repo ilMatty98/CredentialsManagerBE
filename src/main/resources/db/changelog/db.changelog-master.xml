@@ -27,7 +27,6 @@
             <column name="timestamp_last_access" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="token_key" type="text"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

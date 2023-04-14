@@ -38,15 +38,4 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new GenericErrorException(e);
         }
     }
-
-    @Override
-    public boolean validateJwt(String tokenJwt) {
-        try {
-            return authenticationService.validateJwt(tokenJwt);
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
-    }
 }

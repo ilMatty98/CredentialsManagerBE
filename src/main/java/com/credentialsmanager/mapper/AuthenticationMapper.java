@@ -24,9 +24,10 @@ public interface AuthenticationMapper {
     User newUser(RegistrationDto registrationDto, byte[] salt, byte[] hash, Timestamp timestamp);
 
     @Mapping(target = "token", source = "token")
+    @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")
     @Mapping(target = "initializationVector", source = "user.initializationVector", qualifiedByName = "base64DecodingString")
     @Mapping(target = "protectedSymmetricKey", source = "user.protectedSymmetricKey", qualifiedByName = "base64DecodingString")
-    LoginDto.Response newLoginDto(User user, String token);
+    LoginDto.Response newLoginDto(User user, String token, String tokenPublicKey);
 
     @Named("base64Encoding")
     default String base64Encoding(byte[] input) {

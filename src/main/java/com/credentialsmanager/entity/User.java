@@ -37,8 +37,4 @@ public class User {
     @Basic
     @Column(name = "timestamp_last_access")
     private Timestamp timestampLastAccess;
-
-    @Basic
-    @Column(name = "token_key")
-    private String tokenKey;
 }

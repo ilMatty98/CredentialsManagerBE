@@ -10,6 +10,4 @@ public interface AuthenticationService {
     void signUp(RegistrationDto registrationDto);
 
     LoginDto.Response logIn(LoginDto.Request requestLoginDto);
-
-    boolean validateJwt(String tokenJwt);
 }

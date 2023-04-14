@@ -43,6 +43,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${token.expiration-minutes}")
     private long tokenExpiration;
 
+    @Value("${token.public-key}")
+    private String tokenPublicKey;
+
+    @Value("${token.private-key}")
+    private String tokenPrivateKey;
+
     private final UserRepository usersRepository;
 
     private final AuthenticationMapper authenticationMapper;
@@ -75,26 +81,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!Arrays.equals(storedHash, currentHash))
             throw new UnauthorizedException(MessageUtils.ERROR_02);
 
-        var tokenKey = TokenJwtUtils.generateSecretKey().getEncoded();
-
-        //TODO: criptare la chiave prima di trasformarla in base64
         user.setTimestampLastAccess(getCurrentTimestamp());
-        user.setTokenKey(authenticationMapper.base64Encoding(tokenKey));
         usersRepository.save(user);
 
-        var token = TokenJwtUtils.generateTokenJwt(tokenKey, tokenExpiration, user.getEmail(), new HashMap<>());
-        return authenticationMapper.newLoginDto(user, token);
-    }
-
-    @Override
-    @SneakyThrows
-    public boolean validateJwt(String tokenJwt) {
-        var email = TokenJwtUtils.getSubject(tokenJwt);
-        if (email == null) return false;
-        var user = usersRepository.findById(email)
-                .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_03));
-
-        return TokenJwtUtils.validateTokenJwt(tokenJwt, authenticationMapper.base64Decoding(user.getTokenKey()));
+        var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
+        return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
 
     private static Timestamp getCurrentTimestamp() {
