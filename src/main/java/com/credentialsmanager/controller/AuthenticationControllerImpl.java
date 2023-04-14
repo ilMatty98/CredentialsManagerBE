@@ -38,4 +38,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new GenericErrorException(e);
         }
     }
+
+    @Override
+    public boolean checkEmail(String email) {
+        return authenticationService.checkEmail(email);
+    }
 }

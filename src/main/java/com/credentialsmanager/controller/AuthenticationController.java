@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Authentication")
@@ -32,4 +29,9 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     LoginDto.Response logIn(@Parameter(description = "Dto to log in")
                             @Valid @RequestBody LoginDto.Request requestLoginDto);
+
+    @GetMapping("/checkEmail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully performed check")})
+    boolean checkEmail(@RequestHeader("checkEmail") String email);
 }

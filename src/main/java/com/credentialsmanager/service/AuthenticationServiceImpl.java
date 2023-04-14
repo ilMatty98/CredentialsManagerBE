@@ -88,6 +88,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
 
+    @Override
+    public boolean checkEmail(String email) {
+        return usersRepository.existsById(email);
+    }
+
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
