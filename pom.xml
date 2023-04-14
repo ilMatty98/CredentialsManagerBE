@@ -26,6 +26,8 @@
         <liquibase.version>4.20.0</liquibase.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
+        <mail.version>1.6.2</mail.version>
+        <greenmail.version>2.0.0</greenmail.version>
     </properties>
 
     <dependencies>
@@ -60,6 +62,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
@@ -71,17 +77,19 @@
             <artifactId>jjwt-api</artifactId>
             <version>${jsonwebtoken.version}</version>
         </dependency>
+
+        <!-- Mail -->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jsonwebtoken.version}</version>
-            <scope>runtime</scope>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${mail.version}</version>
         </dependency>
+
+        <!-- Mail Test -->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jsonwebtoken.version}</version>
-            <scope>runtime</scope>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail.version}</version>
         </dependency>
 
         <!-- bouncy castle -->
