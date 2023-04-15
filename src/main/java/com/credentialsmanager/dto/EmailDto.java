@@ -1,4 +1,6 @@
 package com.credentialsmanager.dto;
 
-public record EmailDto(String to, String subject, String text) {
+import com.credentialsmanager.constants.EmailType;
+
+public record EmailDto(String to, String language, EmailType emailType) {
 }

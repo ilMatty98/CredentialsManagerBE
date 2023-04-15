@@ -1,6 +1,6 @@
 package com.credentialsmanager.exception;
 
-import com.credentialsmanager.utils.MessageUtils;
+import com.credentialsmanager.constants.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

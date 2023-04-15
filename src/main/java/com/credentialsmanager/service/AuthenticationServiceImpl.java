@@ -1,5 +1,7 @@
 package com.credentialsmanager.service;
 
+import com.credentialsmanager.constants.EmailType;
+import com.credentialsmanager.constants.MessageUtils;
 import com.credentialsmanager.dto.EmailDto;
 import com.credentialsmanager.dto.LoginDto;
 import com.credentialsmanager.dto.RegistrationDto;
@@ -8,7 +10,6 @@ import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
-import com.credentialsmanager.utils.MessageUtils;
 import com.credentialsmanager.utils.TokenJwtUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
-        emailService.sendEmail(new EmailDto(user.getEmail(), "Accesso rilevato in", "Accesso in bla bla bla"));
+        emailService.sendEmail(new EmailDto(user.getEmail(), user.getLanguage(), EmailType.SING_UP));
 
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }

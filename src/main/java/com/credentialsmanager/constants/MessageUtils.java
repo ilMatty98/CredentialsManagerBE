@@ -1,4 +1,4 @@
-package com.credentialsmanager.utils;
+package com.credentialsmanager.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
