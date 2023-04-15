@@ -1,0 +1,19 @@
+{
+  "subject": {
+    "IT": "Benvenuto su Credentials Manager!",
+    "EN": "Welcome to Credentials Manager!"
+  },
+  "template": {
+    "title": {
+      "IT": "Benvenuto su Credentials Manager!",
+      "EN": "Welcome to Credentials Manager!"
+    },
+    "body": {
+      "IT": "Il team di Credentials Manager ti ringrazia",
+      "EN": "The Credentials Manager team thanks you!"
+    },
+    "footer": {
+      "EN": "Credentials Manager"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.dto.LoginDto;
-import com.credentialsmanager.dto.RegistrationDto;
+import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
 import com.credentialsmanager.service.AuthenticationService;
@@ -17,9 +17,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @Override
-    public ResponseEntity<Object> signUp(RegistrationDto registrationDto) {
+    public ResponseEntity<Object> signUp(SignUpDto signUpDto) {
         try {
-            authenticationService.signUp(registrationDto);
+            authenticationService.signUp(signUpDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (CustomException customException) {
             throw customException;

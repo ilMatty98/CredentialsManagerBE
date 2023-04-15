@@ -28,6 +28,7 @@
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <mail.version>1.6.2</mail.version>
         <greenmail.version>2.0.0</greenmail.version>
+        <commons.version>2.11.0</commons.version>
     </properties>
 
     <dependencies>
@@ -69,6 +70,13 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- commons -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.version}</version>
         </dependency>
 
         <!-- jsonwebtoken -->

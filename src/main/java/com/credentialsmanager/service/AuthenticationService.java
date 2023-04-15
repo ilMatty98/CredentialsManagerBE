@@ -1,13 +1,13 @@
 package com.credentialsmanager.service;
 
 import com.credentialsmanager.dto.LoginDto;
-import com.credentialsmanager.dto.RegistrationDto;
+import com.credentialsmanager.dto.SignUpDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthenticationService {
 
-    void signUp(RegistrationDto registrationDto);
+    void signUp(SignUpDto signUpDto);
 
     LoginDto.Response logIn(LoginDto.Request requestLoginDto);
 

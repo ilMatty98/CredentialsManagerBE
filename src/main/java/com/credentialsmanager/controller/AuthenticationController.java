@@ -1,7 +1,7 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.dto.LoginDto;
-import com.credentialsmanager.dto.RegistrationDto;
+import com.credentialsmanager.dto.SignUpDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,7 +20,7 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "SignUp successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     ResponseEntity<Object> signUp(@Parameter(description = "Dto to create a new user")
-                                  @Valid @RequestBody RegistrationDto registrationDto);
+                                  @Valid @RequestBody SignUpDto signUpDto);
 
     @PostMapping("/logIn")
     @ApiResponses(value = {

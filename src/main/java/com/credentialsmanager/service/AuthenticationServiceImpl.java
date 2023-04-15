@@ -2,9 +2,8 @@ package com.credentialsmanager.service;
 
 import com.credentialsmanager.constants.EmailType;
 import com.credentialsmanager.constants.MessageUtils;
-import com.credentialsmanager.dto.EmailDto;
 import com.credentialsmanager.dto.LoginDto;
-import com.credentialsmanager.dto.RegistrationDto;
+import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
@@ -60,15 +59,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @SneakyThrows
     @Transactional
-    public void signUp(RegistrationDto registrationDto) {
-        if (usersRepository.existsById(registrationDto.getEmail()))
+    public void signUp(SignUpDto signUpDto) {
+        if (usersRepository.existsById(signUpDto.getEmail()))
             throw new BadRequestException(MessageUtils.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
-        var hash = AuthenticationUtils.generateArgon2id(registrationDto.getMasterPasswordHash(), salt, argon2idSize,
+        var hash = AuthenticationUtils.generateArgon2id(signUpDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        usersRepository.save(authenticationMapper.newUser(registrationDto, salt, hash, getCurrentTimestamp()));
+        usersRepository.save(authenticationMapper.newUser(signUpDto, salt, hash, getCurrentTimestamp()));
     }
 
     @Override
@@ -90,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
-        emailService.sendEmail(new EmailDto(user.getEmail(), user.getLanguage(), EmailType.SING_UP));
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailType.SING_UP);
 
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
