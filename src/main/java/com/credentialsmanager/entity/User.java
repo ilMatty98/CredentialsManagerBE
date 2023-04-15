@@ -37,4 +37,7 @@ public class User {
     @Basic
     @Column(name = "timestamp_last_access")
     private Timestamp timestampLastAccess;
+
+    @Basic
+    private String language;
 }

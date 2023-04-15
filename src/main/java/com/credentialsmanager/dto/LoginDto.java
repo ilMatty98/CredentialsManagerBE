@@ -2,6 +2,7 @@ package com.credentialsmanager.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -20,6 +21,7 @@ public abstract class LoginDto {
         @NotBlank(message = "MasterPasswordHash cannot be blank")
         private String masterPasswordHash;
 
+        @Pattern(regexp = "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$")
         @NotBlank(message = "IpAddress cannot be blank")
         private String ipAddress;
 
@@ -37,5 +39,7 @@ public abstract class LoginDto {
         private String protectedSymmetricKey;
 
         private String initializationVector;
+
+        private String language;
     }
 }

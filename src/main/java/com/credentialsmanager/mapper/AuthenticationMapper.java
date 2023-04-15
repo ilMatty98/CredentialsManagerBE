@@ -17,6 +17,7 @@ public interface AuthenticationMapper {
     @Mapping(target = "email", source = "registrationDto.email")
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
+    @Mapping(target = "language", source = "registrationDto.language")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
     @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
     @Mapping(target = "initializationVector", source = "registrationDto.initializationVector", qualifiedByName = "base64EncodingString")
