@@ -19,6 +19,12 @@ public abstract class LoginDto {
 
         @NotBlank(message = "MasterPasswordHash cannot be blank")
         private String masterPasswordHash;
+
+        @NotBlank(message = "IpAddress cannot be blank")
+        private String ipAddress;
+
+        @NotBlank(message = "DeviceType cannot be blank")
+        private String deviceType;
     }
 
     @Data
