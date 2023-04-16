@@ -10,7 +10,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="users_id_pk"/>
             </column>
             <column name="email" type="varchar(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="salt" type="text">
                 <constraints nullable="false"/>
