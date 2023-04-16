@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EmailService {
 
-    boolean sendEmail(String email, String language, EmailType emailType);
+    void sendEmail(String email, String language, EmailType emailType);
 }

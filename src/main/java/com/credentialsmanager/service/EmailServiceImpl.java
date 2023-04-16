@@ -31,20 +31,17 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
 
-
-    public boolean sendEmail(String email, String language, EmailType emailType) {
+    public void sendEmail(String email, String language, EmailType emailType) {
         try {
-            var labelsMap = objectMapper.readValue(Paths.get(emailType.getLabelLocation()).toFile(), Map.class);
+            var labels = objectMapper.readValue(Paths.get(emailType.getLabelLocation()).toFile(), Map.class);
             var template = FileUtils.readFileToString(Paths.get(emailType.getTemplateLocation()).toFile(), StandardCharsets.UTF_8);
 
-            var subject = getValue((LinkedHashMap<?, ?>) labelsMap.get(EmailType.EmailConstants.KEY_SUBJECT), language);
-            var templateFiller = fillTemplate((LinkedHashMap<?, ?>) labelsMap.get(EmailType.EmailConstants.KEY_TEMPLATE), template, language);
+            var subject = getValue((LinkedHashMap<?, ?>) labels.get(EmailType.EmailConstants.KEY_SUBJECT), language);
+            var templateFiller = fillTemplate((LinkedHashMap<?, ?>) labels.get(EmailType.EmailConstants.KEY_TEMPLATE), template, language);
 
             emailSender.send(buildMail(emailFrom, email, subject, templateFiller));
-            return true;
         } catch (Exception e) {
             log.warn(MessageUtils.ERROR_04.getMessage(email), e.getMessage());
-            return false;
         }
     }
 
@@ -74,13 +71,13 @@ public class EmailServiceImpl implements EmailService {
     private static String fillTemplate(Map<?, ?> labelsMap, String template, String language) {
         try {
             var substrings = extractSubstrings(template, "\\$\\{[^}]+\\}");
-            for (var substring : substrings) {
-                var key = substring.substring(2, substring.length() - 1);
-                template = template.replace(substring, getValue((LinkedHashMap<?, ?>) labelsMap.get(key), language));
+            for (var s : substrings) {
+                var key = s.substring(2, s.length() - 1);
+                template = template.replace(s, getValue((LinkedHashMap<?, ?>) labelsMap.get(key), language));
             }
             return Optional.ofNullable(template).orElse("");
         } catch (Exception e) {
-            return "";
+            return template;
         }
     }
 
