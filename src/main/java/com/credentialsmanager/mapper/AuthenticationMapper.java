@@ -11,6 +11,7 @@ import org.mapstruct.Named;
 
 import java.sql.Timestamp;
 import java.util.Base64;
+import java.util.UUID;
 
 @Mapper(config = AppMapperConfig.class)
 public interface AuthenticationMapper {
@@ -20,6 +21,7 @@ public interface AuthenticationMapper {
     @Mapping(target = "language", source = "signUpDto.language")
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
+    @Mapping(target = "verificationCode", expression = "java(getUUID())")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
     @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
     @Mapping(target = "initializationVector", source = "signUpDto.initializationVector", qualifiedByName = "base64EncodingString")
@@ -50,6 +52,11 @@ public interface AuthenticationMapper {
     @Named("base64DecodingString")
     default String base64DecodingString(String input) {
         return input != null ? new String(base64Decoding(input)) : null;
+    }
+
+    @Named("getUUID")
+    default String getUUID() {
+        return UUID.randomUUID().toString();
     }
 
 

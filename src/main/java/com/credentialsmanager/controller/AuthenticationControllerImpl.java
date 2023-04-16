@@ -41,6 +41,20 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Override
     public boolean checkEmail(String email) {
-        return authenticationService.checkEmail(email);
+        try {
+            return authenticationService.checkEmail(email);
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> confirmEmail(String email, String code) {
+        try {
+            authenticationService.confirmEmail(email, code);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
     }
 }

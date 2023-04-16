@@ -17,7 +17,7 @@ public interface AuthenticationController {
 
     @PostMapping("/signUp")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "SignUp successfully"),
+            @ApiResponse(responseCode = "201", description = "SignUp successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     ResponseEntity<Object> signUp(@Parameter(description = "Dto to create a new user")
                                   @Valid @RequestBody SignUpDto signUpDto);
@@ -34,4 +34,9 @@ public interface AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully performed check")})
     boolean checkEmail(@RequestHeader("checkEmail") String email);
+
+    @GetMapping("confirm/{email}/{code}/confirm")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Confirm email successfully")})
+    ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 }

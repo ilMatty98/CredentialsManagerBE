@@ -6,6 +6,7 @@ import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.LoginDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.BadRequestException;
+import com.credentialsmanager.exception.NotFoundException;
 import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
@@ -99,6 +100,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public boolean checkEmail(String email) {
         return usersRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void confirmEmail(String email, String code) {
+        var user = usersRepository.findByEmailAndVerificationCode(email, code).orElseThrow(
+                () -> new NotFoundException(MessageEnum.ERROR_05));
+
+        user.setVerificationCode(null);
+        usersRepository.save(user);
     }
 
     private static Timestamp getCurrentTimestamp() {

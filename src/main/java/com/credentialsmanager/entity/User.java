@@ -48,4 +48,8 @@ public class User {
     @Basic
     @Enumerated(EnumType.STRING)
     private UserStateEnum state;
+
+    @Basic
+    @Column(name = "verification_code")
+    private String verificationCode;
 }

@@ -12,4 +12,6 @@ public interface AuthenticationService {
     LoginDto.Response logIn(LoginDto.Request requestLoginDto);
 
     boolean checkEmail(String email);
+
+    void confirmEmail(String email, String code);
 }
