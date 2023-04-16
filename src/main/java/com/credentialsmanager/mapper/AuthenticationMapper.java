@@ -1,6 +1,7 @@
 package com.credentialsmanager.mapper;
 
 import com.credentialsmanager.configuration.mapper.AppMapperConfig;
+import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.LoginDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.entity.User;
@@ -14,15 +15,16 @@ import java.util.Base64;
 @Mapper(config = AppMapperConfig.class)
 public interface AuthenticationMapper {
 
+    @Mapping(target = "state", source = "userStateEnum")
     @Mapping(target = "email", source = "signUpDto.email")
+    @Mapping(target = "language", source = "signUpDto.language")
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
-    @Mapping(target = "language", source = "signUpDto.language")
     @Mapping(target = "salt", source = "salt", qualifiedByName = "base64Encoding")
     @Mapping(target = "hash", source = "hash", qualifiedByName = "base64Encoding")
     @Mapping(target = "initializationVector", source = "signUpDto.initializationVector", qualifiedByName = "base64EncodingString")
     @Mapping(target = "protectedSymmetricKey", source = "signUpDto.protectedSymmetricKey", qualifiedByName = "base64EncodingString")
-    User newUser(SignUpDto signUpDto, byte[] salt, byte[] hash, Timestamp timestamp);
+    User newUser(SignUpDto signUpDto, byte[] salt, byte[] hash, Timestamp timestamp, UserStateEnum userStateEnum);
 
     @Mapping(target = "token", source = "token")
     @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")

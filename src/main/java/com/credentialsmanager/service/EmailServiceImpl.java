@@ -1,7 +1,7 @@
 package com.credentialsmanager.service;
 
-import com.credentialsmanager.constants.EmailType;
-import com.credentialsmanager.constants.MessageUtils;
+import com.credentialsmanager.constants.EmailTypeEnum;
+import com.credentialsmanager.constants.MessageEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static com.credentialsmanager.constants.EmailType.EmailConstants.DEFAULT_LANGUAGE;
+import static com.credentialsmanager.constants.EmailTypeEnum.EmailConstants.DEFAULT_LANGUAGE;
 
 @Slf4j
 @Service
@@ -31,17 +31,17 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
 
-    public void sendEmail(String email, String language, EmailType emailType) {
+    public void sendEmail(String email, String language, EmailTypeEnum emailTypeEnum) {
         try {
-            var labels = objectMapper.readValue(Paths.get(emailType.getLabelLocation()).toFile(), Map.class);
-            var template = FileUtils.readFileToString(Paths.get(emailType.getTemplateLocation()).toFile(), StandardCharsets.UTF_8);
+            var labels = objectMapper.readValue(Paths.get(emailTypeEnum.getLabelLocation()).toFile(), Map.class);
+            var template = FileUtils.readFileToString(Paths.get(emailTypeEnum.getTemplateLocation()).toFile(), StandardCharsets.UTF_8);
 
-            var subject = getValue((LinkedHashMap<?, ?>) labels.get(EmailType.EmailConstants.KEY_SUBJECT), language);
-            var templateFiller = fillTemplate((LinkedHashMap<?, ?>) labels.get(EmailType.EmailConstants.KEY_TEMPLATE), template, language);
+            var subject = getValue((LinkedHashMap<?, ?>) labels.get(EmailTypeEnum.EmailConstants.KEY_SUBJECT), language);
+            var templateFiller = fillTemplate((LinkedHashMap<?, ?>) labels.get(EmailTypeEnum.EmailConstants.KEY_TEMPLATE), template, language);
 
             emailSender.send(buildMail(emailFrom, email, subject, templateFiller));
         } catch (Exception e) {
-            log.warn(MessageUtils.ERROR_04.getMessage(email), e.getMessage());
+            log.warn(MessageEnum.ERROR_04.getMessage(email), e.getMessage());
         }
     }
 

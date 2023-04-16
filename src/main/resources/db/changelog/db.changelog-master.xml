@@ -33,7 +33,11 @@
             <column name="language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>
+            <column name="state" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addAutoIncrement tableName="users" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+        <sql>ALTER TABLE users ADD CONSTRAINT state_check CHECK (state in ('REGISTERED','ACTIVE'))</sql>
     </changeSet>
 </databaseChangeLog>

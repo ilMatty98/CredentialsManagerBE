@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
 
 @Getter
 @AllArgsConstructor
-public enum EmailType {
+public enum EmailTypeEnum {
 
     LOG_IN(EmailConstants.BASE_PATH_LABEL + "logIn.json", EmailConstants.BASE_PATH_TEMPLATE + "logIn.html"),
     SING_UP(EmailConstants.BASE_PATH_LABEL + "signUp.json", EmailConstants.BASE_PATH_TEMPLATE + "signUp.html");

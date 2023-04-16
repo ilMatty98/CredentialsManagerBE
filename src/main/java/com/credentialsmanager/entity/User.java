@@ -1,6 +1,7 @@
 package com.credentialsmanager.entity;
 
 
+import com.credentialsmanager.constants.UserStateEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class User {
     private BigInteger id;
 
     @Basic
+    @Column(unique = true)
     private String email;
 
     @Basic
@@ -42,4 +44,8 @@ public class User {
 
     @Basic
     private String language;
+
+    @Basic
+    @Enumerated(EnumType.STRING)
+    private UserStateEnum state;
 }

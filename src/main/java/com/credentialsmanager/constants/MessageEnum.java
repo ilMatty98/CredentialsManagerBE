@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MessageUtils {
+public enum MessageEnum {
 
     ERROR_00(0, "Generic error"),
     ERROR_01(1, "Email already registered"),
