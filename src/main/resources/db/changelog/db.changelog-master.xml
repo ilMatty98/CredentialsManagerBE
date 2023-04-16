@@ -38,6 +38,6 @@
             </column>
         </createTable>
         <addAutoIncrement tableName="users" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
-        <sql>ALTER TABLE users ADD CONSTRAINT state_check CHECK (state in ('REGISTERED','ACTIVE'))</sql>
+        <sql>ALTER TABLE users ADD CONSTRAINT state_check CHECK (state in ('UNVERIFIED','VERIFIED'))</sql>
     </changeSet>
 </databaseChangeLog>

@@ -68,14 +68,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var hash = AuthenticationUtils.generateArgon2id(signUpDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        var user = authenticationMapper.newUser(signUpDto, salt, hash, getCurrentTimestamp(), UserStateEnum.REGISTERED);
+        var user = authenticationMapper.newUser(signUpDto, salt, hash, getCurrentTimestamp(), UserStateEnum.UNVERIFIED);
         usersRepository.save(user);
     }
 
     @Override
     @SneakyThrows
     public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
-        var user = usersRepository.findByEmailAndStateIs(requestLoginDto.getEmail(), UserStateEnum.ACTIVE)
+        var user = usersRepository.findByEmailAndStateIs(requestLoginDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
 
         var storedHash = Base64.getDecoder().decode(user.getHash());
