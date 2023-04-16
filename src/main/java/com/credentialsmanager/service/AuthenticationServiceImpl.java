@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @SneakyThrows
     @Transactional
     public void signUp(SignUpDto signUpDto) {
-        if (usersRepository.existsById(signUpDto.getEmail()))
+        if (usersRepository.existsByEmail(signUpDto.getEmail()))
             throw new BadRequestException(MessageUtils.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @SneakyThrows
     public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
-        var user = usersRepository.findById(requestLoginDto.getEmail())
+        var user = usersRepository.findByEmail(requestLoginDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageUtils.ERROR_02));
 
         var storedHash = Base64.getDecoder().decode(user.getHash());
@@ -96,7 +96,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean checkEmail(String email) {
-        return usersRepository.existsById(email);
+        return usersRepository.existsByEmail(email);
     }
 
     private static Timestamp getCurrentTimestamp() {

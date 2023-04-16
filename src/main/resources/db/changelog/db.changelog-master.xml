@@ -6,8 +6,11 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="ilMatty98">
         <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="users_id_pk"/>
+            </column>
             <column name="email" type="varchar(100)">
-                <constraints primaryKey="true" primaryKeyName="users_id_pk"/>
+                <constraints nullable="false"/>
             </column>
             <column name="salt" type="text">
                 <constraints nullable="false"/>
@@ -31,5 +34,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addAutoIncrement tableName="users" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
     </changeSet>
 </databaseChangeLog>

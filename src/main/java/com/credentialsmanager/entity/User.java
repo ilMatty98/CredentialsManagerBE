@@ -1,12 +1,10 @@
 package com.credentialsmanager.entity;
 
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 
 @Data
@@ -14,6 +12,10 @@ import java.sql.Timestamp;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private BigInteger id;
+
+    @Basic
     private String email;
 
     @Basic
