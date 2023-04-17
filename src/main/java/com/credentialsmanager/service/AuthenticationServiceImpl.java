@@ -28,6 +28,9 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    @Value("${fe.endpoint}")
+    private String endpointFe;
+
     @Value("${encryption.salt.size}")
     private int saltSize;
 
@@ -70,6 +73,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         var user = authenticationMapper.newUser(signUpDto, salt, hash, getCurrentTimestamp(), UserStateEnum.UNVERIFIED);
+
+        var dynamicLabels = new HashMap<String, String>();
+        dynamicLabels.put("href", endpointFe + user.getEmail() + "/" + user.getVerificationCode() + "/confirm");
+
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SING_UP, dynamicLabels);
+
         usersRepository.save(user);
     }
 
@@ -92,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
-        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SING_UP);
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, new HashMap<>());
 
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
@@ -107,6 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = usersRepository.findByEmailAndVerificationCode(email, code).orElseThrow(
                 () -> new NotFoundException(MessageEnum.ERROR_05));
 
+        user.setState(UserStateEnum.VERIFIED);
         user.setVerificationCode(null);
         usersRepository.save(user);
     }

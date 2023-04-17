@@ -2,6 +2,7 @@ package com.credentialsmanager.service;
 
 import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
+import com.credentialsmanager.dto.EmailTemplateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +32,14 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
 
-    public void sendEmail(String email, String language, EmailTypeEnum emailTypeEnum) {
+    public void sendEmail(String email, String language, EmailTypeEnum emailTypeEnum, Map<String, String> dynamicLabels) {
         try {
-            var labels = objectMapper.readValue(Paths.get(emailTypeEnum.getLabelLocation()).toFile(), Map.class);
+            var labels = objectMapper.readValue(Paths.get(emailTypeEnum.getLabelLocation()).toFile(), EmailTemplateDto.class);
+            dynamicLabels.forEach((k, v) -> labels.getTemplate().put(k, Collections.singletonMap(DEFAULT_LANGUAGE, v)));
             var template = FileUtils.readFileToString(Paths.get(emailTypeEnum.getTemplateLocation()).toFile(), StandardCharsets.UTF_8);
 
-            var subject = getValue((LinkedHashMap<?, ?>) labels.get(EmailTypeEnum.EmailConstants.KEY_SUBJECT), language);
-            var templateFiller = fillTemplate((LinkedHashMap<?, ?>) labels.get(EmailTypeEnum.EmailConstants.KEY_TEMPLATE), template, language);
+            var subject = getValue(labels.getSubject(), language);
+            var templateFiller = fillTemplate(labels.getTemplate(), template, language);
 
             emailSender.send(buildMail(emailFrom, email, subject, templateFiller));
         } catch (Exception e) {
@@ -55,12 +57,12 @@ public class EmailServiceImpl implements EmailService {
         };
     }
 
-    private static String getValue(Map<?, ?> map, String language) {
+    private static String getValue(Map<String, String> map, String language) {
         try {
             if (map.containsKey(language)) {
-                return map.get(language).toString();
+                return map.get(language);
             } else if (map.containsKey(DEFAULT_LANGUAGE)) {
-                return map.get(DEFAULT_LANGUAGE).toString();
+                return map.get(DEFAULT_LANGUAGE);
             }
             return "";
         } catch (Exception e) {
@@ -68,12 +70,12 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    private static String fillTemplate(Map<?, ?> labelsMap, String template, String language) {
+    private static String fillTemplate(Map<String, Map<String, String>> labelsMap, String template, String language) {
         try {
             var substrings = extractSubstrings(template, "\\$\\{[^}]+\\}");
             for (var s : substrings) {
                 var key = s.substring(2, s.length() - 1);
-                template = template.replace(s, getValue((LinkedHashMap<?, ?>) labelsMap.get(key), language));
+                template = template.replace(s, getValue(labelsMap.get(key), language));
             }
             return Optional.ofNullable(template).orElse("");
         } catch (Exception e) {
