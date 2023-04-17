@@ -35,7 +35,7 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Successfully performed check")})
     boolean checkEmail(@RequestHeader("checkEmail") String email);
 
-    @GetMapping("confirm/{email}/{code}/confirm")
+    @PatchMapping("/{email}/{code}/confirm")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Confirm email successfully")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
