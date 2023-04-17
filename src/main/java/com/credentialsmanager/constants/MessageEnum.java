@@ -12,7 +12,8 @@ public enum MessageEnum {
     ERROR_02(2, "Invalid credentials"),
     ERROR_03(3, "Invalid Token Jwt"),
     ERROR_04(-1, "Error sending email to %s"),
-    ERROR_05(4, "User not found");
+    ERROR_05(4, "User not found"),
+    ERROR_06(5, "Unconfirmed email");
 
     private final int errorCode;
     private final String label;

@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 
 @Service
@@ -74,19 +75,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = authenticationMapper.newUser(signUpDto, salt, hash, getCurrentTimestamp(), UserStateEnum.UNVERIFIED);
 
-        var dynamicLabels = new HashMap<String, String>();
-        dynamicLabels.put("href", endpointFe + user.getEmail() + "/" + user.getVerificationCode() + "/confirm");
+        var dynamicLabels = Collections.singletonMap("href", endpointFe + user.getEmail() + "/" + user.getVerificationCode() + "/confirm");
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SING_UP, dynamicLabels);
-
         usersRepository.save(user);
     }
 
     @Override
     @SneakyThrows
     public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
-        var user = usersRepository.findByEmailAndStateIs(requestLoginDto.getEmail(), UserStateEnum.VERIFIED)
+        var user = usersRepository.findByEmail(requestLoginDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
+
+        if (UserStateEnum.UNVERIFIED.equals(user.getState()))
+            throw new UnauthorizedException(MessageEnum.ERROR_06);
 
         var storedHash = Base64.getDecoder().decode(user.getHash());
         var salt = Base64.getDecoder().decode(user.getSalt());
@@ -102,7 +104,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, new HashMap<>());
-
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
 
@@ -113,8 +114,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void confirmEmail(String email, String code) {
-        var user = usersRepository.findByEmailAndVerificationCode(email, code).orElseThrow(
-                () -> new NotFoundException(MessageEnum.ERROR_05));
+        var user = usersRepository.findByEmailAndVerificationCode(email, code)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
         user.setState(UserStateEnum.VERIFIED);
         user.setVerificationCode(null);
