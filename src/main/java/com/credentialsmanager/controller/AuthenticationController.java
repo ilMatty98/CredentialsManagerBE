@@ -32,11 +32,12 @@ public interface AuthenticationController {
 
     @GetMapping("/checkEmail")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully performed check")})
+            @ApiResponse(responseCode = "200", description = "Checking on email done")})
     boolean checkEmail(@RequestHeader("checkEmail") String email);
 
     @PatchMapping("/{email}/{code}/confirm")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Confirm email successfully")})
+            @ApiResponse(responseCode = "200", description = "Email successfully confirmed"),
+            @ApiResponse(responseCode = "404", description = "User not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 }
