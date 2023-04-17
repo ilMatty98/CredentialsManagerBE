@@ -20,10 +20,13 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static java.util.Map.entry;
 
 @Service
 @RequiredArgsConstructor
@@ -103,7 +106,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
-        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, new HashMap<>());
+        var dynamicLabels = Map.ofEntries(
+                entry("date_value", getLocalDateTime("")),
+                entry("ipAddress_value", requestLoginDto.getIpAddress()),
+                entry("device_value", requestLoginDto.getDeviceType())
+        );
+
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, dynamicLabels);
         return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
     }
 
@@ -124,5 +133,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
+    }
+
+    private static String getLocalDateTime(String zone) {
+        //TODO sistemare offsetId in string e creare una regex per quel tipo
+//        var localDateTime = LocalDateTime.now().atZone(ZoneId.of(offsetId));
+
+        LocalDateTime ldt = LocalDateTime.now(); //Local date time
+
+        ZoneId zoneId = ZoneId.of( zone );  //Zone information
+
+        ZonedDateTime zdtAtAsia = ldt.atZone( zoneId );
+
+        return DateTimeFormatter.ofPattern("dd:MM:yyyy, HH:mm:ss").format(zdtAtAsia);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getLocalDateTime("Asia/Kolkata"));
     }
 }
