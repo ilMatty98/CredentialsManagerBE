@@ -3,7 +3,7 @@ package com.credentialsmanager.service;
 import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.NotFoundException;
@@ -82,8 +82,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @SneakyThrows
-    public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
-        var user = usersRepository.findByEmail(requestLoginDto.getEmail())
+    public LogInDto.Response logIn(LogInDto.Request requestLogInDto) {
+        var user = usersRepository.findByEmail(requestLogInDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
 
         if (UserStateEnum.UNVERIFIED.equals(user.getState()))
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var storedHash = Base64.getDecoder().decode(user.getHash());
         var salt = Base64.getDecoder().decode(user.getSalt());
-        var currentHash = AuthenticationUtils.generateArgon2id(requestLoginDto.getMasterPasswordHash(), salt,
+        var currentHash = AuthenticationUtils.generateArgon2id(requestLogInDto.getMasterPasswordHash(), salt,
                 argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         if (!Arrays.equals(storedHash, currentHash))
@@ -103,9 +103,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
 
         var dynamicLabels = Map.ofEntries(
-                entry("date_value", requestLoginDto.getLocalDateTime()),
-                entry("ipAddress_value", requestLoginDto.getIpAddress()),
-                entry("device_value", requestLoginDto.getDeviceType())
+                entry("date_value", requestLogInDto.getLocalDateTime()),
+                entry("ipAddress_value", requestLogInDto.getIpAddress()),
+                entry("device_value", requestLogInDto.getDeviceType())
         );
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, dynamicLabels);

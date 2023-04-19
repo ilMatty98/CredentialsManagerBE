@@ -1,6 +1,6 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
@@ -29,9 +29,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public LoginDto.Response logIn(LoginDto.Request requestLoginDto) {
+    public LogInDto.Response logIn(LogInDto.Request requestLogInDto) {
         try {
-            return authenticationService.logIn(requestLoginDto);
+            return authenticationService.logIn(requestLogInDto);
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {

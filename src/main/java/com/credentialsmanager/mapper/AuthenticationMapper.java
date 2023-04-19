@@ -2,7 +2,7 @@ package com.credentialsmanager.mapper;
 
 import com.credentialsmanager.configuration.mapper.AppMapperConfig;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.entity.User;
 import org.mapstruct.Mapper;
@@ -32,7 +32,7 @@ public interface AuthenticationMapper {
     @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")
     @Mapping(target = "initializationVector", source = "user.initializationVector", qualifiedByName = "base64DecodingString")
     @Mapping(target = "protectedSymmetricKey", source = "user.protectedSymmetricKey", qualifiedByName = "base64DecodingString")
-    LoginDto.Response newLoginDto(User user, String token, String tokenPublicKey);
+    LogInDto.Response newLoginDto(User user, String token, String tokenPublicKey);
 
     @Named("base64Encoding")
     default String base64Encoding(byte[] input) {

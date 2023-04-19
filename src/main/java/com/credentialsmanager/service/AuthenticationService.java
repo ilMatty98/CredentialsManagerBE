@@ -1,6 +1,6 @@
 package com.credentialsmanager.service;
 
-import com.credentialsmanager.dto.LoginDto;
+import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ public interface AuthenticationService {
 
     void signUp(SignUpDto signUpDto);
 
-    LoginDto.Response logIn(LoginDto.Request requestLoginDto);
+    LogInDto.Response logIn(LogInDto.Request requestLogInDto);
 
     boolean checkEmail(String email);
 

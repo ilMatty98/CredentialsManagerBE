@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public abstract class LoginDto {
+public abstract class LogInDto {
 
     private String token;
 
