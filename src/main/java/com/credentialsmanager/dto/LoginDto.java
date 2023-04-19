@@ -28,8 +28,8 @@ public abstract class LoginDto {
         @NotBlank(message = "DeviceType cannot be blank")
         private String deviceType;
 
-        @NotBlank(message = "Timezone cannot be blank")
-        private int timezone;
+        @NotBlank(message = "LocalDateTime cannot be blank")
+        private String localDateTime;
     }
 
     @Data
