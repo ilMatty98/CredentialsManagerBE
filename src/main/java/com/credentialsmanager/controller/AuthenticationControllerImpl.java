@@ -53,6 +53,8 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         try {
             authenticationService.confirmEmail(email, code);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CustomException customException) {
+            throw customException;
         } catch (Exception e) {
             throw new GenericErrorException(e);
         }
