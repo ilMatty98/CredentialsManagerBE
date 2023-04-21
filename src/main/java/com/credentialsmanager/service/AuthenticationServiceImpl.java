@@ -2,6 +2,7 @@ package com.credentialsmanager.service;
 
 import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
+import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
@@ -11,7 +12,6 @@ import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.utils.AuthenticationUtils;
-import com.credentialsmanager.utils.TokenJwtUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Map.entry;
 
@@ -52,10 +55,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${token.public-key}")
     private String tokenPublicKey;
 
-    @Value("${token.private-key}")
-    private String tokenPrivateKey;
-
     private final EmailService emailService;
+
+    private final TokenJwtService tokenJwtService;
 
     private final UserRepository usersRepository;
 
@@ -100,7 +102,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setTimestampLastAccess(getCurrentTimestamp());
         usersRepository.save(user);
 
-        var token = TokenJwtUtils.generateTokenJwt(tokenPrivateKey, tokenExpiration, user.getEmail(), new HashMap<>());
+        Map<String, Object> claims = Collections.singletonMap(TokenClaimEnum.ROLE.getLabel(), user.getState().name());
+
+        var token = tokenJwtService.generateTokenJwt(tokenExpiration, user.getEmail(), claims);
 
         var dynamicLabels = Map.ofEntries(
                 entry("date_value", requestLogInDto.getLocalDateTime()),

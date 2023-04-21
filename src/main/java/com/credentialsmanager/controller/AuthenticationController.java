@@ -10,19 +10,21 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.credentialsmanager.constants.UrlConstants.*;
+
 @RestController
 @Tag(name = "Authentication")
-@RequestMapping("/v1/authentication")
+@RequestMapping(BASE_PATH)
 public interface AuthenticationController {
 
-    @PostMapping("/signUp")
+    @PostMapping(SIGN_UP)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "SignUp successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     ResponseEntity<Object> signUp(@Parameter(description = "Dto to create a new user")
                                   @Valid @RequestBody SignUpDto signUpDto);
 
-    @PostMapping("/logIn")
+    @PostMapping(LOG_IN)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "LogIn successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
@@ -30,12 +32,12 @@ public interface AuthenticationController {
     LogInDto.Response logIn(@Parameter(description = "Dto to log in")
                             @Valid @RequestBody LogInDto.Request requestLogInDto);
 
-    @GetMapping("/checkEmail")
+    @GetMapping(CHECK_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Checking on email done")})
     boolean checkEmail(@RequestHeader("checkEmail") String email);
 
-    @PatchMapping("/{email}/{code}/confirm")
+    @PatchMapping(CONFIRM_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully confirmed"),
             @ApiResponse(responseCode = "404", description = "User not found")})
