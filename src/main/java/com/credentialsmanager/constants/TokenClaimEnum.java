@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TokenClaimEnum {
 
+    CLAIMS("claims"),
+    EMAIL("email"),
     ROLE("role");
 
     private final String label;

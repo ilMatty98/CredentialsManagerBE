@@ -1,6 +1,6 @@
 package com.credentialsmanager.service;
 
-import com.credentialsmanager.constants.TokenClaimEnum;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,19 +44,18 @@ public class TokenJwtServiceImpl implements TokenJwtService {
     }
 
     @Override
-    public boolean verifySignAndRole(String token, String role) {
+    public Claims getClaims(String token) {
         try {
-            var body = Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(getPublicKey(tokenPublicKey))
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-            return body.get(TokenClaimEnum.ROLE.getLabel()).equals(role);
         } catch (JwtException e) {
-            return false;
+            return Jwts.claims();
         }
     }
+
 
     @SneakyThrows
     private static PrivateKey getPrivateKey(String privateKeyBase64) {

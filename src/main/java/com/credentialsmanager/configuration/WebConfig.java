@@ -49,10 +49,18 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods(HttpMethod.PATCH.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + CHANGE_PASSWORD)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders()
+                .exposedHeaders(CONTENT_TYPE) // TODO deve stare l'header
+                .allowCredentials(false); // Without cookie
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor(tokenJwtService)).addPathPatterns("/v1/authentication/changePsw");
+        registry.addInterceptor(new TokenInterceptor(tokenJwtService))
+                .addPathPatterns(BASE_PATH + CHANGE_PASSWORD);
     }
 }

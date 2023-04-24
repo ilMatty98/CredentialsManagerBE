@@ -1,11 +1,13 @@
 package com.credentialsmanager.controller;
 
+import com.credentialsmanager.dto.ChangePasswordDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,4 +44,11 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Email successfully confirmed"),
             @ApiResponse(responseCode = "404", description = "User not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
+
+    @PatchMapping(CHANGE_PASSWORD)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Password successfully changed")})
+    ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
+                                          @Valid @RequestBody ChangePasswordDto changePasswordDto,
+                                          HttpServletRequest request);
 }

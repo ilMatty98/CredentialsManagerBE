@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Map.entry;
 
@@ -102,7 +99,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setTimestampLastAccess(getCurrentTimestamp());
         usersRepository.save(user);
 
-        Map<String, Object> claims = Collections.singletonMap(TokenClaimEnum.ROLE.getLabel(), user.getState().name());
+        var claims = new HashMap<String, Object>();
+        claims.put(TokenClaimEnum.EMAIL.getLabel(), user.getEmail());
+        claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState().name());
 
         var token = tokenJwtService.generateTokenJwt(tokenExpiration, user.getEmail(), claims);
 
@@ -129,6 +128,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setState(UserStateEnum.VERIFIED);
         user.setVerificationCode(null);
         usersRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(SignUpDto signUpDto) {
+
     }
 
     private static Timestamp getCurrentTimestamp() {

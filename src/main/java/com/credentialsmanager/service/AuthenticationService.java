@@ -14,4 +14,6 @@ public interface AuthenticationService {
     boolean checkEmail(String email);
 
     void confirmEmail(String email, String code);
+
+    void changePassword(SignUpDto signUpDto);
 }
