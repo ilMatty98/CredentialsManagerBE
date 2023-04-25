@@ -16,7 +16,6 @@ public class TokenInterceptor implements HandlerInterceptor {
     private static final String AUTH_HEADER_NAME = "Authorization";
     private static final String AUTH_HEADER_PREFIX = "Bearer ";
 
-
     private final TokenJwtService tokenJwtService;
 
     @Override
@@ -25,7 +24,8 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (token != null && token.startsWith(AUTH_HEADER_PREFIX)) {
             token = token.substring(7);
             var claims = tokenJwtService.getClaims(token);
-            if (claims.get(TokenClaimEnum.ROLE.getLabel()).equals(UserStateEnum.VERIFIED.name())) {
+            if (claims == null || claims.isEmpty()) return false;
+            if (UserStateEnum.VERIFIED.name().equals(claims.get(TokenClaimEnum.ROLE.getLabel()))) {
                 request.setAttribute(TokenClaimEnum.CLAIMS.getLabel(), claims);
                 return true;
             }
