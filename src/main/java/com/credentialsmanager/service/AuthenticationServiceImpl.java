@@ -132,7 +132,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changePassword(SignUpDto signUpDto) {
+        var user = usersRepository.findByEmailAndVerificationCode(signUpDto.getEmail(), UserStateEnum.VERIFIED.name())
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
+        var salt = AuthenticationUtils.generateSalt(saltSize);
+        var hash = AuthenticationUtils.generateArgon2id(signUpDto.getMasterPasswordHash(), salt, argon2idSize,
+                argon2idIterations, argon2idMemoryKB, argon2idParallelism);
+
+        user.setSalt(authenticationMapper.base64Encoding(salt));
+        user.setHash(authenticationMapper.base64Encoding(hash));
+        user.setInitializationVector(signUpDto.getInitializationVector());
+
+        usersRepository.save(user);
     }
 
     private static Timestamp getCurrentTimestamp() {
