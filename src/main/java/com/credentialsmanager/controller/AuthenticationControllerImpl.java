@@ -1,12 +1,10 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.constants.TokenClaimEnum;
-import com.credentialsmanager.dto.ChangePasswordDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
-import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.service.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationControllerImpl implements AuthenticationController {
-
-    private final AuthenticationMapper authenticationMapper;
 
     private final AuthenticationService authenticationService;
 
@@ -68,10 +64,10 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public ResponseEntity<Object> changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) {
+    public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
         try {
             var claims = (Claims) request.getAttribute(TokenClaimEnum.CLAIMS.getLabel());
-            var signUpDto = authenticationMapper.newSignUpDto(changePasswordDto, claims.get(TokenClaimEnum.EMAIL.getLabel()).toString());
+            signUpDto.setEmail(claims.get(TokenClaimEnum.EMAIL.getLabel()).toString());
             authenticationService.changePassword(signUpDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (CustomException customException) {

@@ -1,8 +1,8 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.ChangePasswordDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.validator.ChangePasswordValidator;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static com.credentialsmanager.constants.UrlConstants.*;
@@ -49,6 +50,6 @@ public interface AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password successfully changed")})
     ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
-                                          @Valid @RequestBody ChangePasswordDto changePasswordDto,
+                                          @Validated(ChangePasswordValidator.class) @RequestBody SignUpDto signUpDto,
                                           HttpServletRequest request);
 }
