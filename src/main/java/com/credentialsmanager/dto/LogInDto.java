@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 public abstract class LogInDto {
 
@@ -44,5 +46,11 @@ public abstract class LogInDto {
         private String initializationVector;
 
         private String language;
+
+        private Timestamp timestampCreation;
+
+        private Timestamp timestampLastAccess;
+
+        private Timestamp timestampPassword;
     }
 }

@@ -139,6 +139,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var hash = AuthenticationUtils.generateArgon2id(signUpDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
+        user.setTimestampPassword(getCurrentTimestamp());
         user.setSalt(authenticationMapper.base64Encoding(salt));
         user.setHash(authenticationMapper.base64Encoding(hash));
         user.setInitializationVector(authenticationMapper.base64EncodingString(signUpDto.getInitializationVector()));

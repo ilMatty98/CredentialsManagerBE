@@ -43,6 +43,10 @@ public class User {
     private Timestamp timestampLastAccess;
 
     @Basic
+    @Column(name = "timestamp_password")
+    private Timestamp timestampPassword;
+
+    @Basic
     private String language;
 
     @Basic

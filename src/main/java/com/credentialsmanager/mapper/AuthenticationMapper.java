@@ -20,6 +20,7 @@ public interface AuthenticationMapper {
     @Mapping(target = "state", source = "userStateEnum")
     @Mapping(target = "email", source = "signUpDto.email")
     @Mapping(target = "language", source = "signUpDto.language")
+    @Mapping(target = "timestampPassword", source = "timestamp")
     @Mapping(target = "timestampCreation", source = "timestamp")
     @Mapping(target = "timestampLastAccess", source = "timestamp")
     @Mapping(target = "verificationCode", expression = "java(getUUID())")
@@ -31,6 +32,9 @@ public interface AuthenticationMapper {
 
     @Mapping(target = "token", source = "token")
     @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")
+    @Mapping(target = "timestampPassword", source = "user.timestampPassword")
+    @Mapping(target = "timestampCreation", source = "user.timestampCreation")
+    @Mapping(target = "timestampLastAccess", source = "user.timestampLastAccess")
     @Mapping(target = "initializationVector", source = "user.initializationVector", qualifiedByName = "base64DecodingString")
     @Mapping(target = "protectedSymmetricKey", source = "user.protectedSymmetricKey", qualifiedByName = "base64DecodingString")
     LogInDto.Response newLoginDto(User user, String token, String tokenPublicKey);

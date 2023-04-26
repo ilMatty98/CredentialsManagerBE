@@ -30,6 +30,9 @@
             <column name="timestamp_last_access" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="timestamp_password" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
             <column name="language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>
