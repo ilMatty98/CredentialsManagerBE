@@ -45,7 +45,7 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "404", description = "User not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 
-    @PatchMapping(CHANGE_PASSWORD)
+    @PostMapping(CHANGE_PASSWORD)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password successfully changed")})
     ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
