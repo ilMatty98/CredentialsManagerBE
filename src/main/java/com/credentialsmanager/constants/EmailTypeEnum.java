@@ -10,7 +10,8 @@ import lombok.experimental.UtilityClass;
 public enum EmailTypeEnum {
 
     LOG_IN(EmailConstants.BASE_PATH_LABEL + "logIn.json", EmailConstants.BASE_PATH_TEMPLATE + "logIn.html"),
-    SING_UP(EmailConstants.BASE_PATH_LABEL + "signUp.json", EmailConstants.BASE_PATH_TEMPLATE + "signUp.html");
+    SING_UP(EmailConstants.BASE_PATH_LABEL + "signUp.json", EmailConstants.BASE_PATH_TEMPLATE + "signUp.html"),
+    CHANGE_PSW(EmailConstants.BASE_PATH_LABEL + "changePSW.json", EmailConstants.BASE_PATH_TEMPLATE + "changePSW.html");
 
     private final String labelLocation;
     private final String templateLocation;
@@ -23,7 +24,5 @@ public enum EmailTypeEnum {
         private static final String BASE_PATH_TEMPLATE = BASE_PATH + "template/";
 
         public static final String DEFAULT_LANGUAGE = "EN";
-        public static final String KEY_SUBJECT = "subject";
-        public static final String KEY_TEMPLATE = "template";
     }
 }

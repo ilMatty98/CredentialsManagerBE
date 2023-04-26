@@ -145,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setInitializationVector(authenticationMapper.base64EncodingString(signUpDto.getInitializationVector()));
         user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(signUpDto.getProtectedSymmetricKey()));
 
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_PSW, new HashMap<>());
         usersRepository.save(user);
     }
 
