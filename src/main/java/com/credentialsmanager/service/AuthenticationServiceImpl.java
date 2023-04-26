@@ -132,7 +132,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changePassword(SignUpDto signUpDto) {
-        var user = usersRepository.findByEmailAndVerificationCode(signUpDto.getEmail(), UserStateEnum.VERIFIED.name())
+        var user = usersRepository.findByEmailAndState(signUpDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
@@ -141,7 +141,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setSalt(authenticationMapper.base64Encoding(salt));
         user.setHash(authenticationMapper.base64Encoding(hash));
-        user.setInitializationVector(signUpDto.getInitializationVector());
+        user.setInitializationVector(authenticationMapper.base64EncodingString(signUpDto.getInitializationVector()));
+        user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(signUpDto.getProtectedSymmetricKey()));
 
         usersRepository.save(user);
     }
