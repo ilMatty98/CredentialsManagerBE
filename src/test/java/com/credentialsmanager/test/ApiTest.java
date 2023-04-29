@@ -48,6 +48,7 @@ public abstract class ApiTest {
 
     @Autowired
     protected AuthenticationMapper authenticationMapper;
+
     protected static GreenMail greenMail;
 
     @BeforeAll

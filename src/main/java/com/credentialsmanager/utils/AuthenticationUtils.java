@@ -1,6 +1,5 @@
 package com.credentialsmanager.utils;
 
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
 import org.bouncycastle.crypto.params.Argon2Parameters;
@@ -17,7 +16,6 @@ public class AuthenticationUtils {
         return salt;
     }
 
-    @SneakyThrows
     public static byte[] generateArgon2id(String password, byte[] salt, int argon2idSize, int iteration, int memLimitKB, int parallelism) {
         var generator = new Argon2BytesGenerator();
         var aragon2id = new byte[argon2idSize];
