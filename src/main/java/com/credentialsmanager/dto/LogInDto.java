@@ -10,10 +10,6 @@ import java.sql.Timestamp;
 @Data
 public abstract class LogInDto {
 
-    private String token;
-
-    private String protectedSymmetricKey;
-
     @Data
     public static class Request {
         @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
