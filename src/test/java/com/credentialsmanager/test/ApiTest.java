@@ -7,6 +7,7 @@ import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.service.EmailService;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Random;
@@ -75,7 +77,8 @@ public abstract class ApiTest {
                 .toString();
     }
 
-    protected static <T> T fillObject(T object) throws IllegalAccessException {
+    @SneakyThrows
+    protected static <T> T fillObject(T object) {
         var fields = object.getClass().getDeclaredFields();
         var random = new Random();
         for (Field field : fields) {
@@ -93,9 +96,11 @@ public abstract class ApiTest {
             } else if (field.getType() == char.class) {
                 field.setChar(object, (char) (random.nextInt(26) + 'a'));
             } else if (field.getType() == String.class) {
-                field.set(object, generateRandomString(random.nextInt(10)));
+                field.set(object, generateRandomString(random.nextInt(1000)));
             } else if (field.getType() == Timestamp.class) {
                 field.set(object, Timestamp.from(Instant.now()));
+            } else if (field.getType() == BigInteger.class) {
+                field.set(object, BigInteger.valueOf(random.nextLong(1000)));
             } else if (field.getType() == UserStateEnum.class) {
                 field.set(object, UserStateEnum.VERIFIED);
             }
