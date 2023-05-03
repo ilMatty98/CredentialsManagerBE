@@ -7,10 +7,9 @@ import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.service.EmailService;
 import com.credentialsmanager.service.TokenJwtService;
 import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
@@ -53,15 +52,14 @@ public abstract class ApiTest {
     @Autowired
     protected AuthenticationMapper authenticationMapper;
 
-    protected static GreenMail greenMail;
+    protected static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
 
-    @BeforeAll
+    @BeforeEach
     void startGreenEmail() {
-        greenMail = new GreenMail(ServerSetup.SMTP);
         greenMail.start();
     }
 
-    @AfterAll
+    @AfterEach
     void stopGreenEmail() {
         greenMail.stop();
     }
