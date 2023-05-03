@@ -8,6 +8,6 @@ public interface TokenJwtService {
 
     String generateTokenJwt(long tokenExpiration, String subjetc, Map<String, Object> claims);
 
-    Claims getClaims(String token);
+    Claims getBody(String token);
 
 }

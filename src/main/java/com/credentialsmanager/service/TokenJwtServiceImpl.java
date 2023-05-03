@@ -44,7 +44,7 @@ public class TokenJwtServiceImpl implements TokenJwtService {
     }
 
     @Override
-    public Claims getClaims(String token) {
+    public Claims getBody(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(getPublicKey(tokenPublicKey))
@@ -55,7 +55,6 @@ public class TokenJwtServiceImpl implements TokenJwtService {
             return Jwts.claims();
         }
     }
-
 
     @SneakyThrows
     private static PrivateKey getPrivateKey(String privateKeyBase64) {

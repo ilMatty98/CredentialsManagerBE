@@ -23,7 +23,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         var token = request.getHeader(AUTH_HEADER_NAME);
         if (token != null && token.startsWith(AUTH_HEADER_PREFIX)) {
             token = token.substring(7);
-            var claims = tokenJwtService.getClaims(token);
+            var claims = tokenJwtService.getBody(token);
             if (claims != null && !claims.isEmpty() &&
                     UserStateEnum.VERIFIED.name().equals(claims.get(TokenClaimEnum.ROLE.getLabel()))) {
                 request.setAttribute(TokenClaimEnum.CLAIMS.getLabel(), claims);
