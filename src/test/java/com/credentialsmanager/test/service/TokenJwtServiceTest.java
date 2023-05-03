@@ -35,7 +35,7 @@ class TokenJwtServiceTest extends ApiTest {
         var tokenExpiration = -5L;
         var subjetc = "Subject";
 
-        var token = tokenJwtService.generateTokenJwt(tokenExpiration, subjetc, new HashMap<String, Object>());
+        var token = tokenJwtService.generateTokenJwt(tokenExpiration, subjetc, new HashMap<>());
         assertNotNull(token);
 
         var body = tokenJwtService.getBody(token);
