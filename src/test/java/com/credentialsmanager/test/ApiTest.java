@@ -5,6 +5,7 @@ import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.service.EmailService;
+import com.credentialsmanager.service.TokenJwtService;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import lombok.SneakyThrows;
@@ -42,6 +43,9 @@ public abstract class ApiTest {
 
     @Autowired
     protected EmailService emailService;
+
+    @Autowired
+    protected TokenJwtService tokenJwtService;
 
     @Autowired
     protected UserRepository userRepository;
