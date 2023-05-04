@@ -6,6 +6,8 @@ import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.service.EmailService;
 import com.credentialsmanager.service.TokenJwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.SneakyThrows;
@@ -109,6 +111,11 @@ public abstract class ApiTest {
             }
         }
         return object;
+    }
+
+    protected String objectToJsonString(Object object) throws JsonProcessingException {
+        var ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(object);
     }
 
 }
