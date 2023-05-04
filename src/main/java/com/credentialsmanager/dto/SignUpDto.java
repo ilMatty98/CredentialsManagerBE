@@ -22,7 +22,7 @@ public class SignUpDto {
     @NotBlank(message = "InitializationVector cannot be blank", groups = ChangePasswordValidator.class)
     private String initializationVector;
 
-    @Pattern(regexp = "^[A-Z]{2}$")
+    @Pattern(message = "Language is not valid", regexp = "^[A-Z]{2}$")
     @NotBlank(message = "Language cannot be blank")
     private String language;
 
