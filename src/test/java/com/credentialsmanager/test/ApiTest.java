@@ -2,6 +2,7 @@ package com.credentialsmanager.test;
 
 import com.credentialsmanager.CredentialsManagerBeApplication;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.entity.User;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
 import com.credentialsmanager.service.EmailService;
@@ -56,6 +57,8 @@ public abstract class ApiTest {
 
     protected static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
 
+    protected static final String MESSAGE = "$.message";
+
     @BeforeEach
     void startGreenEmail() {
         greenMail.start();
@@ -101,7 +104,7 @@ public abstract class ApiTest {
             } else if (field.getType() == char.class) {
                 field.setChar(object, (char) (random.nextInt(26) + 'a'));
             } else if (field.getType() == String.class) {
-                field.set(object, generateRandomString(random.nextInt(1000)));
+                field.set(object, generateRandomString(random.nextInt(20)));
             } else if (field.getType() == Timestamp.class) {
                 field.set(object, Timestamp.from(Instant.now()));
             } else if (field.getType() == BigInteger.class) {
@@ -116,6 +119,13 @@ public abstract class ApiTest {
     protected String objectToJsonString(Object object) throws JsonProcessingException {
         var ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         return ow.writeValueAsString(object);
+    }
+
+    protected void addUser(String email) {
+        var user = fillObject(new User());
+        user.setEmail(email);
+        user.setLanguage("EN");
+        userRepository.save(user);
     }
 
 }
