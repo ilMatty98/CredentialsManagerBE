@@ -28,6 +28,9 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.Random;
 
 @AutoConfigureMockMvc
@@ -121,11 +124,19 @@ public abstract class ApiTest {
         return ow.writeValueAsString(object);
     }
 
-    protected void addUser(String email) {
+    @SuppressWarnings("UnusedReturnValue")
+    protected User addUser(String email) {
         var user = fillObject(new User());
         user.setEmail(email);
         user.setLanguage("EN");
-        userRepository.save(user);
+        return userRepository.save(user);
+    }
+
+    protected LocalDateTime getLocalDataTime(Timestamp timestamp) {
+        return Optional.ofNullable(timestamp)
+                .map(Timestamp::toLocalDateTime)
+                .map(l -> l.truncatedTo(ChronoUnit.SECONDS))
+                .orElse(null);
     }
 
 }
