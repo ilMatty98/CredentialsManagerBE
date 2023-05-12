@@ -4,6 +4,7 @@ import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.test.ApiTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -167,7 +168,7 @@ class SignUpTest extends ApiTest {
                     assertEquals(signUp.getLanguage(), user.getLanguage());
                     assertEquals(UserStateEnum.UNVERIFIED, user.getState());
                     assertNotNull(user.getVerificationCode());
-                }, () -> fail("User not found"));
+                }, Assertions::fail);
 
         //Check email
         var receivedMessages = greenMail.getReceivedMessages();
