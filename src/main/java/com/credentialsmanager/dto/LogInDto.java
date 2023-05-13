@@ -7,11 +7,10 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
-@Data
-public abstract class LogInDto {
+public interface LogInDto {
 
     @Data
-    public static class Request {
+    class Request {
         @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
         @NotBlank(message = "Email cannot be blank")
         private String email;
@@ -31,7 +30,7 @@ public abstract class LogInDto {
     }
 
     @Data
-    public static class Response {
+    class Response {
 
         private String token;
 
