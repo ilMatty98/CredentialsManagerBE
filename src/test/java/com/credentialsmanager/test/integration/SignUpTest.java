@@ -25,7 +25,8 @@ class SignUpTest extends ApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(new SignUpDto()));
 
-        mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isBadRequest());
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
     }
 
     @Test
