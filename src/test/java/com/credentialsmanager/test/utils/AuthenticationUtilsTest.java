@@ -20,7 +20,7 @@ class AuthenticationUtilsTest extends ApiTest {
     }
 
     @Test
-    public void testGenerateArgon2id() {
+    void testGenerateArgon2id() {
         var password = "password123";
         var salt = new byte[128];
         new SecureRandom().nextBytes(salt);
