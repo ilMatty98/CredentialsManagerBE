@@ -2,6 +2,7 @@ package com.credentialsmanager.test;
 
 import com.credentialsmanager.CredentialsManagerBeApplication;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,12 +35,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.credentialsmanager.constants.UrlConstants.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = CredentialsManagerBeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ApiTest {
+
+    @Value("${token.public-key}")
+    protected String tokenPublicKey;
 
     @Value("${mail.from}")
     protected String emailFrom;
@@ -131,6 +141,36 @@ public abstract class ApiTest {
         user.setLanguage("EN");
         return userRepository.save(user);
     }
+
+    protected User signUp(String email, String password) throws Exception {
+        var signUp = new SignUpDto();
+        signUp.setEmail(email);
+        signUp.setMasterPasswordHash(password);
+        signUp.setInitializationVector("initVector");
+        signUp.setProtectedSymmetricKey("protectedSymmetricKey");
+        signUp.setLanguage("EN");
+
+        var mockHttpServletRequestBuilder = post(BASE_PATH + SIGN_UP)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(signUp));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isCreated());
+
+        return userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
+    protected User confirmEmail(String email) throws Exception {
+        var user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        var mockHttpServletRequestBuilder = patch(BASE_PATH + CONFIRM_EMAIL, email, user.getVerificationCode())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isOk());
+
+        return userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
 
     protected LocalDateTime getLocalDataTime(Timestamp timestamp) {
         return Optional.ofNullable(timestamp)

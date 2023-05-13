@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 
 import static com.credentialsmanager.constants.UrlConstants.BASE_PATH;
 import static com.credentialsmanager.constants.UrlConstants.LOG_IN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,8 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LogInTest extends ApiTest {
 
     private static final String LOG_IN_URL = BASE_PATH + LOG_IN;
-
     private static final String EMAIL = "test@test.com";
+    private static final String IP_ADDRESS = "1.1.1.1";
+    private static final String PASSWORD = "password";
 
     @Test
     void testLogInDtoEmpty() throws Exception {
@@ -57,7 +60,7 @@ class LogInTest extends ApiTest {
     @Test
     void testMasterPasswordHashEmpty() throws Exception {
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test@test.com");
+        logIn.setEmail(EMAIL);
         logIn.setMasterPasswordHash(null);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
@@ -71,7 +74,7 @@ class LogInTest extends ApiTest {
     @Test
     void testIpAddressEmpty() throws Exception {
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test@test.com");
+        logIn.setEmail(EMAIL);
         logIn.setIpAddress(null);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
@@ -85,8 +88,8 @@ class LogInTest extends ApiTest {
     @Test
     void testIpAddressNotValid() throws Exception {
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test@test.com");
-        logIn.setIpAddress("asdasdasdasd");
+        logIn.setEmail(EMAIL);
+        logIn.setIpAddress("fakeip");
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,8 +102,8 @@ class LogInTest extends ApiTest {
     @Test
     void testDeviceTypeEmpty() throws Exception {
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test@test.com");
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setEmail(EMAIL);
+        logIn.setIpAddress(IP_ADDRESS);
         logIn.setDeviceType(null);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
@@ -114,8 +117,8 @@ class LogInTest extends ApiTest {
     @Test
     void testLocalDateTimeEmpty() throws Exception {
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test@test.com");
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setEmail(EMAIL);
+        logIn.setIpAddress(IP_ADDRESS);
         logIn.setLocalDateTime(null);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
@@ -130,8 +133,8 @@ class LogInTest extends ApiTest {
     void testUserNotFound() throws Exception {
         addUser(EMAIL);
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail("test1@test.com");
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setEmail("a" + EMAIL);
+        logIn.setIpAddress(IP_ADDRESS);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -150,7 +153,7 @@ class LogInTest extends ApiTest {
 
         var logIn = fillObject(new LogInDto.Request());
         logIn.setEmail(user.getEmail());
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setIpAddress(IP_ADDRESS);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,12 +166,13 @@ class LogInTest extends ApiTest {
 
     @Test
     void testMasterPasswordHashDifferent() throws Exception {
-        var user = addUser(EMAIL);
-        user = userRepository.save(user);
-
         var logIn = fillObject(new LogInDto.Request());
-        logIn.setEmail(user.getEmail());
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setEmail(EMAIL);
+        logIn.setIpAddress(IP_ADDRESS);
+        logIn.setMasterPasswordHash(PASSWORD + ".");
+
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +180,47 @@ class LogInTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_06.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_02.getLabel()));
+    }
+
+    @Test
+    void testLogIn() throws Exception {
+        var logIn = fillObject(new LogInDto.Request());
+        logIn.setEmail(EMAIL);
+        logIn.setIpAddress(IP_ADDRESS);
+        logIn.setMasterPasswordHash(PASSWORD);
+
+        var user = signUp(EMAIL, PASSWORD);
+        user = confirmEmail(EMAIL);
+
+        var mockHttpServletRequestBuilder = post(LOG_IN_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(logIn));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.tokenPublicKey").value(tokenPublicKey))
+                .andExpect(jsonPath("$.protectedSymmetricKey").value(authenticationMapper.base64DecodingString(user.getProtectedSymmetricKey())))
+                .andExpect(jsonPath("$.initializationVector").value(authenticationMapper.base64DecodingString(user.getInitializationVector())))
+                .andExpect(jsonPath("$.language").value(user.getLanguage()))
+                .andExpect(jsonPath("$.timestampCreation").isNotEmpty())
+                .andExpect(jsonPath("$.timestampLastAccess").isNotEmpty())
+                .andExpect(jsonPath("$.timestampPassword").isNotEmpty());
+
+        user = userRepository.findByEmail(EMAIL).orElseThrow(RuntimeException::new);
+        assertTrue(user.getTimestampLastAccess().after(user.getTimestampCreation()));
+
+        //Check email
+        var receivedMessages = greenMail.getReceivedMessages();
+        assertTrue(greenMail.waitForIncomingEmail(5000, 1));
+        assertEquals(2, receivedMessages.length);
+
+        var email = receivedMessages[1];
+        assertEquals(1, email.getAllRecipients().length);
+        assertEquals(emailFrom, email.getFrom()[0].toString());
+        assertEquals(EMAIL, email.getAllRecipients()[0].toString());
+        assertEquals("New access on Credential Manager!", email.getSubject());
     }
 
 }
