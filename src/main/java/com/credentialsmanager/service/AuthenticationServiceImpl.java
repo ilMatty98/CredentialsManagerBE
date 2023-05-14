@@ -4,8 +4,10 @@ import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.ChangeEmailDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.entity.User;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.NotFoundException;
 import com.credentialsmanager.exception.UnauthorizedException;
@@ -88,13 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (UserStateEnum.UNVERIFIED.equals(user.getState()))
             throw new UnauthorizedException(MessageEnum.ERROR_06);
 
-        var storedHash = Base64.getDecoder().decode(user.getHash());
-        var salt = Base64.getDecoder().decode(user.getSalt());
-        var currentHash = AuthenticationUtils.generateArgon2id(requestLogInDto.getMasterPasswordHash(), salt,
-                argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
-
-        if (!Arrays.equals(storedHash, currentHash))
-            throw new UnauthorizedException(MessageEnum.ERROR_02);
+        checkPassword(user, requestLogInDto.getMasterPasswordHash());
 
         user.setTimestampLastAccess(getCurrentTimestamp());
         usersRepository.save(user);
@@ -149,7 +145,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         usersRepository.save(user);
     }
 
+    @Override
+    public void changeEmail(ChangeEmailDto changeEmailDto) {
+        var user = usersRepository.findByEmailAndState(changeEmailDto.getCurrentEmail(), UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        checkPassword(user, changeEmailDto.getMasterPasswordHash());
+
+        user.setEmail(changeEmailDto.getNewEmail());
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_PSW, new HashMap<>());
+        usersRepository.save(user);
+    }
+
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
+    }
+
+    private void checkPassword(User user, String masterPasswordHash) {
+        var storedHash = Base64.getDecoder().decode(user.getHash());
+        var salt = Base64.getDecoder().decode(user.getSalt());
+        var currentHash = AuthenticationUtils.generateArgon2id(masterPasswordHash, salt,
+                argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
+
+        if (!Arrays.equals(storedHash, currentHash))
+            throw new UnauthorizedException(MessageEnum.ERROR_02);
     }
 }

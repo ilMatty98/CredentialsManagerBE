@@ -1,10 +1,13 @@
 package com.credentialsmanager.controller;
 
+import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
+import com.credentialsmanager.dto.ChangeEmailDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.CustomException;
 import com.credentialsmanager.exception.GenericErrorException;
+import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.service.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,8 +71,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
         try {
-            var claims = (Claims) request.getAttribute(TokenClaimEnum.CLAIMS.getLabel());
-            signUpDto.setEmail(Optional.ofNullable(claims.get(TokenClaimEnum.EMAIL.getLabel())).map(Object::toString).orElse(null));
+            signUpDto.setEmail(getEmailFromToken(request));
             authenticationService.changePassword(signUpDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (CustomException customException) {
@@ -77,5 +79,50 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         } catch (Exception e) {
             throw new GenericErrorException(e);
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> changeEmail(ChangeEmailDto changeEmailDto, HttpServletRequest request) {
+        try {
+            changeEmailDto.setCurrentEmail(getEmailFromToken(request));
+            authenticationService.changeEmail(changeEmailDto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> changeLanguage(String language, HttpServletRequest request) {
+        try {
+//            authenticationService.changeLanguage(getEmail(request), language);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> changeHint(String hint, HttpServletRequest request) {
+        try {
+//            authenticationService.changeHint(getEmail(request), hint);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CustomException customException) {
+            throw customException;
+        } catch (Exception e) {
+            throw new GenericErrorException(e);
+        }
+    }
+
+    private static String getEmailFromToken(HttpServletRequest request) {
+        var claims = (Claims) request.getAttribute(TokenClaimEnum.CLAIMS.getLabel());
+        return Optional.ofNullable(claims)
+                .map(c -> c.get(TokenClaimEnum.EMAIL.getLabel()))
+                .map(Object::toString)
+                .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
     }
 }

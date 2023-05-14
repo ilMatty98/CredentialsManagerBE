@@ -114,7 +114,7 @@ class ChangePasswordTest extends ApiTest {
                 .content(objectToJsonString(signUp));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

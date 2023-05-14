@@ -1,5 +1,6 @@
 package com.credentialsmanager.controller;
 
+import com.credentialsmanager.dto.ChangeEmailDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.validator.ChangePasswordValidator;
@@ -37,19 +38,46 @@ public interface AuthenticationController {
 
     @GetMapping(CHECK_EMAIL)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Checking on email done")})
+            @ApiResponse(responseCode = "200", description = "Checking on email done"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
     boolean checkEmail(@RequestHeader("checkEmail") String email);
 
     @PatchMapping(CONFIRM_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully confirmed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
             @ApiResponse(responseCode = "404", description = "User not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 
     @PostMapping(CHANGE_PASSWORD)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Password successfully changed")})
+            @ApiResponse(responseCode = "200", description = "Password successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
     ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
                                           @Validated(ChangePasswordValidator.class) @RequestBody SignUpDto signUpDto,
                                           HttpServletRequest request);
+
+    @PostMapping(CHANGE_EMAIL)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Email successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
+    ResponseEntity<Object> changeEmail(@Parameter(description = "Dto to change email")
+                                       @Valid @RequestBody ChangeEmailDto changeEmailDto,
+                                       HttpServletRequest request);
+
+    @PostMapping(CHANGE_LANGUAGE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Language successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
+    ResponseEntity<Object> changeLanguage(@Parameter(description = "String to change language")
+                                          @RequestBody String language,
+                                          HttpServletRequest request);
+
+    @PostMapping(CHANGE_HINT)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Hint successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
+    ResponseEntity<Object> changeHint(@Parameter(description = "String to change hint")
+                                      @RequestBody String hint,
+                                      HttpServletRequest request);
 }

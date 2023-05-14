@@ -10,6 +10,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.stream.Stream;
+
 import static com.credentialsmanager.constants.UrlConstants.*;
 
 @Configuration
@@ -17,6 +19,7 @@ import static com.credentialsmanager.constants.UrlConstants.*;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final String CONTENT_TYPE = "Content-Type";
+    private static final String AUTHORIZATION = "Authorization";
 
 
     @Value("${fe.endpoint}")
@@ -53,13 +56,34 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping(BASE_PATH + CHANGE_PASSWORD)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
-                .allowedHeaders("Authorization")
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + CHANGE_EMAIL)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + CHANGE_LANGUAGE)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + CHANGE_HINT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_LANGUAGE, CHANGE_HINT)
+                .map(element -> BASE_PATH + element)
+                .toList();
         registry.addInterceptor(new TokenInterceptor(tokenJwtService))
-                .addPathPatterns(BASE_PATH + CHANGE_PASSWORD);
+                .addPathPatterns(patterns);
     }
 }
