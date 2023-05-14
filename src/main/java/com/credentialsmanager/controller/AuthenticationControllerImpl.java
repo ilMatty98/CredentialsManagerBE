@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationControllerImpl implements AuthenticationController {
@@ -67,7 +69,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
         try {
             var claims = (Claims) request.getAttribute(TokenClaimEnum.CLAIMS.getLabel());
-            signUpDto.setEmail(claims.get(TokenClaimEnum.EMAIL.getLabel()).toString());
+            signUpDto.setEmail(Optional.ofNullable(claims.get(TokenClaimEnum.EMAIL.getLabel())).map(Object::toString).orElse(null));
             authenticationService.changePassword(signUpDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (CustomException customException) {
