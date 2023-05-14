@@ -2,6 +2,7 @@ package com.credentialsmanager.test;
 
 import com.credentialsmanager.CredentialsManagerBeApplication;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.mapper.AuthenticationMapper;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import com.jayway.jsonpath.JsonPath;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,7 +136,7 @@ public abstract class ApiTest {
         return ow.writeValueAsString(object);
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    @Deprecated(since = "Use signUp")
     protected User addUser(String email) {
         var user = fillObject(new User());
         user.setEmail(email);
@@ -171,6 +173,23 @@ public abstract class ApiTest {
         return userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
+    protected String getTokenFromLogIn(String email, String password) throws Exception {
+        var logIn = fillObject(new LogInDto.Request());
+        logIn.setEmail(email);
+        logIn.setIpAddress("1.1.1.1");
+        logIn.setMasterPasswordHash(password);
+
+        var mockHttpServletRequestBuilder = post(BASE_PATH + LOG_IN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(logIn));
+
+        var mvcResult = mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var jsonResponse = mvcResult.getResponse().getContentAsString();
+        return JsonPath.parse(jsonResponse).read("$.token");
+    }
 
     protected LocalDateTime getLocalDataTime(Timestamp timestamp) {
         return Optional.ofNullable(timestamp)
