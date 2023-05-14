@@ -57,7 +57,7 @@ public interface AuthenticationController {
                                           @Validated(ChangePasswordValidator.class) @RequestBody SignUpDto signUpDto,
                                           HttpServletRequest request);
 
-    @PostMapping(CHANGE_EMAIL)
+    @PatchMapping(CHANGE_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
@@ -65,7 +65,7 @@ public interface AuthenticationController {
                                        @Valid @RequestBody ChangeEmailDto changeEmailDto,
                                        HttpServletRequest request);
 
-    @PostMapping(CHANGE_LANGUAGE)
+    @PatchMapping(CHANGE_LANGUAGE)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Language successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
@@ -73,7 +73,7 @@ public interface AuthenticationController {
                                           @RequestBody String language,
                                           HttpServletRequest request);
 
-    @PostMapping(CHANGE_HINT)
+    @PatchMapping(CHANGE_HINT)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Hint successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
