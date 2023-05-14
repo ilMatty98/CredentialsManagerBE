@@ -11,7 +11,8 @@ public enum EmailTypeEnum {
 
     LOG_IN(EmailConstants.BASE_PATH_LABEL + "logIn.json", EmailConstants.BASE_PATH_TEMPLATE + "logIn.html"),
     SING_UP(EmailConstants.BASE_PATH_LABEL + "signUp.json", EmailConstants.BASE_PATH_TEMPLATE + "signUp.html"),
-    CHANGE_PSW(EmailConstants.BASE_PATH_LABEL + "changePSW.json", EmailConstants.BASE_PATH_TEMPLATE + "changePSW.html");
+    CHANGE_PSW(EmailConstants.BASE_PATH_LABEL + "changePSW.json", EmailConstants.BASE_PATH_TEMPLATE + "changePSW.html"),
+    CHANGE_EMAIL(EmailConstants.BASE_PATH_LABEL + "changeEmail.json", EmailConstants.BASE_PATH_TEMPLATE + "changeEmail.html");
 
     private final String labelLocation;
     private final String templateLocation;

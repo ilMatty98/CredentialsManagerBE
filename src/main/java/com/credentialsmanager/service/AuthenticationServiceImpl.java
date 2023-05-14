@@ -153,7 +153,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
         user.setEmail(changeEmailDto.getNewEmail());
-        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_PSW, new HashMap<>());
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
         usersRepository.save(user);
     }
 

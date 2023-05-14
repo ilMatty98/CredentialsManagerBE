@@ -22,22 +22,22 @@ class EmailServiceTest extends ApiTest {
     private static final String IT = "IT";
 
     @Test
-    void testEmailIT() throws MessagingException {
+    void testIT() throws MessagingException {
         verifyLanguage(IT, "Nuovo accesso su Credential Manager!", "Data:");
     }
 
     @Test
-    void testEmailEN() throws MessagingException {
+    void testEN() throws MessagingException {
         verifyLanguage(EN, "New access on Credential Manager!", "Date:");
     }
 
     @Test
-    void testEmailDifferentLanguage() throws MessagingException {
+    void testDifferentLanguage() throws MessagingException {
         verifyLanguage("HR", "New access on Credential Manager!", "Date:");
     }
 
     @Test
-    void testEmailLogIn() throws MessagingException {
+    void testLogIn() throws MessagingException {
         var expectedSubject = "New access on Credential Manager!";
         var label = List.of("Date", "IP Address", "Device Type", "Credentials Manager");
         var dynamicLabels = new HashMap<String, String>();
@@ -49,7 +49,7 @@ class EmailServiceTest extends ApiTest {
     }
 
     @Test
-    void testEmailSignUp() throws MessagingException {
+    void testSignUp() throws MessagingException {
         var expectedSubject = "Welcome to Credentials Manager!";
         var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Welcome to Credentials Manager!", "Click on this link to confirm the account", "Credentials Manager");
@@ -59,13 +59,23 @@ class EmailServiceTest extends ApiTest {
     }
 
     @Test
-    void testEmailChangePsw() throws MessagingException {
+    void testChangePsw() throws MessagingException {
         var expectedSubject = "Password changed!";
         var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Password changed!", "Password has been changed!", "Credentials Manager");
         dynamicLabels.put("href", generateRandomString(20));
 
         verifyEmail(EmailTypeEnum.CHANGE_PSW, expectedSubject, label, dynamicLabels);
+    }
+
+    @Test
+    void testChangeEmail() throws MessagingException {
+        var expectedSubject = "Email changed!";
+        var dynamicLabels = new HashMap<String, String>();
+        var label = List.of("Email changed!", "Email has been changed!", "Credentials Manager");
+        dynamicLabels.put("href", generateRandomString(20));
+
+        verifyEmail(EmailTypeEnum.CHANGE_EMAIL, expectedSubject, label, dynamicLabels);
     }
 
     private void verifyLanguage(String language, String expectedSubject, String expectedContainsBody) throws MessagingException {
