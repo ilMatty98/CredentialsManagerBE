@@ -16,6 +16,7 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import com.jayway.jsonpath.JsonPath;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
@@ -37,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
-import static com.credentialsmanager.constants.UrlConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = CredentialsManagerBeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class ApiTest {
+public abstract class ApiTest extends ApiTestConstans {
 
     @Value("${token.public-key}")
     protected String tokenPublicKey;
@@ -71,8 +71,6 @@ public abstract class ApiTest {
     protected AuthenticationMapper authenticationMapper;
 
     protected static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
-
-    protected static final String MESSAGE = "$.message";
 
     @BeforeEach
     void startGreenEmail() {
@@ -119,7 +117,7 @@ public abstract class ApiTest {
             } else if (field.getType() == char.class) {
                 field.setChar(object, (char) (random.nextInt(26) + 'a'));
             } else if (field.getType() == String.class) {
-                field.set(object, generateRandomString(random.nextInt(20)));
+                field.set(object, generateRandomString(random.nextInt(20) + 1));
             } else if (field.getType() == Timestamp.class) {
                 field.set(object, Timestamp.from(Instant.now()));
             } else if (field.getType() == BigInteger.class) {
@@ -136,50 +134,42 @@ public abstract class ApiTest {
         return ow.writeValueAsString(object);
     }
 
-    @Deprecated(since = "Use signUp")
-    protected User addUser(String email) {
-        var user = fillObject(new User());
-        user.setEmail(email);
-        user.setLanguage("EN");
-        return userRepository.save(user);
-    }
-
     protected User signUp(String email, String password) throws Exception {
         var signUp = new SignUpDto();
         signUp.setEmail(email);
         signUp.setMasterPasswordHash(password);
         signUp.setInitializationVector("initVector");
         signUp.setProtectedSymmetricKey("protectedSymmetricKey");
-        signUp.setLanguage("EN");
+        signUp.setLanguage(EN);
 
-        var mockHttpServletRequestBuilder = post(BASE_PATH + SIGN_UP)
+        var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isCreated());
 
-        return userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return userRepository.findByEmail(email).orElseGet(Assertions::fail);
     }
 
     protected User confirmEmail(String email) throws Exception {
         var user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        var mockHttpServletRequestBuilder = patch(BASE_PATH + CONFIRM_EMAIL, email, user.getVerificationCode())
+        var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, email, user.getVerificationCode())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
 
-        return userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return userRepository.findByEmail(email).orElseGet(Assertions::fail);
     }
 
     protected String getTokenFromLogIn(String email, String password) throws Exception {
         var logIn = fillObject(new LogInDto.Request());
         logIn.setEmail(email);
-        logIn.setIpAddress("1.1.1.1");
+        logIn.setIpAddress(IP_ADDRESS);
         logIn.setMasterPasswordHash(password);
 
-        var mockHttpServletRequestBuilder = post(BASE_PATH + LOG_IN)
+        var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(logIn));
 

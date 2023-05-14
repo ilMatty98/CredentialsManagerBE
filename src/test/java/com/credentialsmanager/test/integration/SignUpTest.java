@@ -8,16 +8,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static com.credentialsmanager.constants.UrlConstants.BASE_PATH;
-import static com.credentialsmanager.constants.UrlConstants.SIGN_UP;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class SignUpTest extends ApiTest {
-
-    private static final String SIGN_UP_URL = BASE_PATH + SIGN_UP;
 
     @Test
     void testSignUpDtoEmpty() throws Exception {
@@ -57,7 +53,7 @@ class SignUpTest extends ApiTest {
     @Test
     void testMasterPasswordHashEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
+        signUp.setEmail(EMAIL);
         signUp.setMasterPasswordHash(null);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
@@ -71,7 +67,7 @@ class SignUpTest extends ApiTest {
     @Test
     void testProtectedSymmetricKeyEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
+        signUp.setEmail(EMAIL);
         signUp.setProtectedSymmetricKey(null);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
@@ -85,7 +81,7 @@ class SignUpTest extends ApiTest {
     @Test
     void testInitializationVectorEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
+        signUp.setEmail(EMAIL);
         signUp.setInitializationVector(null);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
@@ -99,7 +95,7 @@ class SignUpTest extends ApiTest {
     @Test
     void testLanguageEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
+        signUp.setEmail(EMAIL);
         signUp.setLanguage(null);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
@@ -113,7 +109,7 @@ class SignUpTest extends ApiTest {
     @Test
     void testLanguageNotValid() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
+        signUp.setEmail(EMAIL);
         signUp.setLanguage("asdasdasd");
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
@@ -127,10 +123,10 @@ class SignUpTest extends ApiTest {
     @Test
     void testEmailAlreadyRegistered() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
-        signUp.setLanguage("IT");
+        signUp.setEmail(EMAIL);
+        signUp.setLanguage(EN);
 
-        addUser(signUp.getEmail());
+        signUp(signUp.getEmail(), PASSWORD);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -144,8 +140,8 @@ class SignUpTest extends ApiTest {
     @Test
     void testSignUp() throws Exception {
         var signUp = fillObject(new SignUpDto());
-        signUp.setEmail("test@test.com");
-        signUp.setLanguage("EN");
+        signUp.setEmail(EMAIL);
+        signUp.setLanguage(EN);
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)

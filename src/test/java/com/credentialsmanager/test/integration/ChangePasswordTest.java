@@ -10,19 +10,11 @@ import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 
-import static com.credentialsmanager.constants.UrlConstants.BASE_PATH;
-import static com.credentialsmanager.constants.UrlConstants.CHANGE_PASSWORD;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ChangePasswordTest extends ApiTest {
-
-    private static final String CHANGE_PASSWORD_URL = BASE_PATH + CHANGE_PASSWORD;
-    private static final String AUTH_HEADER_NAME = "Authorization";
-    private static final String AUTH_HEADER_PREFIX = "Bearer ";
-    private static final String EMAIL = "test@test.com";
-    private static final String PASSWORD = "password";
 
     @Test
     void testWithoutToken() throws Exception {
@@ -156,7 +148,7 @@ class ChangePasswordTest extends ApiTest {
 
         var signUp = new SignUpDto();
         signUp.setEmail(EMAIL);
-        signUp.setLanguage("EN");
+        signUp.setLanguage(EN);
         signUp.setMasterPasswordHash("new password");
         signUp.setProtectedSymmetricKey("new protectedSymmetricKey");
         signUp.setInitializationVector("new initializationVector");

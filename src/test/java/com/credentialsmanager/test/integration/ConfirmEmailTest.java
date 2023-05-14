@@ -1,14 +1,11 @@
 package com.credentialsmanager.test.integration;
 
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.entity.User;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static com.credentialsmanager.constants.UrlConstants.BASE_PATH;
-import static com.credentialsmanager.constants.UrlConstants.CONFIRM_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -16,13 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ConfirmEmailTest extends ApiTest {
 
-    private static final String CONFIRM_EMAIL_URL = BASE_PATH + CONFIRM_EMAIL;
-    private static final String EMAIL = "email@emai.it";
-    private static final String CODE = "code";
-
     @Test
     void testEmailNotFound() throws Exception {
-        saveUser();
+        signUp(ConfirmEmailTest.EMAIL, PASSWORD);
         var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL + ".", CODE)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -32,7 +25,7 @@ class ConfirmEmailTest extends ApiTest {
 
     @Test
     void testCodeNotFound() throws Exception {
-        saveUser();
+        signUp(ConfirmEmailTest.EMAIL, PASSWORD);
         var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL, CODE + ".")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -42,8 +35,8 @@ class ConfirmEmailTest extends ApiTest {
 
     @Test
     void testConfirmEmail() throws Exception {
-        var user = saveUser();
-        var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL, CODE)
+        var user = signUp(ConfirmEmailTest.EMAIL, PASSWORD);
+        var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL, user.getVerificationCode())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -67,8 +60,8 @@ class ConfirmEmailTest extends ApiTest {
 
     @Test
     void testEmailAlreadyConfirmed() throws Exception {
-        saveUser();
-        var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL, CODE)
+        var user = signUp(ConfirmEmailTest.EMAIL, PASSWORD);
+        var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, EMAIL, user.getVerificationCode())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -76,12 +69,6 @@ class ConfirmEmailTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
-    }
-
-    private User saveUser() {
-        var user = addUser(ConfirmEmailTest.EMAIL);
-        user.setVerificationCode(ConfirmEmailTest.CODE);
-        return userRepository.save(user);
     }
 
 }

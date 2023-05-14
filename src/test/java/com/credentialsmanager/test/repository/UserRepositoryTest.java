@@ -19,22 +19,22 @@ class UserRepositoryTest extends ApiTest {
     private static final String EMAIL = "email@email.it";
 
     @Test
-    void testExistsByEmail() {
+    void testExistsByEmail() throws Exception {
         assertFalse(userRepository.existsByEmail(EMAIL));
-        addUser(EMAIL);
+        signUp(EMAIL, PASSWORD);
         assertTrue(userRepository.existsByEmail(EMAIL));
     }
 
     @Test
-    void testFindByEmail() {
+    void testFindByEmail() throws Exception {
         assertFalse(userRepository.findByEmail(EMAIL).isPresent());
-        var user = addUser(EMAIL);
+        var user = signUp(EMAIL, PASSWORD);
         checkUser((userRepository) -> userRepository.findByEmail(EMAIL), user);
     }
 
     @Test
-    void testFindByEmailAndState() {
-        var user = addUser(EMAIL);
+    void testFindByEmailAndState() throws Exception {
+        var user = signUp(EMAIL, PASSWORD);
         user.setState(UserStateEnum.UNVERIFIED);
         userRepository.save(user);
 
@@ -47,8 +47,8 @@ class UserRepositoryTest extends ApiTest {
     }
 
     @Test
-    void testFindByEmailAndVerificationCode() {
-        var user = addUser(EMAIL);
+    void testFindByEmailAndVerificationCode() throws Exception {
+        var user = signUp(EMAIL, PASSWORD);
         user.setVerificationCode("code1");
         userRepository.save(user);
 

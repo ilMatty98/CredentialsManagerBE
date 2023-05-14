@@ -7,8 +7,6 @@ import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static com.credentialsmanager.constants.UrlConstants.BASE_PATH;
-import static com.credentialsmanager.constants.UrlConstants.LOG_IN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,11 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class LogInTest extends ApiTest {
-
-    private static final String LOG_IN_URL = BASE_PATH + LOG_IN;
-    private static final String EMAIL = "test@test.com";
-    private static final String IP_ADDRESS = "1.1.1.1";
-    private static final String PASSWORD = "password";
 
     @Test
     void testLogInDtoEmpty() throws Exception {
@@ -131,7 +124,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testUserNotFound() throws Exception {
-        addUser(EMAIL);
+        signUp(EMAIL, PASSWORD);
         var logIn = fillObject(new LogInDto.Request());
         logIn.setEmail("a" + EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
@@ -147,7 +140,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testUserUnverified() throws Exception {
-        var user = addUser(EMAIL);
+        var user = signUp(EMAIL, PASSWORD);
         user.setState(UserStateEnum.UNVERIFIED);
         user = userRepository.save(user);
 
