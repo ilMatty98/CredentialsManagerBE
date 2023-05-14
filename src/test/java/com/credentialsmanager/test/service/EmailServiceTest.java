@@ -63,8 +63,6 @@ class EmailServiceTest extends ApiTest {
         var expectedSubject = "Password changed!";
         var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Password changed!", "Password has been changed!", "Credentials Manager");
-        dynamicLabels.put("href", generateRandomString(20));
-
         verifyEmail(EmailTypeEnum.CHANGE_PSW, expectedSubject, label, dynamicLabels);
     }
 
@@ -73,8 +71,6 @@ class EmailServiceTest extends ApiTest {
         var expectedSubject = "Email changed!";
         var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Email changed!", "Email has been changed!", "Credentials Manager");
-        dynamicLabels.put("href", generateRandomString(20));
-
         verifyEmail(EmailTypeEnum.CHANGE_EMAIL, expectedSubject, label, dynamicLabels);
     }
 
