@@ -176,7 +176,7 @@ class SignUpTest extends ApiTest {
         assertEquals(1, email.getAllRecipients().length);
         assertEquals(emailFrom, email.getFrom()[0].toString());
         assertEquals(signUp.getEmail(), email.getAllRecipients()[0].toString());
-        assertEquals("Welcome to Credentials Manager!", receivedMessages[0].getSubject());
+        assertEquals("Welcome to Credentials Manager!", email.getSubject());
     }
 
 }
