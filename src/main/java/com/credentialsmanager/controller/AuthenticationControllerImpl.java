@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,91 +27,67 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Override
     public ResponseEntity<Object> signUp(SignUpDto signUpDto) {
-        try {
+        return handleRequest(() -> {
             authenticationService.signUp(signUpDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        });
     }
 
     @Override
     public LogInDto.Response logIn(LogInDto.Request requestLogInDto) {
-        try {
-            return authenticationService.logIn(requestLogInDto);
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        return handleRequest(() -> authenticationService.logIn(requestLogInDto));
     }
 
     @Override
     public boolean checkEmail(String email) {
-        try {
-            return authenticationService.checkEmail(email);
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        return handleRequest(() -> authenticationService.checkEmail(email));
     }
 
     @Override
     public ResponseEntity<Object> confirmEmail(String email, String code) {
-        try {
+        return handleRequest(() -> {
             authenticationService.confirmEmail(email, code);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        });
     }
 
     @Override
     public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
-        try {
+        return handleRequest(() -> {
             signUpDto.setEmail(getEmailFromToken(request));
             authenticationService.changePassword(signUpDto);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        });
     }
 
     @Override
     public ResponseEntity<Object> changeEmail(ChangeEmailDto changeEmailDto, HttpServletRequest request) {
-        try {
+        return handleRequest(() -> {
             changeEmailDto.setCurrentEmail(getEmailFromToken(request));
             authenticationService.changeEmail(changeEmailDto);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        });
     }
 
     @Override
     public ResponseEntity<Object> changeLanguage(String language, HttpServletRequest request) {
-        try {
+        return handleRequest(() -> {
 //            authenticationService.changeLanguage(getEmail(request), language);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (CustomException customException) {
-            throw customException;
-        } catch (Exception e) {
-            throw new GenericErrorException(e);
-        }
+        });
     }
 
     @Override
     public ResponseEntity<Object> changeHint(String hint, HttpServletRequest request) {
-        try {
+        return handleRequest(() -> {
 //            authenticationService.changeHint(getEmail(request), hint);
             return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
+    private <T> T handleRequest(Supplier<T> supplier) {
+        try {
+            return supplier.get();
         } catch (CustomException customException) {
             throw customException;
         } catch (Exception e) {
