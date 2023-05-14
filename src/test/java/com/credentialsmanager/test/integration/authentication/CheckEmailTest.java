@@ -1,4 +1,4 @@
-package com.credentialsmanager.test.integration;
+package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.test.ApiTest;

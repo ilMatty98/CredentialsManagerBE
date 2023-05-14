@@ -1,4 +1,4 @@
-package com.credentialsmanager.test.integration;
+package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
