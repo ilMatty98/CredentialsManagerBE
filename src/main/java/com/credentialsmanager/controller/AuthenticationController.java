@@ -41,7 +41,7 @@ public interface AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Checking on email done"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
-    boolean checkEmail(@RequestHeader("checkEmail") String email);
+    boolean checkEmail(@RequestHeader(HEADER_EMAIL) String email);
 
     @PatchMapping(CONFIRM_EMAIL)
     @ApiResponses(value = {

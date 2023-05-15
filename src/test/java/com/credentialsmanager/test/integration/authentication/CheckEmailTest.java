@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CheckEmailTest extends ApiTest {
 
-    private static final String CHECK_EMAIL = "checkEmail";
+    private static final String REQUEST_EMAIL = "email";
     private static final String IT = "IT";
 
     @Test
@@ -32,7 +32,7 @@ class CheckEmailTest extends ApiTest {
 
         var mockHttpServletRequestBuilder = get(CHECK_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(CHECK_EMAIL, signUp.getEmail());
+                .header(REQUEST_EMAIL, signUp.getEmail());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())
@@ -48,7 +48,7 @@ class CheckEmailTest extends ApiTest {
 
         var mockHttpServletRequestBuilder = get(CHECK_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(CHECK_EMAIL, signUp.getEmail() + "fake");
+                .header(REQUEST_EMAIL, signUp.getEmail() + "fake");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())
