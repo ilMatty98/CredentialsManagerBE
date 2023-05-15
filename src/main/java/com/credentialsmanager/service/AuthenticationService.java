@@ -22,4 +22,6 @@ public interface AuthenticationService {
     void changeEmail(ChangeEmailDto changeEmailDto);
 
     void changeInformation(ChangeInformationDto changeInformationDto);
+
+    void sendHint(String email);
 }

@@ -73,4 +73,10 @@ public interface AuthenticationController {
     ResponseEntity<Object> changeInformation(@Parameter(description = "Dto to change information")
                                              @Valid @RequestBody ChangeInformationDto changeInformationDto,
                                              HttpServletRequest request);
+
+    @PostMapping(SEND_HINT)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Checking on email done"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")})
+    ResponseEntity<Object> sendHint(@RequestHeader(HEADER_EMAIL) String email);
 }

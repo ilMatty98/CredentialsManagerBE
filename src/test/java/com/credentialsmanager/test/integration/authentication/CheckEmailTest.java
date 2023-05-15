@@ -5,13 +5,12 @@ import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import static com.credentialsmanager.constants.UrlConstants.HEADER_EMAIL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CheckEmailTest extends ApiTest {
-
-    private static final String REQUEST_EMAIL = "email";
     private static final String IT = "IT";
 
     @Test
@@ -32,7 +31,7 @@ class CheckEmailTest extends ApiTest {
 
         var mockHttpServletRequestBuilder = get(CHECK_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(REQUEST_EMAIL, signUp.getEmail());
+                .header(HEADER_EMAIL, signUp.getEmail());
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())
@@ -48,7 +47,7 @@ class CheckEmailTest extends ApiTest {
 
         var mockHttpServletRequestBuilder = get(CHECK_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(REQUEST_EMAIL, signUp.getEmail() + "fake");
+                .header(HEADER_EMAIL, signUp.getEmail() + "fake");
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())

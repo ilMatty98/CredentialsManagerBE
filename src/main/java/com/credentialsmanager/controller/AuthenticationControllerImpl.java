@@ -79,6 +79,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         });
     }
 
+    @Override
+    public ResponseEntity<Object> sendHint(String email) {
+        return handleRequest(() -> {
+            authenticationService.sendHint(email);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
     private <T> T handleRequest(Supplier<T> supplier) {
         try {
             return supplier.get();

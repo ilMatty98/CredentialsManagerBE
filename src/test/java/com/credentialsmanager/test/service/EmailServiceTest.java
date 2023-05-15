@@ -53,7 +53,7 @@ class EmailServiceTest extends ApiTest {
         var expectedSubject = "Welcome to Credentials Manager!";
         var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Welcome to Credentials Manager!", "Click on this link to confirm the account", "Credentials Manager");
-        dynamicLabels.put("href", generateRandomString(20));
+        dynamicLabels.put("href", generateRandomString(20) + 1);
 
         verifyEmail(EmailTypeEnum.SING_UP, expectedSubject, label, dynamicLabels);
     }
@@ -61,17 +61,27 @@ class EmailServiceTest extends ApiTest {
     @Test
     void testChangePsw() throws MessagingException {
         var expectedSubject = "Password changed!";
-        var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Password changed!", "Password has been changed!", "Credentials Manager");
-        verifyEmail(EmailTypeEnum.CHANGE_PSW, expectedSubject, label, dynamicLabels);
+
+        verifyEmail(EmailTypeEnum.CHANGE_PSW, expectedSubject, label, new HashMap<>());
     }
 
     @Test
     void testChangeEmail() throws MessagingException {
         var expectedSubject = "Email changed!";
-        var dynamicLabels = new HashMap<String, String>();
         var label = List.of("Email changed!", "Email has been changed!", "Credentials Manager");
-        verifyEmail(EmailTypeEnum.CHANGE_EMAIL, expectedSubject, label, dynamicLabels);
+
+        verifyEmail(EmailTypeEnum.CHANGE_EMAIL, expectedSubject, label, new HashMap<>());
+    }
+
+    @Test
+    void testSendHint() throws MessagingException {
+        var expectedSubject = "Your Master Password Hint";
+        var label = List.of("You (or someone) recently requested your master password hint.", "Your hint is", "Credentials Manager");
+        var dynamicLabels = new HashMap<String, String>();
+        dynamicLabels.put("hint_value", generateRandomString(20) + 1);
+
+        verifyEmail(EmailTypeEnum.SEND_HINT, expectedSubject, label, dynamicLabels);
     }
 
     private void verifyLanguage(String language, String expectedSubject, String expectedContainsBody) throws MessagingException {

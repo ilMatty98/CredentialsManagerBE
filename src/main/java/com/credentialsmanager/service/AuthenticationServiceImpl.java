@@ -168,6 +168,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         usersRepository.save(user);
     }
 
+    @Override
+    public void sendHint(String email) {
+        var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        var dynamicLabels = Map.ofEntries(entry("hint_value", user.getHint()));
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SEND_HINT, dynamicLabels);
+    }
+
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
