@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = CredentialsManagerBeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class ApiTest extends ApiTestConstans {
+public abstract class ApiTest extends ApiTestConstants {
 
     @Value("${token.public-key}")
     protected String tokenPublicKey;
@@ -141,6 +141,7 @@ public abstract class ApiTest extends ApiTestConstans {
         signUp.setInitializationVector("initVector");
         signUp.setProtectedSymmetricKey("protectedSymmetricKey");
         signUp.setLanguage(EN);
+        signUp.setHint("Hint");
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)

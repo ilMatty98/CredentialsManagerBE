@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import static com.credentialsmanager.constants.UrlConstants.*;
 
 @NoArgsConstructor
-public abstract class ApiTestConstans {
+public abstract class ApiTestConstants {
 
+    protected static final String CHANGE_INFORMATION_URL = BASE_PATH + CHANGE_INFORMATION;
     protected static final String CHANGE_PASSWORD_URL = BASE_PATH + CHANGE_PASSWORD;
     protected static final String CONFIRM_EMAIL_URL = BASE_PATH + CONFIRM_EMAIL;
     protected static final String CHANGE_EMAIL_URL = BASE_PATH + CHANGE_EMAIL;

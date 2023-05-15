@@ -16,6 +16,7 @@ import java.util.UUID;
 @Mapper(config = AppMapperConfig.class)
 public interface AuthenticationMapper {
 
+    @Mapping(target = "hint", source = "signUpDto.hint")
     @Mapping(target = "state", source = "userStateEnum")
     @Mapping(target = "email", source = "signUpDto.email")
     @Mapping(target = "language", source = "signUpDto.language")

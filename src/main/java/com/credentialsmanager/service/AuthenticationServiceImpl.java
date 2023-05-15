@@ -5,6 +5,7 @@ import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.ChangeEmailDto;
+import com.credentialsmanager.dto.ChangeInformationDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.entity.User;
@@ -147,13 +148,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changeEmail(ChangeEmailDto changeEmailDto) {
-        var user = usersRepository.findByEmailAndState(changeEmailDto.getCurrentEmail(), UserStateEnum.VERIFIED)
+        var user = usersRepository.findByEmailAndState(changeEmailDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
         checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
         user.setEmail(changeEmailDto.getNewEmail());
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
+        usersRepository.save(user);
+    }
+
+    @Override
+    public void changeInformation(ChangeInformationDto changeInformationDto) {
+        var user = usersRepository.findByEmailAndState(changeInformationDto.getEmail(), UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        user.setHint(changeInformationDto.getHint());
+        user.setLanguage(changeInformationDto.getLanguage());
         usersRepository.save(user);
     }
 

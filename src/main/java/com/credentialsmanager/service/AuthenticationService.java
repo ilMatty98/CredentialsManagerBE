@@ -1,6 +1,7 @@
 package com.credentialsmanager.service;
 
 import com.credentialsmanager.dto.ChangeEmailDto;
+import com.credentialsmanager.dto.ChangeInformationDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,6 @@ public interface AuthenticationService {
     void changePassword(SignUpDto signUpDto);
 
     void changeEmail(ChangeEmailDto changeEmailDto);
+
+    void changeInformation(ChangeInformationDto changeInformationDto);
 }

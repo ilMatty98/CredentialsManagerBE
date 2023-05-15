@@ -50,6 +50,9 @@ public class User {
     private String language;
 
     @Basic
+    private String hint;
+
+    @Basic
     @Enumerated(EnumType.STRING)
     private UserStateEnum state;
 

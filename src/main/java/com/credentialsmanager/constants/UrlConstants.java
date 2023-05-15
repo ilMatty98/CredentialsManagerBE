@@ -13,6 +13,5 @@ public class UrlConstants {
     public static final String CONFIRM_EMAIL = "/{email}/{code}/confirm";
     public static final String CHANGE_PASSWORD = "/changePassword";
     public static final String CHANGE_EMAIL = "/changeEmail";
-    public static final String CHANGE_LANGUAGE = "/changeLanguage";
-    public static final String CHANGE_HINT = "/changeHint";
+    public static final String CHANGE_INFORMATION = "/changeInformation";
 }

@@ -65,13 +65,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CHANGE_LANGUAGE)
-                .allowedOrigins(endpointFe)
-                .allowedMethods(HttpMethod.POST.name())
-                .allowedHeaders(AUTHORIZATION)
-                .allowCredentials(false); // Without cookie
-
-        registry.addMapping(BASE_PATH + CHANGE_HINT)
+        registry.addMapping(BASE_PATH + CHANGE_INFORMATION)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .allowedHeaders(AUTHORIZATION)
@@ -80,7 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_LANGUAGE, CHANGE_HINT)
+        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_INFORMATION)
                 .map(element -> BASE_PATH + element)
                 .toList();
         registry.addInterceptor(new TokenInterceptor(tokenJwtService))

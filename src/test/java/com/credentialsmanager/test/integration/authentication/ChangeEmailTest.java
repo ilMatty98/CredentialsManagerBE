@@ -158,6 +158,7 @@ class ChangeEmailTest extends ApiTest {
             assertEquals(getLocalDataTime(user.getTimestampLastAccess()), getLocalDataTime(u.getTimestampLastAccess()));
             assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
             assertEquals(user.getLanguage(), u.getLanguage());
+            assertEquals(user.getHint(), u.getHint());
             assertEquals(UserStateEnum.VERIFIED, u.getState());
             assertNull(u.getVerificationCode());
         }, Assert::fail);

@@ -3,6 +3,7 @@ package com.credentialsmanager.controller;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.dto.ChangeEmailDto;
+import com.credentialsmanager.dto.ChangeInformationDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.exception.CustomException;
@@ -63,24 +64,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public ResponseEntity<Object> changeEmail(ChangeEmailDto changeEmailDto, HttpServletRequest request) {
         return handleRequest(() -> {
-            changeEmailDto.setCurrentEmail(getEmailFromToken(request));
+            changeEmailDto.setEmail(getEmailFromToken(request));
             authenticationService.changeEmail(changeEmailDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }
 
     @Override
-    public ResponseEntity<Object> changeLanguage(String language, HttpServletRequest request) {
+    public ResponseEntity<Object> changeInformation(ChangeInformationDto changeInformationDto, HttpServletRequest request) {
         return handleRequest(() -> {
-//            authenticationService.changeLanguage(getEmail(request), language);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        });
-    }
-
-    @Override
-    public ResponseEntity<Object> changeHint(String hint, HttpServletRequest request) {
-        return handleRequest(() -> {
-//            authenticationService.changeHint(getEmail(request), hint);
+            changeInformationDto.setEmail(getEmailFromToken(request));
+            authenticationService.changeInformation(changeInformationDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }

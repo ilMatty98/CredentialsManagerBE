@@ -1,6 +1,7 @@
 package com.credentialsmanager.controller;
 
 import com.credentialsmanager.dto.ChangeEmailDto;
+import com.credentialsmanager.dto.ChangeInformationDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.validator.ChangePasswordValidator;
@@ -65,19 +66,11 @@ public interface AuthenticationController {
                                        @Valid @RequestBody ChangeEmailDto changeEmailDto,
                                        HttpServletRequest request);
 
-    @PatchMapping(CHANGE_LANGUAGE)
+    @PatchMapping(CHANGE_INFORMATION)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Language successfully changed"),
+            @ApiResponse(responseCode = "200", description = "Information successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
-    ResponseEntity<Object> changeLanguage(@Parameter(description = "String to change language")
-                                          @RequestBody String language,
-                                          HttpServletRequest request);
-
-    @PatchMapping(CHANGE_HINT)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Hint successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
-    ResponseEntity<Object> changeHint(@Parameter(description = "String to change hint")
-                                      @RequestBody String hint,
-                                      HttpServletRequest request);
+    ResponseEntity<Object> changeInformation(@Parameter(description = "Dto to change information")
+                                             @Valid @RequestBody ChangeInformationDto changeInformationDto,
+                                             HttpServletRequest request);
 }

@@ -173,6 +173,7 @@ class ChangePasswordTest extends ApiTest {
                     assertNotNull(u.getTimestampLastAccess());
                     assertNotNull(u.getTimestampPassword());
                     assertEquals(signUp.getLanguage(), u.getLanguage());
+                    assertEquals(user.getHint(), u.getHint());
                     assertEquals(UserStateEnum.VERIFIED, u.getState());
                     assertNull(u.getVerificationCode());
                     assertTrue(u.getTimestampPassword().after(user.getTimestampPassword()));

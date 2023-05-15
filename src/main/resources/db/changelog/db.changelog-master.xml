@@ -33,6 +33,9 @@
             <column name="timestamp_password" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="hint" type="text">
+                <constraints nullable="false"/>
+            </column>
             <column name="language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>

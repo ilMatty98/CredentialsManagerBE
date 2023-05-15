@@ -93,6 +93,20 @@ class SignUpTest extends ApiTest {
     }
 
     @Test
+    void testHintEmpty() throws Exception {
+        var signUp = fillObject(new SignUpDto());
+        signUp.setEmail(EMAIL);
+        signUp.setHint(null);
+
+        var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(signUp));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testLanguageEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
         signUp.setEmail(EMAIL);
@@ -163,6 +177,7 @@ class SignUpTest extends ApiTest {
                     assertNotNull(user.getTimestampLastAccess());
                     assertNotNull(user.getTimestampPassword());
                     assertEquals(signUp.getLanguage(), user.getLanguage());
+                    assertEquals(signUp.getHint(), user.getHint());
                     assertEquals(UserStateEnum.UNVERIFIED, user.getState());
                     assertNotNull(user.getVerificationCode());
                 }, Assertions::fail);
