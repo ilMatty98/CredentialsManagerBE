@@ -155,7 +155,7 @@ class ChangeEmailTest extends ApiTest {
             assertEquals(user.getProtectedSymmetricKey(), u.getProtectedSymmetricKey());
             assertEquals(user.getInitializationVector(), u.getInitializationVector());
             assertEquals(getLocalDataTime(user.getTimestampCreation()), getLocalDataTime(u.getTimestampCreation()));
-            assertEquals(getLocalDataTime(user.getTimestampLastAccess()), getLocalDataTime(u.getTimestampLastAccess()));
+            assertTrue(user.getTimestampLastAccess().before(u.getTimestampLastAccess()));
             assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
             assertEquals(user.getLanguage(), u.getLanguage());
             assertEquals(user.getHint(), u.getHint());
