@@ -30,7 +30,7 @@ keytool -genkey -alias ssl_certificate -storetype PKCS12 -keyalg RSA -keysize 20
 
 ## Contributing
 
-ilMattaty98 & TwoTimeScotti
+ilMatty98 & TwoTimeScotti
 
 ## License
 
