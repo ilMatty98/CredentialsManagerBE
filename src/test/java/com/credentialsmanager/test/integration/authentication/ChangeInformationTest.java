@@ -52,6 +52,23 @@ class ChangeInformationTest extends ApiTest {
     }
 
     @Test
+    void testHintTooLong() throws Exception {
+        var changeLanguageDto = new ChangeInformationDto();
+        changeLanguageDto.setLanguage(EN);
+        changeLanguageDto.setHint(generateRandomString(101));
+
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeLanguageDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testUserNotFoundForEmail() throws Exception {
         var user = signUp(EMAIL, PASSWORD);
         user = confirmEmail(EMAIL);

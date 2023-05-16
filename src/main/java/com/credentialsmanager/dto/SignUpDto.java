@@ -4,6 +4,7 @@ import com.credentialsmanager.validator.ChangePasswordValidator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -22,6 +23,7 @@ public class SignUpDto {
     @NotBlank(message = "InitializationVector cannot be blank", groups = ChangePasswordValidator.class)
     private String initializationVector;
 
+    @Size(max = 100)
     @NotBlank(message = "Hint cannot be blank")
     private String hint;
 

@@ -107,6 +107,21 @@ class SignUpTest extends ApiTest {
     }
 
     @Test
+    void testHintTooLong() throws Exception {
+        var signUp = fillObject(new SignUpDto());
+        signUp.setEmail(EMAIL);
+        signUp.setHint(generateRandomString(101));
+        signUp.setLanguage(EN);
+
+        var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(signUp));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testLanguageEmpty() throws Exception {
         var signUp = fillObject(new SignUpDto());
         signUp.setEmail(EMAIL);

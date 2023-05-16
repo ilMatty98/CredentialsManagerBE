@@ -33,13 +33,13 @@
             <column name="timestamp_password" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="hint" type="text">
+            <column name="hint" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="state" type="varchar(20)">
+            <column name="state" type="varchar(10)">
                 <constraints nullable="false"/>
             </column>
             <column name="verification_code" type="varchar(36)"/>
