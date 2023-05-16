@@ -6,8 +6,10 @@ import java.util.Map;
 
 public interface TokenJwtService {
 
-    String generateTokenJwt(long tokenExpiration, String subjetc, Map<String, Object> claims);
+    String generateTokenJwt(String subjetc, Map<String, Object> claims);
 
     Claims getBody(String token);
+
+    String getPublicKey();
 
 }

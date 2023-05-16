@@ -49,12 +49,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${encryption.argon2id.parallelism}")
     private int argon2idParallelism;
 
-    @Value("${token.expiration-minutes}")
-    private long tokenExpiration;
-
-    @Value("${token.public-key}")
-    private String tokenPublicKey;
-
     private final EmailService emailService;
 
     private final TokenJwtService tokenJwtService;
@@ -100,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         claims.put(TokenClaimEnum.EMAIL.getLabel(), user.getEmail());
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState().name());
 
-        var token = tokenJwtService.generateTokenJwt(tokenExpiration, user.getEmail(), claims);
+        var token = tokenJwtService.generateTokenJwt(user.getEmail(), claims);
 
         var dynamicLabels = Map.ofEntries(
                 entry("date_value", requestLogInDto.getLocalDateTime()),
@@ -109,7 +103,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, dynamicLabels);
-        return authenticationMapper.newLoginDto(user, token, tokenPublicKey);
+        return authenticationMapper.newLoginDto(user, token, tokenJwtService.getPublicKey());
     }
 
     @Override

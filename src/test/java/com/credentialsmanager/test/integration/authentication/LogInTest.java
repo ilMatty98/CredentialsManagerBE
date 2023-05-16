@@ -193,7 +193,7 @@ class LogInTest extends ApiTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").isNotEmpty())
-                .andExpect(jsonPath("$.tokenPublicKey").value(tokenPublicKey))
+                .andExpect(jsonPath("$.tokenPublicKey").value(tokenJwtService.getPublicKey()))
                 .andExpect(jsonPath("$.protectedSymmetricKey").value(authenticationMapper.base64DecodingString(user.getProtectedSymmetricKey())))
                 .andExpect(jsonPath("$.initializationVector").value(authenticationMapper.base64DecodingString(user.getInitializationVector())))
                 .andExpect(jsonPath("$.language").value(user.getLanguage()))

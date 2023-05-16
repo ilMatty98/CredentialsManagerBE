@@ -106,7 +106,7 @@ class ChangePasswordTest extends ApiTest {
 
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
-        var token = tokenJwtService.generateTokenJwt(5, EMAIL, claims);
+        var token = tokenJwtService.generateTokenJwt(EMAIL, claims);
 
         var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
@@ -130,7 +130,7 @@ class ChangePasswordTest extends ApiTest {
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.EMAIL.getLabel(), EMAIL + ".");
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
-        var token = tokenJwtService.generateTokenJwt(5, EMAIL, claims);
+        var token = tokenJwtService.generateTokenJwt(EMAIL, claims);
 
         var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)

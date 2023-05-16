@@ -4,14 +4,20 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.KeyPairGenerator;
+import java.security.Security;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -19,27 +25,52 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
+@Data
+@Slf4j
 @Component
 public class TokenJwtServiceImpl implements TokenJwtService {
 
-    @Value("${token.public-key}")
-    private String tokenPublicKey;
+    @Value("${token.expiration-minutes}")
+    private long tokenExpiration;
 
-    @Value("${token.private-key}")
-    private String tokenPrivateKey;
+    private static RSAPublicKey publicKey;
+    private static RSAPrivateKey privateKey;
 
+    private static final int KEY_SIZE = 2048;
     private static final String ALGORITHM = "RSA";
+
+    @PostConstruct
+    private void init() {
+        generateKeyPair();
+    }
+
+    @Scheduled(cron = "${token.key-rotation.cron}")
+    private static void generateKeyPair() {
+        try {
+            log.info("Started generation of key pair for jwt token");
+            Security.addProvider(new BouncyCastleProvider());
+            var keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
+            keyPairGenerator.initialize(KEY_SIZE);
+
+            var keyPair = keyPairGenerator.generateKeyPair();
+            publicKey = (RSAPublicKey) keyPair.getPublic();
+            privateKey = (RSAPrivateKey) keyPair.getPrivate();
+            log.info("Finished generating key pair for jwt token");
+        } catch (Exception e) {
+            log.error("Error creating keys", e);
+        }
+    }
 
     @Override
     @SneakyThrows
-    public String generateTokenJwt(long tokenExpiration, String subjetc, Map<String, Object> claims) {
+    public String generateTokenJwt(String subjetc, Map<String, Object> claims) {
         var now = Instant.now();
         return Jwts.builder()
                 .setSubject(subjetc)
                 .addClaims(claims)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plus(tokenExpiration, ChronoUnit.MINUTES)))
-                .signWith(getPrivateKey(tokenPrivateKey), SignatureAlgorithm.PS512)
+                .signWith(privateKey, SignatureAlgorithm.PS512)
                 .compact();
     }
 
@@ -47,7 +78,7 @@ public class TokenJwtServiceImpl implements TokenJwtService {
     public Claims getBody(String token) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(getPublicKey(tokenPublicKey))
+                    .setSigningKey(publicKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -56,19 +87,12 @@ public class TokenJwtServiceImpl implements TokenJwtService {
         }
     }
 
+    @Override
     @SneakyThrows
-    private static PrivateKey getPrivateKey(String privateKeyBase64) {
-        var privateKeyBytes = Base64.getDecoder().decode(privateKeyBase64);
-        var privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+    public String getPublicKey() {
         var keyFactory = KeyFactory.getInstance(ALGORITHM);
-        return keyFactory.generatePrivate(privateKeySpec);
-    }
-
-    @SneakyThrows
-    private static PublicKey getPublicKey(String publicKeyBase64) {
-        var publicKeyBytes = Base64.getDecoder().decode(publicKeyBase64);
-        var publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
-        var keyFactory = KeyFactory.getInstance(ALGORITHM);
-        return keyFactory.generatePublic(publicKeySpec);
+        var keySpec = keyFactory.getKeySpec(publicKey, X509EncodedKeySpec.class);
+        byte[] encodedKey = keySpec.getEncoded();
+        return Base64.getEncoder().encodeToString(encodedKey);
     }
 }

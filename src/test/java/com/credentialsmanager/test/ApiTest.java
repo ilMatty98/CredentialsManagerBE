@@ -49,8 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CredentialsManagerBeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ApiTest extends ApiTestConstants {
 
-    @Value("${token.public-key}")
-    protected String tokenPublicKey;
+    @Value("${token.expiration-minutes}")
+    protected long tokenExpiration;
 
     @Value("${mail.from}")
     protected String emailFrom;
