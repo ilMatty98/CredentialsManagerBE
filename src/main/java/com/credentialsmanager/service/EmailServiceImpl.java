@@ -72,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static String fillTemplate(Map<String, Map<String, String>> labelsMap, String template, String language) {
         try {
-            var substrings = extractSubstrings(template, "\\$\\{[^}]+\\}");
+            var substrings = extractSubstrings(template);
             for (var s : substrings) {
                 var key = s.substring(2, s.length() - 1);
                 template = template.replace(s, getValue(labelsMap.get(key), language));
@@ -83,9 +83,9 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    private static List<String> extractSubstrings(String input, String regex) {
+    private static List<String> extractSubstrings(String input) {
         try {
-            var matcher = Pattern.compile(regex).matcher(input);
+            var matcher = Pattern.compile("\\$\\{[^}]+\\}").matcher(input);
             var substrings = new ArrayList<String>();
             while (matcher.find()) {
                 substrings.add(matcher.group());
