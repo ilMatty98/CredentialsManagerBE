@@ -20,13 +20,6 @@ public class ErrorResponse {
         timestamp = new Date();
     }
 
-    public ErrorResponse(HttpStatus httpStatus, String message) {
-        this();
-        this.code = httpStatus.value();
-        this.status = httpStatus.name();
-        this.message = message;
-    }
-
     public ErrorResponse(HttpStatus httpStatus, String message, int errorMessage) {
         this();
         this.code = httpStatus.value();

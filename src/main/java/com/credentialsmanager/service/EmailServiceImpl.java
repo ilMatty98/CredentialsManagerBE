@@ -83,7 +83,7 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    public static List<String> extractSubstrings(String input, String regex) {
+    private static List<String> extractSubstrings(String input, String regex) {
         try {
             var matcher = Pattern.compile(regex).matcher(input);
             var substrings = new ArrayList<String>();
