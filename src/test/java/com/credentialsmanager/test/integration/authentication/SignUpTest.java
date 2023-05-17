@@ -139,7 +139,7 @@ class SignUpTest extends ApiTest {
     void testLanguageNotValid() throws Exception {
         var signUp = fillObject(new SignUpDto());
         signUp.setEmail(EMAIL);
-        signUp.setLanguage("asdasdasd");
+        signUp.setLanguage("as");
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)
