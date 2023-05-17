@@ -17,4 +17,5 @@ public class UrlConstants {
     public static final String CHANGE_EMAIL = "/changeEmail";
     public static final String CHANGE_INFORMATION = "/changeInformation";
     public static final String SEND_HINT = "/sendHint";
+    public static final String DELETE_ACCOUNT = "/deleteAccount";
 }

@@ -18,12 +18,10 @@ import static com.credentialsmanager.constants.UrlConstants.*;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String AUTHORIZATION = "Authorization";
-
-
     @Value("${fe.endpoint}")
     private String endpointFe;
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String CONTENT_TYPE = "Content-Type";
 
     private final TokenJwtService tokenJwtService;
 
@@ -61,20 +59,38 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addMapping(BASE_PATH + CHANGE_EMAIL)
                 .allowedOrigins(endpointFe)
-                .allowedMethods(HttpMethod.POST.name())
+                .allowedMethods(HttpMethod.PATCH.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH + CHANGE_INFORMATION)
                 .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.PUT.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + DELETE_ACCOUNT)
+                .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + SEND_HINT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH + DELETE_ACCOUNT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.DELETE.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_INFORMATION)
+        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_INFORMATION, DELETE_ACCOUNT)
                 .map(element -> BASE_PATH + element)
                 .toList();
         registry.addInterceptor(new TokenInterceptor(tokenJwtService))

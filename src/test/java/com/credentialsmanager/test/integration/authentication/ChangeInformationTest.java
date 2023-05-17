@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ChangeInformationTest extends ApiTest {
 
     @Test
     void testWithoutToken() throws Exception {
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
@@ -26,7 +26,7 @@ class ChangeInformationTest extends ApiTest {
     void testLanguageEmpty() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(new ChangeInformationDto()));
@@ -42,7 +42,7 @@ class ChangeInformationTest extends ApiTest {
 
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeLanguageDto));
@@ -59,7 +59,7 @@ class ChangeInformationTest extends ApiTest {
 
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeLanguageDto));
@@ -81,7 +81,7 @@ class ChangeInformationTest extends ApiTest {
         user.setEmail(EMAIL + ".");
         userRepository.save(user);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .content(objectToJsonString(changeLanguageDto));
@@ -103,7 +103,7 @@ class ChangeInformationTest extends ApiTest {
         user.setState(UserStateEnum.UNVERIFIED);
         userRepository.save(user);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .content(objectToJsonString(changeLanguageDto));
@@ -121,7 +121,7 @@ class ChangeInformationTest extends ApiTest {
         changeLanguageDto.setLanguage("FR");
         changeLanguageDto.setHint("new hint");
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_INFORMATION_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeLanguageDto));

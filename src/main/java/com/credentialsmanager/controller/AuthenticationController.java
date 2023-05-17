@@ -66,7 +66,7 @@ public interface AuthenticationController {
                                        @Valid @RequestBody ChangeEmailDto changeEmailDto,
                                        HttpServletRequest request);
 
-    @PatchMapping(CHANGE_INFORMATION)
+    @PutMapping(CHANGE_INFORMATION)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Information successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
