@@ -26,7 +26,7 @@ keytool -genkey -alias ssl_certificate -storetype PKCS12 -keyalg RSA -keysize 20
 
 ## Utility
 
-- Swagger: http://localhost:8080/swagger-ui/index.html
+- Swagger: https://localhost:8080/swagger-ui/index.html
 
 ## Contributing
 
