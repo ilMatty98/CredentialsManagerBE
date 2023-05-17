@@ -32,6 +32,11 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
 
+    /**
+     * "\\$\\{[^}]+}"  --> ${variableName}
+     **/
+    private static final String REGEX = "\\$\\{[^}]+}";
+
     public void sendEmail(String email, String language, EmailTypeEnum emailTypeEnum, Map<String, String> dynamicLabels) {
         try {
             var labels = objectMapper.readValue(Paths.get(emailTypeEnum.getLabelLocation()).toFile(), EmailTemplateDto.class);
@@ -59,12 +64,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static String getValue(Map<String, String> map, String language) {
         try {
-            if (map.containsKey(language)) {
-                return map.get(language);
-            } else if (map.containsKey(DEFAULT_LANGUAGE)) {
-                return map.get(DEFAULT_LANGUAGE);
-            }
-            return "";
+            return map.getOrDefault(language, map.getOrDefault(DEFAULT_LANGUAGE, ""));
         } catch (Exception e) {
             return "";
         }
@@ -85,7 +85,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static List<String> extractSubstrings(String input) {
         try {
-            var matcher = Pattern.compile("\\$\\{[^}]+\\}").matcher(input);
+            var matcher = Pattern.compile(REGEX).matcher(input);
             var substrings = new ArrayList<String>();
             while (matcher.find()) {
                 substrings.add(matcher.group());
