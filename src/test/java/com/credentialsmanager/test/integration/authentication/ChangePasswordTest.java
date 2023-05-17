@@ -11,14 +11,14 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ChangePasswordTest extends ApiTest {
 
     @Test
     void testWithoutToken() throws Exception {
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(new SignUpDto()));
 
@@ -31,7 +31,7 @@ class ChangePasswordTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(new SignUpDto()));
@@ -49,7 +49,7 @@ class ChangePasswordTest extends ApiTest {
         signUp.setEmail(EMAIL);
         signUp.setMasterPasswordHash(null);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
@@ -67,7 +67,7 @@ class ChangePasswordTest extends ApiTest {
         signUp.setEmail(EMAIL);
         signUp.setProtectedSymmetricKey(null);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
@@ -85,7 +85,7 @@ class ChangePasswordTest extends ApiTest {
         signUp.setEmail(EMAIL);
         signUp.setInitializationVector(null);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
@@ -108,7 +108,7 @@ class ChangePasswordTest extends ApiTest {
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
         var token = tokenJwtService.generateTokenJwt(EMAIL, claims);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
@@ -132,7 +132,7 @@ class ChangePasswordTest extends ApiTest {
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
         var token = tokenJwtService.generateTokenJwt(EMAIL, claims);
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));
@@ -153,7 +153,7 @@ class ChangePasswordTest extends ApiTest {
         signUp.setProtectedSymmetricKey("new protectedSymmetricKey");
         signUp.setInitializationVector("new initializationVector");
 
-        var mockHttpServletRequestBuilder = post(CHANGE_PASSWORD_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(signUp));

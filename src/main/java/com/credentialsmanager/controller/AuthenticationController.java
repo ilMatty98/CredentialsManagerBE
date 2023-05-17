@@ -50,7 +50,7 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "404", description = "User not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 
-    @PostMapping(CHANGE_PASSWORD)
+    @PutMapping(CHANGE_PASSWORD)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
