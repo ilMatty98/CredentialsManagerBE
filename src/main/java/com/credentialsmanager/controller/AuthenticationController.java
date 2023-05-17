@@ -32,8 +32,8 @@ public interface AuthenticationController {
     @PostMapping(LOG_IN)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "LogIn successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")})
     LogInDto.Response logIn(@Parameter(description = "Dto to log in")
                             @Valid @RequestBody LogInDto.Request requestLogInDto);
 
@@ -46,14 +46,15 @@ public interface AuthenticationController {
     @PatchMapping(CONFIRM_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully confirmed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "404", description = "User not found")})
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> confirmEmail(@PathVariable String email, @PathVariable String code);
 
     @PutMapping(CHANGE_PASSWORD)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
                                           @Validated(ChangePasswordValidator.class) @RequestBody SignUpDto signUpDto,
                                           HttpServletRequest request);
@@ -61,7 +62,9 @@ public interface AuthenticationController {
     @PatchMapping(CHANGE_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> changeEmail(@Parameter(description = "Dto to change email")
                                        @Valid @RequestBody ChangeEmailDto changeEmailDto,
                                        HttpServletRequest request);
@@ -69,7 +72,9 @@ public interface AuthenticationController {
     @PutMapping(CHANGE_INFORMATION)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Information successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> changeInformation(@Parameter(description = "Dto to change information")
                                              @Valid @RequestBody ChangeInformationDto changeInformationDto,
                                              HttpServletRequest request);
@@ -77,13 +82,14 @@ public interface AuthenticationController {
     @PostMapping(SEND_HINT)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Checking on email done"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")})
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> sendHint(@RequestHeader(HEADER_EMAIL) String email);
 
     @DeleteMapping(DELETE_ACCOUNT)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "404", description = "User not found")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> deleteAccount(HttpServletRequest request);
 }
