@@ -145,8 +145,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = usersRepository.findByEmailAndState(changeEmailDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
-        checkPassword(user, changeEmailDto.getMasterPasswordHash());
-
         user.setEmail(changeEmailDto.getNewEmail());
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
         usersRepository.save(user);
