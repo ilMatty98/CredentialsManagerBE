@@ -24,4 +24,6 @@ public interface AuthenticationService {
     void changeInformation(ChangeInformationDto changeInformationDto);
 
     void sendHint(String email);
+
+    void deleteAccount(String email);
 }

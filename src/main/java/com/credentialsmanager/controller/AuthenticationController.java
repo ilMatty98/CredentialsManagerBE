@@ -79,4 +79,11 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Checking on email done"),
             @ApiResponse(responseCode = "400", description = "Bad Request")})
     ResponseEntity<Object> sendHint(@RequestHeader(HEADER_EMAIL) String email);
+
+    @DeleteMapping(DELETE_ACCOUNT)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "404", description = "User not found")})
+    ResponseEntity<Object> deleteAccount(HttpServletRequest request);
 }

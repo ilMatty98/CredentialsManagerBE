@@ -169,6 +169,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SEND_HINT, dynamicLabels);
     }
 
+    @Override
+    public void deleteAccount(String email) {
+        var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        usersRepository.delete(user);
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.DELETE_USER, new HashMap<>());
+    }
+
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }

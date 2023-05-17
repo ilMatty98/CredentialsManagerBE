@@ -87,6 +87,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         });
     }
 
+    @Override
+    public ResponseEntity<Object> deleteAccount(HttpServletRequest request) {
+        return handleRequest(() -> {
+            authenticationService.deleteAccount(getEmailFromToken(request));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
     private <T> T handleRequest(Supplier<T> supplier) {
         try {
             return supplier.get();

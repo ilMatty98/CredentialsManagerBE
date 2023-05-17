@@ -9,6 +9,7 @@ public abstract class ApiTestConstants {
 
     protected static final String CHANGE_INFORMATION_URL = BASE_PATH + CHANGE_INFORMATION;
     protected static final String CHANGE_PASSWORD_URL = BASE_PATH + CHANGE_PASSWORD;
+    protected static final String DELETE_ACCOUNT_URL = BASE_PATH + DELETE_ACCOUNT;
     protected static final String CONFIRM_EMAIL_URL = BASE_PATH + CONFIRM_EMAIL;
     protected static final String CHANGE_EMAIL_URL = BASE_PATH + CHANGE_EMAIL;
     protected static final String CHECK_EMAIL_URL = BASE_PATH + CHECK_EMAIL;
