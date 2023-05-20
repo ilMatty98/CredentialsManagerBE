@@ -32,9 +32,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender emailSender;
 
-    /**
-     * "\\$\\{[^}]+}"  --> ${variableName}
-     **/
+    /** "\\$\\{[^}]+}" --> ${variableName} **/
     private static final String REGEX = "\\$\\{[^}]+}";
 
     public void sendEmail(String email, String language, EmailTypeEnum emailTypeEnum, Map<String, String> dynamicLabels) {
