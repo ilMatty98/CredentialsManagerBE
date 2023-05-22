@@ -36,6 +36,8 @@ class AuthenticationMapperTest extends ApiTest {
         assertEquals(timestamp, user.getTimestampPassword());
         assertEquals(signUpDto.getLanguage(), user.getLanguage());
         assertEquals(userStateEnum, user.getState());
+        assertEquals(signUpDto.getHint(), user.getHint());
+        assertEquals(signUpDto.getPropic(), user.getPropic());
         assertNotNull(user.getVerificationCode());
     }
 
@@ -57,6 +59,7 @@ class AuthenticationMapperTest extends ApiTest {
         assertEquals(protectedSymmetricKey, loginDto.getProtectedSymmetricKey());
         assertEquals(initializationVector, loginDto.getInitializationVector());
         assertEquals(user.getLanguage(), loginDto.getLanguage());
+        assertEquals(user.getPropic(), loginDto.getPropic());
         assertEquals(user.getTimestampCreation(), loginDto.getTimestampCreation());
         assertEquals(user.getTimestampLastAccess(), loginDto.getTimestampLastAccess());
         assertEquals(user.getTimestampPassword(), loginDto.getTimestampPassword());

@@ -18,4 +18,7 @@ public class ChangeInformationDto extends ChangeDto {
     @NotBlank(message = "Hint cannot be blank")
     private String hint;
 
+    @NotBlank(message = "Propic cannot be blank")
+    private String propic;
+
 }

@@ -36,6 +36,9 @@
             <column name="hint" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
+            <column name="propic" type="text">
+                <constraints nullable="false"/>
+            </column>
             <column name="language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>

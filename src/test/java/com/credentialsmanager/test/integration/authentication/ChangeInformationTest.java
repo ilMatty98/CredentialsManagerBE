@@ -37,15 +37,15 @@ class ChangeInformationTest extends ApiTest {
 
     @Test
     void testLanguageNotValid() throws Exception {
-        var changeLanguageDto = new ChangeInformationDto();
-        changeLanguageDto.setLanguage("AAA");
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("AAA");
 
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
-                .content(objectToJsonString(changeLanguageDto));
+                .content(objectToJsonString(changeInformationDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -53,16 +53,34 @@ class ChangeInformationTest extends ApiTest {
 
     @Test
     void testHintTooLong() throws Exception {
-        var changeLanguageDto = new ChangeInformationDto();
-        changeLanguageDto.setLanguage(EN);
-        changeLanguageDto.setHint(generateRandomString(101));
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage(EN);
+        changeInformationDto.setHint(generateRandomString(101));
 
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
-                .content(objectToJsonString(changeLanguageDto));
+                .content(objectToJsonString(changeInformationDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testPropicEmpty() throws Exception {
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("FR");
+        changeInformationDto.setHint("hint");
+        changeInformationDto.setPropic(null);
+
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeInformationDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -74,9 +92,10 @@ class ChangeInformationTest extends ApiTest {
         user = confirmEmail(EMAIL);
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
-        var changeLanguageDto = new ChangeInformationDto();
-        changeLanguageDto.setLanguage("FR");
-        changeLanguageDto.setHint("hint");
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("FR");
+        changeInformationDto.setHint("hint");
+        changeInformationDto.setPropic("propic");
 
         user.setEmail(EMAIL + ".");
         userRepository.save(user);
@@ -84,7 +103,7 @@ class ChangeInformationTest extends ApiTest {
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
-                .content(objectToJsonString(changeLanguageDto));
+                .content(objectToJsonString(changeInformationDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
@@ -96,9 +115,10 @@ class ChangeInformationTest extends ApiTest {
         user = confirmEmail(EMAIL);
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
-        var changeLanguageDto = new ChangeInformationDto();
-        changeLanguageDto.setLanguage("FR");
-        changeLanguageDto.setHint("hint");
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("FR");
+        changeInformationDto.setHint("hint");
+        changeInformationDto.setPropic("propic");
 
         user.setState(UserStateEnum.UNVERIFIED);
         userRepository.save(user);
@@ -106,7 +126,7 @@ class ChangeInformationTest extends ApiTest {
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
-                .content(objectToJsonString(changeLanguageDto));
+                .content(objectToJsonString(changeInformationDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
@@ -117,14 +137,15 @@ class ChangeInformationTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);
 
-        var changeLanguageDto = new ChangeInformationDto();
-        changeLanguageDto.setLanguage("FR");
-        changeLanguageDto.setHint("new hint");
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("FR");
+        changeInformationDto.setHint("new hint");
+        changeInformationDto.setPropic("new propic");
 
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
-                .content(objectToJsonString(changeLanguageDto));
+                .content(objectToJsonString(changeInformationDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
@@ -141,8 +162,9 @@ class ChangeInformationTest extends ApiTest {
                     assertEquals(getLocalDataTime(user.getTimestampCreation()), getLocalDataTime(u.getTimestampCreation()));
                     assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
                     assertTrue(user.getTimestampLastAccess().before(u.getTimestampLastAccess()));
-                    assertEquals(changeLanguageDto.getLanguage(), u.getLanguage());
-                    assertEquals(changeLanguageDto.getHint(), u.getHint());
+                    assertEquals(changeInformationDto.getLanguage(), u.getLanguage());
+                    assertEquals(changeInformationDto.getHint(), u.getHint());
+                    assertEquals(user.getPropic(), u.getPropic());
                     assertEquals(user.getState(), u.getState());
                     assertNull(u.getVerificationCode());
                 }, Assertions::fail);

@@ -73,6 +73,8 @@ class UserRepositoryTest extends ApiTest {
                     assertEquals(getLocalDataTime(expectedUser.getTimestampLastAccess()), getLocalDataTime(u.getTimestampLastAccess()));
                     assertEquals(getLocalDataTime(expectedUser.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
                     assertEquals(expectedUser.getLanguage(), u.getLanguage());
+                    assertEquals(expectedUser.getHint(), u.getHint());
+                    assertEquals(expectedUser.getPropic(), u.getPropic());
                     assertEquals(expectedUser.getState(), u.getState());
                     assertEquals(expectedUser.getVerificationCode(), u.getVerificationCode());
                 }, Assert::fail);

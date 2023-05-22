@@ -19,6 +19,7 @@ public interface AuthenticationMapper {
     @Mapping(target = "hint", source = "signUpDto.hint")
     @Mapping(target = "state", source = "userStateEnum")
     @Mapping(target = "email", source = "signUpDto.email")
+    @Mapping(target = "propic", source = "signUpDto.propic")
     @Mapping(target = "language", source = "signUpDto.language")
     @Mapping(target = "timestampPassword", source = "timestamp")
     @Mapping(target = "timestampCreation", source = "timestamp")
@@ -31,6 +32,7 @@ public interface AuthenticationMapper {
     User newUser(SignUpDto signUpDto, byte[] salt, byte[] hash, Timestamp timestamp, UserStateEnum userStateEnum);
 
     @Mapping(target = "token", source = "token")
+    @Mapping(target = "propic", source = "user.propic")
     @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")
     @Mapping(target = "timestampPassword", source = "user.timestampPassword")
     @Mapping(target = "timestampCreation", source = "user.timestampCreation")

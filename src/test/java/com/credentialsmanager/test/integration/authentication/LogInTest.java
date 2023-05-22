@@ -197,6 +197,7 @@ class LogInTest extends ApiTest {
                 .andExpect(jsonPath("$.protectedSymmetricKey").value(authenticationMapper.base64DecodingString(user.getProtectedSymmetricKey())))
                 .andExpect(jsonPath("$.initializationVector").value(authenticationMapper.base64DecodingString(user.getInitializationVector())))
                 .andExpect(jsonPath("$.language").value(user.getLanguage()))
+                .andExpect(jsonPath("$.propic").value(user.getPropic()))
                 .andExpect(jsonPath("$.timestampCreation").isNotEmpty())
                 .andExpect(jsonPath("$.timestampLastAccess").isNotEmpty())
                 .andExpect(jsonPath("$.timestampPassword").isNotEmpty());

@@ -53,6 +53,9 @@ public class User {
     private String hint;
 
     @Basic
+    private String propic;
+
+    @Basic
     @Enumerated(EnumType.STRING)
     private UserStateEnum state;
 

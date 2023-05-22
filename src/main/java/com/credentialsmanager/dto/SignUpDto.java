@@ -27,6 +27,9 @@ public class SignUpDto {
     @NotBlank(message = "Hint cannot be blank")
     private String hint;
 
+    @NotBlank(message = "Propic cannot be blank")
+    private String propic;
+
     @Pattern(message = "Language is not valid", regexp = "^[A-Z]{2}$")
     @NotBlank(message = "Language cannot be blank")
     private String language;

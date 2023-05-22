@@ -142,6 +142,7 @@ public abstract class ApiTest extends ApiTestConstants {
         signUp.setProtectedSymmetricKey("protectedSymmetricKey");
         signUp.setLanguage(EN);
         signUp.setHint("Hint");
+        signUp.setPropic("Propic");
 
         var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
                 .contentType(MediaType.APPLICATION_JSON)

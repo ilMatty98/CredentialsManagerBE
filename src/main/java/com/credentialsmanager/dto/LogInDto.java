@@ -42,6 +42,8 @@ public interface LogInDto {
 
         private String language;
 
+        private String propic;
+
         private Timestamp timestampCreation;
 
         private Timestamp timestampLastAccess;
