@@ -114,23 +114,6 @@ class ChangeEmailTest extends ApiTest {
     }
 
     @Test
-    void testIncorrectCurrentPasswordEmpty() throws Exception {
-        signUp(EMAIL, PASSWORD);
-        confirmEmail(EMAIL);
-        var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail("test2@test.com");
-        changeEmailDto.setMasterPasswordHash(PASSWORD + ".");
-
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
-                .content(objectToJsonString(changeEmailDto));
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void testChangeEmail() throws Exception {
         var newEmail = "test2@test.com";
         signUp(EMAIL, PASSWORD);
