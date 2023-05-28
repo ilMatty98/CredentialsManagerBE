@@ -48,6 +48,71 @@
             <column name="verification_code" type="varchar(36)"/>
         </createTable>
         <addAutoIncrement tableName="users" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
-        <sql>ALTER TABLE users ADD CONSTRAINT state_check CHECK (state in ('UNVERIFIED','VERIFIED'))</sql>
+        <sql>ALTER TABLE users
+            ADD CONSTRAINT state_check CHECK (state in ('UNVERIFIED', 'VERIFIED'))</sql>
+
+        <createTable tableName="credentials">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="credentials_id_pk"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_users_id" references="users(id)"/>
+            </column>
+            <column name="type" type="varchar(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notes" type="varchar(10000)"/>
+            <column name="timestamp_creation" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_updated" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addAutoIncrement tableName="credentials" columnName="id" columnDataType="bigint" startWith="1"
+                          incrementBy="1"/>
+        <sql>ALTER TABLE credentials
+            ADD CONSTRAINT type_check CHECK (type in ('LOGIN', 'CARD', 'SECURE_NOTE'))</sql>
+
+        <createTable tableName="logins">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="logins_id_pk"/>
+            </column>
+            <column name="credentials_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+            </column>
+            <column name="username" type="varchar(100)"/>
+            <column name="password" type="varchar(100)"/>
+            <column name="2fa" type="boolean"/>
+        </createTable>
+        <addAutoIncrement tableName="logins" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+
+        <createTable tableName="cards">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="cards_id_pk"/>
+            </column>
+            <column name="credentials_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+            </column>
+            <column name="card_holder" type="varchar(100)"/>
+            <column name="number" type="varchar(100)"/>
+            <column name="expiration" type="varchar(7)"/>
+            <column name="cvv" type="varchar(100)"/>
+        </createTable>
+        <addAutoIncrement tableName="cards" columnName="id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+
+        <createTable tableName="secure_notes">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="secure_notes_id_pk"/>
+            </column>
+            <column name="credentials_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+            </column>
+        </createTable>
+        <addAutoIncrement tableName="secure_notes" columnName="id" columnDataType="bigint" startWith="1"
+                          incrementBy="1"/>
     </changeSet>
 </databaseChangeLog>
