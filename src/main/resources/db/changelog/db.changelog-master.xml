@@ -56,7 +56,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="credentials_id_pk"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_users_id" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_credentials_users_id" references="users(id)"/>
             </column>
             <column name="type" type="varchar(11)">
                 <constraints nullable="false"/>
@@ -82,7 +82,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="logins_id_pk"/>
             </column>
             <column name="credentials_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_logins_credentials_id" references="credentials(id)"/>
             </column>
             <column name="username" type="varchar(100)"/>
             <column name="password" type="varchar(100)"/>
@@ -95,7 +95,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="cards_id_pk"/>
             </column>
             <column name="credentials_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_cards_credentials_id" references="credentials(id)"/>
             </column>
             <column name="card_holder" type="varchar(100)"/>
             <column name="number" type="varchar(100)"/>
@@ -109,7 +109,7 @@
                 <constraints primaryKey="true" nullable="false" primaryKeyName="secure_notes_id_pk"/>
             </column>
             <column name="credentials_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_credentials_id" references="credentials(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_secure_notes_credentials_id" references="credentials(id)"/>
             </column>
         </createTable>
         <addAutoIncrement tableName="secure_notes" columnName="id" columnDataType="bigint" startWith="1"
