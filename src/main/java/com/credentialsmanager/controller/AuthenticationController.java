@@ -1,7 +1,5 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.ChangeEmailDto;
-import com.credentialsmanager.dto.ChangeInformationDto;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.validator.ChangePasswordValidator;
@@ -19,7 +17,7 @@ import static com.credentialsmanager.constants.UrlConstants.*;
 
 @RestController
 @Tag(name = "Authentication")
-@RequestMapping(BASE_PATH)
+@RequestMapping(BASE_PATH_AUTHENTICATION)
 public interface AuthenticationController {
 
     @PostMapping(SIGN_UP)
@@ -58,26 +56,6 @@ public interface AuthenticationController {
     ResponseEntity<Object> changePassword(@Parameter(description = "Dto to change password")
                                           @Validated(ChangePasswordValidator.class) @RequestBody SignUpDto signUpDto,
                                           HttpServletRequest request);
-
-    @PatchMapping(CHANGE_EMAIL)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Email successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Not found")})
-    ResponseEntity<Object> changeEmail(@Parameter(description = "Dto to change email")
-                                       @Valid @RequestBody ChangeEmailDto changeEmailDto,
-                                       HttpServletRequest request);
-
-    @PutMapping(CHANGE_INFORMATION)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Information successfully changed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Not found")})
-    ResponseEntity<Object> changeInformation(@Parameter(description = "Dto to change information")
-                                             @Valid @RequestBody ChangeInformationDto changeInformationDto,
-                                             HttpServletRequest request);
 
     @PostMapping(SEND_HINT)
     @ApiResponses(value = {

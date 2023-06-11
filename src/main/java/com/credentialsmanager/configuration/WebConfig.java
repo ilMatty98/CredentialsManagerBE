@@ -27,72 +27,73 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(BASE_PATH + SIGN_UP)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + SIGN_UP)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + LOG_IN)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + LOG_IN)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CHECK_EMAIL)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + CHECK_EMAIL)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.GET.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CONFIRM_EMAIL)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + CONFIRM_EMAIL)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.PATCH.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CHANGE_PASSWORD)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + CHANGE_PASSWORD)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CHANGE_EMAIL)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + DELETE_ACCOUNT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH_AUTHENTICATION + SEND_HINT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.POST.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH_AUTHENTICATION + DELETE_ACCOUNT)
+                .allowedOrigins(endpointFe)
+                .allowedMethods(HttpMethod.DELETE.name())
+                .allowedHeaders(AUTHORIZATION)
+                .allowCredentials(false); // Without cookie
+
+        registry.addMapping(BASE_PATH_USER + CHANGE_EMAIL)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.PATCH.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH + CHANGE_INFORMATION)
+        registry.addMapping(BASE_PATH_USER + CHANGE_INFORMATION)
                 .allowedOrigins(endpointFe)
                 .allowedMethods(HttpMethod.PUT.name())
-                .allowedHeaders(AUTHORIZATION)
-                .allowCredentials(false); // Without cookie
-
-        registry.addMapping(BASE_PATH + DELETE_ACCOUNT)
-                .allowedOrigins(endpointFe)
-                .allowedMethods(HttpMethod.POST.name())
-                .allowedHeaders(AUTHORIZATION)
-                .allowCredentials(false); // Without cookie
-
-        registry.addMapping(BASE_PATH + SEND_HINT)
-                .allowedOrigins(endpointFe)
-                .allowedMethods(HttpMethod.POST.name())
-                .allowedHeaders(AUTHORIZATION)
-                .allowCredentials(false); // Without cookie
-
-        registry.addMapping(BASE_PATH + DELETE_ACCOUNT)
-                .allowedOrigins(endpointFe)
-                .allowedMethods(HttpMethod.DELETE.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        var patterns = Stream.of(CHANGE_PASSWORD, CHANGE_EMAIL, CHANGE_INFORMATION, DELETE_ACCOUNT)
-                .map(element -> BASE_PATH + element)
-                .toList();
+        var patterns = Stream.concat(
+                Stream.of(CHANGE_PASSWORD, DELETE_ACCOUNT).map(element -> BASE_PATH_AUTHENTICATION + element),
+                Stream.of(CHANGE_EMAIL, CHANGE_INFORMATION).map(element -> BASE_PATH_USER + element)
+        ).toList();
         registry.addInterceptor(new TokenInterceptor(tokenJwtService))
                 .addPathPatterns(patterns);
     }
