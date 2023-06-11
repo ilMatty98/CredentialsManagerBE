@@ -28,61 +28,61 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping(BASE_PATH_AUTHENTICATION + SIGN_UP)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + LOG_IN)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + CHECK_EMAIL)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.GET.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + CONFIRM_EMAIL)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.PATCH.name())
                 .exposedHeaders(CONTENT_TYPE) // Without headers
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + CHANGE_PASSWORD)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + DELETE_ACCOUNT)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + SEND_HINT)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.POST.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + DELETE_ACCOUNT)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.DELETE.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_USER + CHANGE_EMAIL)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.PATCH.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
 
         registry.addMapping(BASE_PATH_USER + CHANGE_INFORMATION)
-                .allowedOrigins(endpointFe)
+                .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.PUT.name())
                 .allowedHeaders(AUTHORIZATION)
                 .allowCredentials(false); // Without cookie
