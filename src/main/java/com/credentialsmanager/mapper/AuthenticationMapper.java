@@ -32,6 +32,7 @@ public interface AuthenticationMapper {
     User newUser(SignUpDto signUpDto, byte[] salt, byte[] hash, Timestamp timestamp, UserStateEnum userStateEnum);
 
     @Mapping(target = "token", source = "token")
+    @Mapping(target = "hint", source = "user.hint")
     @Mapping(target = "propic", source = "user.propic")
     @Mapping(target = "tokenPublicKey", source = "tokenPublicKey")
     @Mapping(target = "timestampPassword", source = "user.timestampPassword")
