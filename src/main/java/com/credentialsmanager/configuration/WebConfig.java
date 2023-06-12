@@ -4,6 +4,7 @@ import com.credentialsmanager.interceptor.TokenInterceptor;
 import com.credentialsmanager.service.TokenJwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -94,7 +95,11 @@ public class WebConfig implements WebMvcConfigurer {
                 Stream.of(CHANGE_PASSWORD, DELETE_ACCOUNT).map(element -> BASE_PATH_AUTHENTICATION + element),
                 Stream.of(CHANGE_EMAIL, CHANGE_INFORMATION).map(element -> BASE_PATH_USER + element)
         ).toList();
-        registry.addInterceptor(new TokenInterceptor(tokenJwtService))
-                .addPathPatterns(patterns);
+        registry.addInterceptor(tokenInterceptor()).addPathPatterns(patterns);
+    }
+
+    @Bean
+    public TokenInterceptor tokenInterceptor() {
+        return new TokenInterceptor(tokenJwtService);
     }
 }
