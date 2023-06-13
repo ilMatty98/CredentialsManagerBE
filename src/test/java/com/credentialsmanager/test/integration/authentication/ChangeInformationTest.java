@@ -133,6 +133,25 @@ class ChangeInformationTest extends ApiTest {
     }
 
     @Test
+    void testMaxSizePropic() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var changeInformationDto = new ChangeInformationDto();
+        changeInformationDto.setLanguage("FR");
+        changeInformationDto.setHint("new hint");
+        changeInformationDto.setPropic(createLargeString(3.1));
+
+        var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeInformationDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testChangeInformation() throws Exception {
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);

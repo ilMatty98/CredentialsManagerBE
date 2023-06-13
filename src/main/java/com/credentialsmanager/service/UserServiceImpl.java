@@ -32,8 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeInformation(ChangeInformationDto changeInformationDto) {
-        //TODO checkare la size della propic
-
         var user = usersRepository.findByEmailAndState(changeInformationDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 

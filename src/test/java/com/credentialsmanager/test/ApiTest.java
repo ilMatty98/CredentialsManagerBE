@@ -129,7 +129,7 @@ public abstract class ApiTest extends ApiTestConstants {
         return object;
     }
 
-    protected String objectToJsonString(Object object) throws JsonProcessingException {
+    protected static String objectToJsonString(Object object) throws JsonProcessingException {
         var ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         return ow.writeValueAsString(object);
     }
@@ -183,11 +183,26 @@ public abstract class ApiTest extends ApiTestConstants {
         return JsonPath.parse(jsonResponse).read("$.token");
     }
 
-    protected LocalDateTime getLocalDataTime(Timestamp timestamp) {
+    protected static LocalDateTime getLocalDataTime(Timestamp timestamp) {
         return Optional.ofNullable(timestamp)
                 .map(Timestamp::toLocalDateTime)
                 .map(l -> l.truncatedTo(ChronoUnit.SECONDS))
                 .orElse(null);
+    }
+
+    protected static String createLargeString(double mb) {
+        var desiredSizeInBytes = mb * 1024 * 1024; // 3 MB
+        var chunkSize = 1024; // Chunk size for each iteration
+        var chunkCount = desiredSizeInBytes / chunkSize;
+
+        var sb = new StringBuilder();
+
+        // Generate a chunk of characters to fill the StringBuilder
+        var chunk = new String(new char[chunkSize]).replace("\0", "x");
+
+        sb.append(chunk.repeat((int) chunkCount));
+
+        return sb.toString();
     }
 
 }
