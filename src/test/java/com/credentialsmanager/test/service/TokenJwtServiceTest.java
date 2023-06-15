@@ -1,15 +1,28 @@
 package com.credentialsmanager.test.service;
 
+import com.credentialsmanager.constants.MessageEnum;
+import com.credentialsmanager.exception.UnauthorizedException;
 import com.credentialsmanager.test.ApiTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Date;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TokenJwtServiceTest extends ApiTest {
+
+    private MockHttpServletRequest request;
+
+    @BeforeEach
+    void setUp() {
+        request = new MockHttpServletRequest();
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void testGenerateTokenJwt() {
@@ -43,6 +56,30 @@ class TokenJwtServiceTest extends ApiTest {
         var body = tokenJwtService.getBody(token);
         assertTrue(body.isEmpty());
         field.set(tokenJwtService, tokenExpiration);
+    }
+
+    @Test
+    void testWithoutAuthorizationHeaders() {
+        var exception = assertThrows(UnauthorizedException.class, () -> tokenJwtService.getEmailFromToken(request));
+        assertEquals(MessageEnum.ERROR_02.getMessage(), exception.getMessage());
+        assertEquals(MessageEnum.ERROR_02.getErrorCode(), exception.getCodeMessage());
+    }
+
+    @Test
+    void testTokenNotStartsWithBearer() {
+        request.addHeader("Authorization", "FakeBearer ");
+        var exception = assertThrows(UnauthorizedException.class, () -> tokenJwtService.getEmailFromToken(request));
+        assertEquals(MessageEnum.ERROR_02.getMessage(), exception.getMessage());
+        assertEquals(MessageEnum.ERROR_02.getErrorCode(), exception.getCodeMessage());
+    }
+
+    @Test
+    void testCheckAuthorization() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        request.addHeader("Authorization", "Bearer " + getTokenFromLogIn(EMAIL, PASSWORD));
+
+        assertEquals(EMAIL, tokenJwtService.getEmailFromToken(request));
     }
 
 }

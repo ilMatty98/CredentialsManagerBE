@@ -1,4 +1,4 @@
-package com.credentialsmanager.test.integration.authentication;
+package com.credentialsmanager.test.integration.user;
 
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.ChangeInformationDto;
@@ -19,7 +19,7 @@ class ChangeInformationTest extends ApiTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

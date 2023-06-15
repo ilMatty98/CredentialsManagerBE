@@ -20,7 +20,7 @@ class ChangeEmailTest extends ApiTest {
                 .content(objectToJsonString(new ChangeEmailDto()));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

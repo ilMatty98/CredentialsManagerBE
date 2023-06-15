@@ -3,6 +3,7 @@ package com.credentialsmanager.controller;
 import com.credentialsmanager.dto.LogInDto;
 import com.credentialsmanager.dto.SignUpDto;
 import com.credentialsmanager.service.AuthenticationService;
+import com.credentialsmanager.service.TokenJwtService;
 import com.credentialsmanager.utils.ControllerUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final TokenJwtService tokenJwtService;
 
     @Override
     public ResponseEntity<Object> signUp(SignUpDto signUpDto) {
@@ -45,7 +47,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
-            signUpDto.setEmail(ControllerUtils.getEmailFromToken(request));
+            signUpDto.setEmail(tokenJwtService.getEmailFromToken(request));
             authenticationService.changePassword(signUpDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         });
@@ -62,7 +64,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public ResponseEntity<Object> deleteAccount(HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
-            authenticationService.deleteAccount(ControllerUtils.getEmailFromToken(request));
+            authenticationService.deleteAccount(tokenJwtService.getEmailFromToken(request));
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }

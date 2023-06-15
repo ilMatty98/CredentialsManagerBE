@@ -1,10 +1,15 @@
 package com.credentialsmanager.service;
 
+import com.credentialsmanager.constants.MessageEnum;
+import com.credentialsmanager.constants.TokenClaimEnum;
+import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Data
 @Slf4j
@@ -38,6 +44,8 @@ public class TokenJwtServiceImpl implements TokenJwtService {
 
     private static final int KEY_SIZE = 2048;
     private static final String ALGORITHM = "RSA";
+    private static final String AUTH_HEADER_NAME = "Authorization";
+    private static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     @PostConstruct
     private void init() {
@@ -94,5 +102,27 @@ public class TokenJwtServiceImpl implements TokenJwtService {
         var keySpec = keyFactory.getKeySpec(publicKey, X509EncodedKeySpec.class);
         byte[] encodedKey = keySpec.getEncoded();
         return Base64.getEncoder().encodeToString(encodedKey);
+    }
+
+    @Override
+    public String getEmailFromToken(HttpServletRequest request) {
+        var token = request.getHeader(AUTH_HEADER_NAME);
+        if (token != null && token.startsWith(AUTH_HEADER_PREFIX)) {
+            token = token.substring(7);
+            var claims = getBody(token);
+            if (claims != null && !claims.isEmpty() &&
+                    UserStateEnum.VERIFIED.name().equals(claims.get(TokenClaimEnum.ROLE.getLabel()))) {
+                request.setAttribute(TokenClaimEnum.CLAIMS.getLabel(), claims);
+                return getEmailFromToken(claims);
+            }
+        }
+        throw new UnauthorizedException(MessageEnum.ERROR_02);
+    }
+
+    private static String getEmailFromToken(Claims claims) {
+        return Optional.ofNullable(claims)
+                .map(c -> c.get(TokenClaimEnum.EMAIL.getLabel()))
+                .map(Object::toString)
+                .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
     }
 }

@@ -1,6 +1,7 @@
 package com.credentialsmanager.service;
 
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -12,4 +13,5 @@ public interface TokenJwtService {
 
     String getPublicKey();
 
+    String getEmailFromToken(HttpServletRequest request);
 }
