@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
         user.setHint(changeInformationDto.getHint());
         user.setLanguage(changeInformationDto.getLanguage());
+        user.setPropic(changeInformationDto.getPropic());
         usersRepository.save(user);
     }
 }

@@ -183,7 +183,7 @@ class ChangeInformationTest extends ApiTest {
                     assertTrue(user.getTimestampLastAccess().before(u.getTimestampLastAccess()));
                     assertEquals(changeInformationDto.getLanguage(), u.getLanguage());
                     assertEquals(changeInformationDto.getHint(), u.getHint());
-                    assertEquals(user.getPropic(), u.getPropic());
+                    assertEquals(changeInformationDto.getPropic(), u.getPropic());
                     assertEquals(user.getState(), u.getState());
                     assertNull(u.getVerificationCode());
                 }, Assertions::fail);
