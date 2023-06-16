@@ -1,18 +1,16 @@
-package com.credentialsmanager.dto;
+package com.credentialsmanager.dto.request;
 
+import com.credentialsmanager.dto.BaseDto;
 import com.credentialsmanager.validator.ChangePasswordValidator;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class SignUpDto {
-
-    @Email(message = "Email is not valid", regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-    @NotBlank(message = "Email cannot be blank")
-    private String email;
+@EqualsAndHashCode(callSuper = true)
+public class SignUpDto extends BaseDto {
 
     @NotBlank(message = "MasterPasswordHash cannot be blank", groups = ChangePasswordValidator.class)
     private String masterPasswordHash;

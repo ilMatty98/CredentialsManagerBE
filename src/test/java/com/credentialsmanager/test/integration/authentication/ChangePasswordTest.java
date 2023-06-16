@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

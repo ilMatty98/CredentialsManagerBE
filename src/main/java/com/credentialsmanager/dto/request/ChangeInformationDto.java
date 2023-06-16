@@ -1,15 +1,13 @@
-package com.credentialsmanager.dto;
+package com.credentialsmanager.dto.request;
 
 import com.credentialsmanager.validator.MaxSize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ChangeInformationDto extends ChangeDto {
+public class ChangeInformationDto {
 
     @Pattern(message = "Language is not valid", regexp = "^[A-Z]{2}$")
     @NotBlank(message = "Language cannot be blank")
@@ -20,7 +18,7 @@ public class ChangeInformationDto extends ChangeDto {
     private String hint;
 
     @NotBlank(message = "Propic cannot be blank")
-    @MaxSize(value = 3 * 1024 * 1024, message = "Propic size exceeds the maximum limit of 3 MB")
+    @MaxSize(value = 4 * 1024 * 1024, message = "Propic size exceeds the maximum limit of 4 MB")
     private String propic;
 
 }

@@ -1,7 +1,8 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.LogInDto;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.LogInDto;
+import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.response.AccessDto;
 import com.credentialsmanager.validator.ChangePasswordValidator;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,8 +33,8 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "LogIn successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")})
-    LogInDto.Response logIn(@Parameter(description = "Dto to log in")
-                            @Valid @RequestBody LogInDto.Request requestLogInDto);
+    AccessDto logIn(@Parameter(description = "Dto to log in")
+                    @Valid @RequestBody LogInDto logInDto);
 
     @GetMapping(CHECK_EMAIL)
     @ApiResponses(value = {

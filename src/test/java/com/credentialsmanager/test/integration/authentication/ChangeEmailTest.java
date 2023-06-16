@@ -1,7 +1,7 @@
 package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.ChangeEmailDto;
+import com.credentialsmanager.dto.request.ChangeEmailDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -42,23 +42,7 @@ class ChangeEmailTest extends ApiTest {
         confirmEmail(EMAIL);
 
         var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail("aaaa");
-
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
-                .content(objectToJsonString(changeEmailDto));
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testMasterPasswordHashEmpty() throws Exception {
-        signUp(EMAIL, PASSWORD);
-        confirmEmail(EMAIL);
-        var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail("test2@test.com");
+        changeEmailDto.setEmail("aaaa");
 
         var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +58,7 @@ class ChangeEmailTest extends ApiTest {
         var user = signUp(EMAIL, PASSWORD);
         user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail("test2@test.com");
-        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setEmail("test2@test.com");
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
@@ -96,8 +79,7 @@ class ChangeEmailTest extends ApiTest {
         var user = signUp(EMAIL, PASSWORD);
         user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail("test2@test.com");
-        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setEmail("test2@test.com");
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
@@ -119,8 +101,7 @@ class ChangeEmailTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
-        changeEmailDto.setNewEmail(newEmail);
-        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setEmail(newEmail);
 
         var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)

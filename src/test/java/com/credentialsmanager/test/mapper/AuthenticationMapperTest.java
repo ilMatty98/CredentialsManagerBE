@@ -1,7 +1,7 @@
 package com.credentialsmanager.test.mapper;
 
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.test.ApiTest;
 import org.apache.commons.lang3.RandomUtils;
@@ -42,7 +42,7 @@ class AuthenticationMapperTest extends ApiTest {
     }
 
     @Test
-    void testNewLoginDto() {
+    void testNewAccessDto() {
         var user = fillObject(new User());
         var token = generateRandomString(2048);
         var tokenPublicKey = generateRandomString(1024);
@@ -52,7 +52,7 @@ class AuthenticationMapperTest extends ApiTest {
         user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(protectedSymmetricKey));
         user.setInitializationVector(authenticationMapper.base64EncodingString(initializationVector));
 
-        var loginDto = authenticationMapper.newLoginDto(user, token, tokenPublicKey);
+        var loginDto = authenticationMapper.newAccessDto(user, token, tokenPublicKey);
 
         assertEquals(token, loginDto.getToken());
         assertEquals(tokenPublicKey, loginDto.getTokenPublicKey());

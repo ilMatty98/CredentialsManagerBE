@@ -1,7 +1,7 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.ChangeEmailDto;
-import com.credentialsmanager.dto.ChangeInformationDto;
+import com.credentialsmanager.dto.request.ChangeEmailDto;
+import com.credentialsmanager.dto.request.ChangeInformationDto;
 import com.credentialsmanager.service.TokenJwtService;
 import com.credentialsmanager.service.UserService;
 import com.credentialsmanager.utils.ControllerUtils;
@@ -21,8 +21,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<Object> changeEmail(ChangeEmailDto changeEmailDto, HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
-            changeEmailDto.setEmail(tokenJwtService.getEmailFromToken(request));
-            userService.changeEmail(changeEmailDto);
+            userService.changeEmail(changeEmailDto, tokenJwtService.getEmailFromToken(request));
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }
@@ -30,8 +29,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<Object> changeInformation(ChangeInformationDto changeInformationDto, HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
-            changeInformationDto.setEmail(tokenJwtService.getEmailFromToken(request));
-            userService.changeInformation(changeInformationDto);
+            userService.changeInformation(changeInformationDto, tokenJwtService.getEmailFromToken(request));
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }

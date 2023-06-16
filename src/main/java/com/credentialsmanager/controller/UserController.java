@@ -1,7 +1,7 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.ChangeEmailDto;
-import com.credentialsmanager.dto.ChangeInformationDto;
+import com.credentialsmanager.dto.request.ChangeEmailDto;
+import com.credentialsmanager.dto.request.ChangeInformationDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

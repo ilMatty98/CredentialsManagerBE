@@ -1,7 +1,7 @@
 package com.credentialsmanager.test.integration.user;
 
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.ChangeInformationDto;
+import com.credentialsmanager.dto.request.ChangeInformationDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -140,7 +140,7 @@ class ChangeInformationTest extends ApiTest {
         var changeInformationDto = new ChangeInformationDto();
         changeInformationDto.setLanguage("FR");
         changeInformationDto.setHint("new hint");
-        changeInformationDto.setPropic(createLargeString(3.1));
+        changeInformationDto.setPropic(createLargeString(4.1));
 
         var mockHttpServletRequestBuilder = put(CHANGE_INFORMATION_URL)
                 .contentType(MediaType.APPLICATION_JSON)

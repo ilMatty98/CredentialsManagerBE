@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.LogInDto;
+import com.credentialsmanager.dto.request.LogInDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,7 +19,7 @@ class LogInTest extends ApiTest {
     void testLogInDtoEmpty() throws Exception {
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(new LogInDto.Request()));
+                .content(objectToJsonString(new LogInDto()));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -27,7 +27,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testEmailEmpty() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(null);
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
@@ -40,7 +40,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testEmailNotValid() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
 
         var mockHttpServletRequestBuilder = post(LOG_IN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +52,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testMasterPasswordHashEmpty() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setMasterPasswordHash(null);
 
@@ -66,7 +66,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testIpAddressEmpty() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress(null);
 
@@ -80,7 +80,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testIpAddressNotValid() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress("fakeip");
 
@@ -94,7 +94,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testDeviceTypeEmpty() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
         logIn.setDeviceType(null);
@@ -109,7 +109,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testLocalDateTimeEmpty() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
         logIn.setLocalDateTime(null);
@@ -125,7 +125,7 @@ class LogInTest extends ApiTest {
     @Test
     void testUserNotFound() throws Exception {
         signUp(EMAIL, PASSWORD);
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail("a" + EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
 
@@ -144,7 +144,7 @@ class LogInTest extends ApiTest {
         user.setState(UserStateEnum.UNVERIFIED);
         user = userRepository.save(user);
 
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(user.getEmail());
         logIn.setIpAddress(IP_ADDRESS);
 
@@ -159,7 +159,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testMasterPasswordHashDifferent() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
         logIn.setMasterPasswordHash(PASSWORD + ".");
@@ -178,7 +178,7 @@ class LogInTest extends ApiTest {
 
     @Test
     void testLogIn() throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(EMAIL);
         logIn.setIpAddress(IP_ADDRESS);
         logIn.setMasterPasswordHash(PASSWORD);

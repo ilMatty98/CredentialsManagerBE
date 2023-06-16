@@ -3,8 +3,8 @@ package com.credentialsmanager.service;
 import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.ChangeEmailDto;
-import com.credentialsmanager.dto.ChangeInformationDto;
+import com.credentialsmanager.dto.request.ChangeEmailDto;
+import com.credentialsmanager.dto.request.ChangeInformationDto;
 import com.credentialsmanager.exception.NotFoundException;
 import com.credentialsmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +21,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository usersRepository;
 
     @Override
-    public void changeEmail(ChangeEmailDto changeEmailDto) {
-        var user = usersRepository.findByEmailAndState(changeEmailDto.getEmail(), UserStateEnum.VERIFIED)
+    public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
+        var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
-        user.setEmail(changeEmailDto.getNewEmail());
+        user.setEmail(changeEmailDto.getEmail());
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
         usersRepository.save(user);
     }
 
     @Override
-    public void changeInformation(ChangeInformationDto changeInformationDto) {
-        var user = usersRepository.findByEmailAndState(changeInformationDto.getEmail(), UserStateEnum.VERIFIED)
+    public void changeInformation(ChangeInformationDto changeInformationDto, String email) {
+        var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
         user.setHint(changeInformationDto.getHint());

@@ -1,7 +1,8 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.LogInDto;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.LogInDto;
+import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.response.AccessDto;
 import com.credentialsmanager.service.AuthenticationService;
 import com.credentialsmanager.service.TokenJwtService;
 import com.credentialsmanager.utils.ControllerUtils;
@@ -27,8 +28,8 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public LogInDto.Response logIn(LogInDto.Request requestLogInDto) {
-        return ControllerUtils.handleRequest(() -> authenticationService.logIn(requestLogInDto));
+    public AccessDto logIn(LogInDto logInDto) {
+        return ControllerUtils.handleRequest(() -> authenticationService.logIn(logInDto));
     }
 
     @Override

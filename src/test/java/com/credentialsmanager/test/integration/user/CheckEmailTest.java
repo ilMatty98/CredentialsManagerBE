@@ -1,6 +1,6 @@
 package com.credentialsmanager.test.integration.user;
 
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

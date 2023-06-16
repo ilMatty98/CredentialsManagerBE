@@ -4,8 +4,9 @@ import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.LogInDto;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.LogInDto;
+import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.response.AccessDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.exception.BadRequestException;
 import com.credentialsmanager.exception.NotFoundException;
@@ -76,14 +77,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @SneakyThrows
-    public LogInDto.Response logIn(LogInDto.Request requestLogInDto) {
-        var user = usersRepository.findByEmail(requestLogInDto.getEmail())
+    public AccessDto logIn(LogInDto logInDto) {
+        var user = usersRepository.findByEmail(logInDto.getEmail())
                 .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
 
         if (UserStateEnum.UNVERIFIED.equals(user.getState()))
             throw new UnauthorizedException(MessageEnum.ERROR_06);
 
-        checkPassword(user, requestLogInDto.getMasterPasswordHash());
+        checkPassword(user, logInDto.getMasterPasswordHash());
 
         user.setTimestampLastAccess(getCurrentTimestamp());
         usersRepository.save(user);
@@ -95,13 +96,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var token = tokenJwtService.generateTokenJwt(user.getEmail(), claims);
 
         var dynamicLabels = Map.ofEntries(
-                entry("date_value", requestLogInDto.getLocalDateTime()),
-                entry("ipAddress_value", requestLogInDto.getIpAddress()),
-                entry("device_value", requestLogInDto.getDeviceType())
+                entry("date_value", logInDto.getLocalDateTime()),
+                entry("ipAddress_value", logInDto.getIpAddress()),
+                entry("device_value", logInDto.getDeviceType())
         );
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.LOG_IN, dynamicLabels);
-        return authenticationMapper.newLoginDto(user, token, tokenJwtService.getPublicKey());
+        return authenticationMapper.newAccessDto(user, token, tokenJwtService.getPublicKey());
     }
 
     @Override

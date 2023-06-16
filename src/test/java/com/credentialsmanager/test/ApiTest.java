@@ -2,8 +2,8 @@ package com.credentialsmanager.test;
 
 import com.credentialsmanager.CredentialsManagerBeApplication;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.LogInDto;
-import com.credentialsmanager.dto.SignUpDto;
+import com.credentialsmanager.dto.request.LogInDto;
+import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.mapper.AuthenticationMapper;
 import com.credentialsmanager.repository.UserRepository;
@@ -166,7 +166,7 @@ public abstract class ApiTest extends ApiTestConstants {
     }
 
     protected String getTokenFromLogIn(String email, String password) throws Exception {
-        var logIn = fillObject(new LogInDto.Request());
+        var logIn = fillObject(new LogInDto());
         logIn.setEmail(email);
         logIn.setIpAddress(IP_ADDRESS);
         logIn.setMasterPasswordHash(password);
