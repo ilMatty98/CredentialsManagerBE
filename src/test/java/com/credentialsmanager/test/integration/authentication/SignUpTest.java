@@ -182,6 +182,21 @@ class SignUpTest extends ApiTest {
     }
 
     @Test
+    void testMaxSizePropic() throws Exception {
+        var signUp = fillObject(new SignUpDto());
+        signUp.setEmail(EMAIL);
+        signUp.setLanguage(EN);
+        signUp.setPropic(createLargeString(4.1));
+
+        var mockHttpServletRequestBuilder = post(SIGN_UP_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(signUp));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testSignUp() throws Exception {
         var signUp = fillObject(new SignUpDto());
         signUp.setEmail(EMAIL);

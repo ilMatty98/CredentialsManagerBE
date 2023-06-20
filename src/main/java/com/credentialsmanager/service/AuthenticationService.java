@@ -1,5 +1,6 @@
 package com.credentialsmanager.service;
 
+import com.credentialsmanager.dto.request.ChangePasswordDto;
 import com.credentialsmanager.dto.request.LogInDto;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.dto.response.AccessDto;
@@ -16,7 +17,7 @@ public interface AuthenticationService {
 
     void confirmEmail(String email, String code);
 
-    void changePassword(SignUpDto signUpDto);
+    void changePassword(ChangePasswordDto changePasswordDto, String email);
 
     void sendHint(String email);
 

@@ -100,7 +100,17 @@ public abstract class ApiTest extends ApiTestConstants {
 
     @SneakyThrows
     protected static <T> T fillObject(T object) {
-        var fields = object.getClass().getDeclaredFields();
+        var superclass = object.getClass().getSuperclass();
+        if (superclass != null && !superclass.equals(Object.class))
+            fillObject(object, superclass);
+
+        fillObject(object, object.getClass());
+        return object;
+    }
+
+    @SneakyThrows
+    private static void fillObject(Object object, Class<?> clazz) {
+        var fields = clazz.getDeclaredFields();
         var random = new Random();
         for (Field field : fields) {
             field.setAccessible(true);
@@ -126,7 +136,6 @@ public abstract class ApiTest extends ApiTestConstants {
                 field.set(object, UserStateEnum.VERIFIED);
             }
         }
-        return object;
     }
 
     protected static String objectToJsonString(Object object) throws JsonProcessingException {

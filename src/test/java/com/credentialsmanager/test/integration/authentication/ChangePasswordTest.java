@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.request.ChangePasswordDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class ChangePasswordTest extends ApiTest {
     void testWithoutToken() throws Exception {
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(new SignUpDto()));
+                .content(objectToJsonString(new ChangePasswordDto()));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -34,7 +34,7 @@ class ChangePasswordTest extends ApiTest {
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(new SignUpDto()));
+                .content(objectToJsonString(new ChangePasswordDto()));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -45,14 +45,13 @@ class ChangePasswordTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
-        var signUp = fillObject(new SignUpDto());
-        signUp.setEmail(EMAIL);
-        signUp.setMasterPasswordHash(null);
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setMasterPasswordHash(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -63,14 +62,13 @@ class ChangePasswordTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
-        var signUp = fillObject(new SignUpDto());
-        signUp.setEmail(EMAIL);
-        signUp.setProtectedSymmetricKey(null);
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setProtectedSymmetricKey(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -81,14 +79,13 @@ class ChangePasswordTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
-        var signUp = fillObject(new SignUpDto());
-        signUp.setEmail(EMAIL);
-        signUp.setInitializationVector(null);
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setInitializationVector(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -99,10 +96,10 @@ class ChangePasswordTest extends ApiTest {
         var user = signUp(EMAIL, PASSWORD);
         user = confirmEmail(EMAIL);
 
-        var signUp = fillObject(new SignUpDto());
-        signUp.setMasterPasswordHash("new password");
-        signUp.setProtectedSymmetricKey("new protectedSymmetricKey");
-        signUp.setInitializationVector("new initializationVector");
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setMasterPasswordHash("new password");
+        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setInitializationVector("new initializationVector");
 
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
@@ -111,7 +108,7 @@ class ChangePasswordTest extends ApiTest {
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isUnauthorized());
@@ -122,10 +119,10 @@ class ChangePasswordTest extends ApiTest {
         var user = signUp(EMAIL, PASSWORD);
         user = confirmEmail(EMAIL);
 
-        var signUp = fillObject(new SignUpDto());
-        signUp.setMasterPasswordHash("new password");
-        signUp.setProtectedSymmetricKey("new protectedSymmetricKey");
-        signUp.setInitializationVector("new initializationVector");
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setMasterPasswordHash("new password");
+        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setInitializationVector("new initializationVector");
 
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.EMAIL.getLabel(), EMAIL + ".");
@@ -135,7 +132,7 @@ class ChangePasswordTest extends ApiTest {
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
@@ -146,17 +143,15 @@ class ChangePasswordTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);
 
-        var signUp = new SignUpDto();
-        signUp.setEmail(EMAIL);
-        signUp.setLanguage(EN);
-        signUp.setMasterPasswordHash("new password");
-        signUp.setProtectedSymmetricKey("new protectedSymmetricKey");
-        signUp.setInitializationVector("new initializationVector");
+        var changePasswordDto = new ChangePasswordDto();
+        changePasswordDto.setMasterPasswordHash("new password");
+        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setInitializationVector("new initializationVector");
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJsonString(signUp));
+                .content(objectToJsonString(changePasswordDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
@@ -164,15 +159,15 @@ class ChangePasswordTest extends ApiTest {
         userRepository.findByEmail(EMAIL)
                 .ifPresentOrElse(u -> {
                     assertNotNull(u.getId());
-                    assertEquals(signUp.getEmail(), u.getEmail());
+                    assertEquals(user.getEmail(), u.getEmail());
                     assertNotNull(u.getSalt());
                     assertNotNull(u.getHash());
-                    assertEquals(signUp.getProtectedSymmetricKey(), authenticationMapper.base64DecodingString(u.getProtectedSymmetricKey()));
-                    assertEquals(signUp.getInitializationVector(), authenticationMapper.base64DecodingString(u.getInitializationVector()));
+                    assertEquals(changePasswordDto.getProtectedSymmetricKey(), authenticationMapper.base64DecodingString(u.getProtectedSymmetricKey()));
+                    assertEquals(changePasswordDto.getInitializationVector(), authenticationMapper.base64DecodingString(u.getInitializationVector()));
                     assertNotNull(u.getTimestampCreation());
                     assertNotNull(u.getTimestampLastAccess());
                     assertNotNull(u.getTimestampPassword());
-                    assertEquals(signUp.getLanguage(), u.getLanguage());
+                    assertEquals(user.getLanguage(), u.getLanguage());
                     assertEquals(user.getHint(), u.getHint());
                     assertEquals(user.getPropic(), u.getPropic());
                     assertEquals(UserStateEnum.VERIFIED, u.getState());
@@ -188,7 +183,7 @@ class ChangePasswordTest extends ApiTest {
         var email = receivedMessages[2];
         assertEquals(1, email.getAllRecipients().length);
         assertEquals(emailFrom, email.getFrom()[0].toString());
-        assertEquals(signUp.getEmail(), email.getAllRecipients()[0].toString());
+        assertEquals(user.getEmail(), email.getAllRecipients()[0].toString());
         assertEquals("Password changed!", email.getSubject());
     }
 }

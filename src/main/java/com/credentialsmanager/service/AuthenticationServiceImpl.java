@@ -4,6 +4,7 @@ import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.request.ChangePasswordDto;
 import com.credentialsmanager.dto.request.LogInDto;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.dto.response.AccessDto;
@@ -121,19 +122,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void changePassword(SignUpDto signUpDto) {
-        var user = usersRepository.findByEmailAndState(signUpDto.getEmail(), UserStateEnum.VERIFIED)
+    public void changePassword(ChangePasswordDto changePasswordDto, String email) {
+        var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
-        var hash = AuthenticationUtils.generateArgon2id(signUpDto.getMasterPasswordHash(), salt, argon2idSize,
+        var hash = AuthenticationUtils.generateArgon2id(changePasswordDto.getMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         user.setTimestampPassword(getCurrentTimestamp());
         user.setSalt(authenticationMapper.base64Encoding(salt));
         user.setHash(authenticationMapper.base64Encoding(hash));
-        user.setInitializationVector(authenticationMapper.base64EncodingString(signUpDto.getInitializationVector()));
-        user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(signUpDto.getProtectedSymmetricKey()));
+        user.setInitializationVector(authenticationMapper.base64EncodingString(changePasswordDto.getInitializationVector()));
+        user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(changePasswordDto.getProtectedSymmetricKey()));
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_PSW, new HashMap<>());
         usersRepository.save(user);

@@ -1,5 +1,6 @@
 package com.credentialsmanager.controller;
 
+import com.credentialsmanager.dto.request.ChangePasswordDto;
 import com.credentialsmanager.dto.request.LogInDto;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.dto.response.AccessDto;
@@ -46,10 +47,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public ResponseEntity<Object> changePassword(SignUpDto signUpDto, HttpServletRequest request) {
+    public ResponseEntity<Object> changePassword(ChangePasswordDto changePasswordDto, HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
-            signUpDto.setEmail(tokenJwtService.getEmailFromToken(request));
-            authenticationService.changePassword(signUpDto);
+            authenticationService.changePassword(changePasswordDto, tokenJwtService.getEmailFromToken(request));
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }
