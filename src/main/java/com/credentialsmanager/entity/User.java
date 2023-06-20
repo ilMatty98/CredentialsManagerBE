@@ -9,57 +9,51 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 
 @Data
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
-    @Basic
-    @Column(unique = true)
+    @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Basic
+    @Column(name = "salt", nullable = false)
     private String salt;
 
-    @Basic
+    @Column(name = "hash", nullable = false)
     private String hash;
 
-    @Basic
-    @Column(name = "protected_symmetric_key")
+    @Column(name = "protected_symmetric_key", nullable = false)
     private String protectedSymmetricKey;
 
-    @Basic
-    @Column(name = "initialization_vector")
+    @Column(name = "initialization_vector", nullable = false)
     private String initializationVector;
 
-    @Basic
-    @Column(name = "timestamp_creation")
+    @Column(name = "timestamp_creation", nullable = false)
     private Timestamp timestampCreation;
 
-    @Basic
-    @Column(name = "timestamp_last_access")
+    @Column(name = "timestamp_last_access", nullable = false)
     private Timestamp timestampLastAccess;
 
-    @Basic
-    @Column(name = "timestamp_password")
+    @Column(name = "timestamp_password", nullable = false)
     private Timestamp timestampPassword;
 
-    @Basic
-    private String language;
-
-    @Basic
+    @Column(name = "hint", length = 100, nullable = false)
     private String hint;
 
-    @Basic
+    @Column(name = "propic", nullable = false)
     private String propic;
 
-    @Basic
+    @Column(name = "language", length = 2, nullable = false)
+    private String language;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "state", length = 10, nullable = false)
     private UserStateEnum state;
 
-    @Basic
-    @Column(name = "verification_code")
+    @Column(name = "verification_code", length = 36)
     private String verificationCode;
 }
