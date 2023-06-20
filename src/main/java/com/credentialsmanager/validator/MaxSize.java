@@ -5,10 +5,10 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
+@Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = MaxSizeValidator.class)
-@Documented
 public @interface MaxSize {
 
     String message() default "File size exceeds the maximum limit";
