@@ -43,6 +43,7 @@ class ChangeEmailTest extends ApiTest {
 
         var changeEmailDto = new ChangeEmailDto();
         changeEmailDto.setEmail("aaaa");
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
 
         var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,6 +60,7 @@ class ChangeEmailTest extends ApiTest {
         user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
         changeEmailDto.setEmail("test2@test.com");
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
@@ -80,6 +82,7 @@ class ChangeEmailTest extends ApiTest {
         user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
         changeEmailDto.setEmail("test2@test.com");
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
@@ -96,12 +99,30 @@ class ChangeEmailTest extends ApiTest {
     }
 
     @Test
+    void testIncorrectCurrentPasswordEmpty() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        var changeEmailDto = new ChangeEmailDto();
+        changeEmailDto.setEmail("test2@test.com");
+        changeEmailDto.setMasterPasswordHash(PASSWORD + ".");
+
+        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testChangeEmail() throws Exception {
         var newEmail = "test2@test.com";
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);
         var changeEmailDto = new ChangeEmailDto();
         changeEmailDto.setEmail(newEmail);
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
 
         var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -158,11 +158,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.DELETE_USER, new HashMap<>());
     }
 
-    private static Timestamp getCurrentTimestamp() {
-        return Timestamp.from(Instant.now());
-    }
-
-    private void checkPassword(User user, String masterPasswordHash) {
+    @Override
+    public void checkPassword(User user, String masterPasswordHash) {
         var storedHash = Base64.getDecoder().decode(user.getHash());
         var salt = Base64.getDecoder().decode(user.getSalt());
         var currentHash = AuthenticationUtils.generateArgon2id(masterPasswordHash, salt,
@@ -170,5 +167,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (!Arrays.equals(storedHash, currentHash))
             throw new UnauthorizedException(MessageEnum.ERROR_02);
+    }
+
+    private static Timestamp getCurrentTimestamp() {
+        return Timestamp.from(Instant.now());
     }
 }

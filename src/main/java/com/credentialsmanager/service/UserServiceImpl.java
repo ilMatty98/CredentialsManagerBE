@@ -20,10 +20,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository usersRepository;
 
+    private final AuthenticationService authenticationService;
+
     @Override
     public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
         var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        authenticationService.checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
         user.setEmail(changeEmailDto.getEmail());
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
