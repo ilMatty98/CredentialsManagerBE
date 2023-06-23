@@ -1,8 +1,6 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.request.ChangePasswordDto;
-import com.credentialsmanager.dto.request.LogInDto;
-import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.request.*;
 import com.credentialsmanager.dto.response.AccessDto;
 import com.credentialsmanager.service.AuthenticationService;
 import com.credentialsmanager.service.TokenJwtService;
@@ -66,6 +64,22 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<Object> deleteAccount(HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
             authenticationService.deleteAccount(tokenJwtService.getEmailFromToken(request));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
+    @Override
+    public ResponseEntity<Object> changeEmail(ChangeEmailDto changeEmailDto, HttpServletRequest request) {
+        return ControllerUtils.handleRequest(() -> {
+            authenticationService.changeEmail(changeEmailDto, tokenJwtService.getEmailFromToken(request));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
+    @Override
+    public ResponseEntity<Object> changeInformation(ChangeInformationDto changeInformationDto, HttpServletRequest request) {
+        return ControllerUtils.handleRequest(() -> {
+            authenticationService.changeInformation(changeInformationDto, tokenJwtService.getEmailFromToken(request));
             return ResponseEntity.status(HttpStatus.OK).build();
         });
     }

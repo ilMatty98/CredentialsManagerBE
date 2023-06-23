@@ -1,4 +1,4 @@
-package com.credentialsmanager.test.integration.user;
+package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.ChangeInformationDto;

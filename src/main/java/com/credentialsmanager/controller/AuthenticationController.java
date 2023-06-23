@@ -1,8 +1,6 @@
 package com.credentialsmanager.controller;
 
-import com.credentialsmanager.dto.request.ChangePasswordDto;
-import com.credentialsmanager.dto.request.LogInDto;
-import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.request.*;
 import com.credentialsmanager.dto.response.AccessDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -70,4 +68,24 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> deleteAccount(HttpServletRequest request);
+
+    @PatchMapping(CHANGE_EMAIL)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Email successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    ResponseEntity<Object> changeEmail(@Parameter(description = "Dto to change email")
+                                       @Valid @RequestBody ChangeEmailDto changeEmailDto,
+                                       HttpServletRequest request);
+
+    @PutMapping(CHANGE_INFORMATION)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Information successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    ResponseEntity<Object> changeInformation(@Parameter(description = "Dto to change information")
+                                             @Valid @RequestBody ChangeInformationDto changeInformationDto,
+                                             HttpServletRequest request);
 }

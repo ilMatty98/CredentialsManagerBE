@@ -4,9 +4,7 @@ import com.credentialsmanager.constants.EmailTypeEnum;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.TokenClaimEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.dto.request.ChangePasswordDto;
-import com.credentialsmanager.dto.request.LogInDto;
-import com.credentialsmanager.dto.request.SignUpDto;
+import com.credentialsmanager.dto.request.*;
 import com.credentialsmanager.dto.response.AccessDto;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.exception.BadRequestException;
@@ -167,6 +165,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (!Arrays.equals(storedHash, currentHash))
             throw new UnauthorizedException(MessageEnum.ERROR_02);
+    }
+
+    @Override
+    public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
+        var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        checkPassword(user, changeEmailDto.getMasterPasswordHash());
+
+        user.setEmail(changeEmailDto.getEmail());
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
+        usersRepository.save(user);
+    }
+
+    @Override
+    public void changeInformation(ChangeInformationDto changeInformationDto, String email) {
+        var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        user.setHint(changeInformationDto.getHint());
+        user.setLanguage(changeInformationDto.getLanguage());
+        user.setPropic(changeInformationDto.getPropic());
+        usersRepository.save(user);
     }
 
     private static Timestamp getCurrentTimestamp() {

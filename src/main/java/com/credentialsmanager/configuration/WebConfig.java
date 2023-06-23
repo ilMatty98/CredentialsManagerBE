@@ -67,13 +67,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH_USER + CHANGE_EMAIL)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + CHANGE_EMAIL)
                 .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.PATCH.name())
                 .allowedHeaders("*")
                 .allowCredentials(false); // Without cookie
 
-        registry.addMapping(BASE_PATH_USER + CHANGE_INFORMATION)
+        registry.addMapping(BASE_PATH_AUTHENTICATION + CHANGE_INFORMATION)
                 .allowedOriginPatterns(endpointFe)
                 .allowedMethods(HttpMethod.PUT.name())
                 .allowedHeaders("*")
