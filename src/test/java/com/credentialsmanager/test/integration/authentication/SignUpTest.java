@@ -221,6 +221,7 @@ class SignUpTest extends ApiTest {
                     assertNotNull(user.getTimestampCreation());
                     assertNotNull(user.getTimestampLastAccess());
                     assertNotNull(user.getTimestampPassword());
+                    assertNotNull(user.getTimestampEmail());
                     assertEquals(signUp.getLanguage(), user.getLanguage());
                     assertEquals(signUp.getHint(), user.getHint());
                     assertEquals(signUp.getPropic(), user.getPropic());

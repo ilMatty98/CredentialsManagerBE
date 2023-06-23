@@ -75,6 +75,26 @@ class EmailServiceTest extends ApiTest {
     }
 
     @Test
+    void testChangeEmailCode() throws MessagingException {
+        var expectedSubject = "Your Email Change!";
+        var label = List.of("Your Email Change!", "To finalize changing your Bitwarden email address enter the following code in web vault", "Credentials Manager");
+        var dynamicLabels = new HashMap<String, String>();
+        dynamicLabels.put("code", "123456");
+
+        verifyEmail(EmailTypeEnum.CHANGE_EMAIL_CODE, expectedSubject, label, dynamicLabels);
+    }
+
+    @Test
+    void testChangeEmailNotification() throws MessagingException {
+        var expectedSubject = "Your Email Change!";
+        var label = List.of("Your Email Change!", "A change to your account was recently attempted to use this new email address", "Credentials Manager");
+        var dynamicLabels = new HashMap<String, String>();
+        dynamicLabels.put("email", "test@test.com");
+
+        verifyEmail(EmailTypeEnum.CHANGE_EMAIL_NOTIFICATION, expectedSubject, label, dynamicLabels);
+    }
+
+    @Test
     void testSendHint() throws MessagingException {
         var expectedSubject = "Your Master Password Hint";
         var label = List.of("You (or someone) recently requested your master password hint.", "Your hint is", "Credentials Manager");

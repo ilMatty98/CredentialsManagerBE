@@ -170,9 +170,9 @@ class ChangeEmailTest extends ApiTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
 
-        userRepository.findByEmail(newEmail).ifPresentOrElse(u -> {
+        userRepository.findByEmail(EMAIL).ifPresentOrElse(u -> {
             assertEquals(user.getId(), u.getId());
-            assertEquals(newEmail, u.getEmail());
+            assertEquals(EMAIL, u.getEmail());
             assertEquals(user.getSalt(), u.getSalt());
             assertEquals(user.getHash(), u.getHash());
             assertEquals(user.getProtectedSymmetricKey(), u.getProtectedSymmetricKey());
@@ -180,22 +180,29 @@ class ChangeEmailTest extends ApiTest {
             assertEquals(getLocalDataTime(user.getTimestampCreation()), getLocalDataTime(u.getTimestampCreation()));
             assertTrue(user.getTimestampLastAccess().before(u.getTimestampLastAccess()));
             assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
+            assertTrue(user.getTimestampEmail().before(u.getTimestampEmail()));
             assertEquals(user.getLanguage(), u.getLanguage());
             assertEquals(user.getHint(), u.getHint());
             assertEquals(user.getPropic(), u.getPropic());
             assertEquals(UserStateEnum.VERIFIED, u.getState());
-            assertNull(u.getVerificationCode());
+            assertNotNull(u.getVerificationCode());
         }, Assert::fail);
 
         //Check email
         var receivedMessages = greenMail.getReceivedMessages();
         assertTrue(greenMail.waitForIncomingEmail(5000, 1));
-        assertEquals(3, receivedMessages.length);
+        assertEquals(4, receivedMessages.length);
 
-        var email = receivedMessages[2];
-        assertEquals(1, email.getAllRecipients().length);
-        assertEquals(emailFrom, email.getFrom()[0].toString());
-        assertEquals(newEmail, email.getAllRecipients()[0].toString());
-        assertEquals("Email changed!", email.getSubject());
+        var emailNotification = receivedMessages[2];
+        assertEquals(1, emailNotification.getAllRecipients().length);
+        assertEquals(emailFrom, emailNotification.getFrom()[0].toString());
+        assertEquals(EMAIL, emailNotification.getAllRecipients()[0].toString());
+        assertEquals("Your Email Change!", emailNotification.getSubject());
+
+        var emailCode = receivedMessages[3];
+        assertEquals(1, emailCode.getAllRecipients().length);
+        assertEquals(emailFrom, emailCode.getFrom()[0].toString());
+        assertEquals(newEmail, emailCode.getAllRecipients()[0].toString());
+        assertEquals("Your Email Change!", emailCode.getSubject());
     }
 }

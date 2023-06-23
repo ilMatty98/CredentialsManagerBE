@@ -52,6 +52,7 @@ class ConfirmEmailTest extends ApiTest {
             assertEquals(getLocalDataTime(user.getTimestampCreation()), getLocalDataTime(u.getTimestampCreation()));
             assertEquals(getLocalDataTime(user.getTimestampLastAccess()), getLocalDataTime(u.getTimestampLastAccess()));
             assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
+            assertEquals(getLocalDataTime(user.getTimestampEmail()), getLocalDataTime(u.getTimestampEmail()));
             assertEquals(user.getLanguage(), u.getLanguage());
             assertEquals(user.getHint(), u.getHint());
             assertEquals(user.getPropic(), u.getPropic());

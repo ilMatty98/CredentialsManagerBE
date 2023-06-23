@@ -41,6 +41,9 @@ public class User {
     @Column(name = "timestamp_password", nullable = false)
     private Timestamp timestampPassword;
 
+    @Column(name = "timestamp_email", nullable = false)
+    private Timestamp timestampEmail;
+
     @Column(name = "hint", length = 100, nullable = false)
     private String hint;
 

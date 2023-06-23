@@ -26,4 +26,6 @@ public class AccessDto {
     private Timestamp timestampLastAccess;
 
     private Timestamp timestampPassword;
+
+    private Timestamp timestampEmail;
 }

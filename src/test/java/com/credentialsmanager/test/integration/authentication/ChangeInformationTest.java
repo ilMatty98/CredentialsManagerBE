@@ -180,6 +180,7 @@ class ChangeInformationTest extends ApiTest {
                     assertEquals(user.getInitializationVector(), u.getInitializationVector());
                     assertEquals(getLocalDataTime(user.getTimestampCreation()), getLocalDataTime(u.getTimestampCreation()));
                     assertEquals(getLocalDataTime(user.getTimestampPassword()), getLocalDataTime(u.getTimestampPassword()));
+                    assertEquals(getLocalDataTime(user.getTimestampEmail()), getLocalDataTime(u.getTimestampEmail()));
                     assertTrue(user.getTimestampLastAccess().before(u.getTimestampLastAccess()));
                     assertEquals(changeInformationDto.getLanguage(), u.getLanguage());
                     assertEquals(changeInformationDto.getHint(), u.getHint());

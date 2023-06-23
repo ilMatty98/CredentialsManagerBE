@@ -201,7 +201,8 @@ class LogInTest extends ApiTest {
                 .andExpect(jsonPath("$.hint").value(user.getHint()))
                 .andExpect(jsonPath("$.timestampCreation").isNotEmpty())
                 .andExpect(jsonPath("$.timestampLastAccess").isNotEmpty())
-                .andExpect(jsonPath("$.timestampPassword").isNotEmpty());
+                .andExpect(jsonPath("$.timestampPassword").isNotEmpty())
+                .andExpect(jsonPath("$.timestampEmail").isNotEmpty());
 
         user = userRepository.findByEmail(EMAIL).orElseThrow(RuntimeException::new);
         assertTrue(user.getTimestampLastAccess().after(user.getTimestampCreation()));

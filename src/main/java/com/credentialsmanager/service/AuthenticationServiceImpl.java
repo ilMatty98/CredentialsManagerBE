@@ -23,6 +23,8 @@ import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Map.entry;
 
@@ -47,6 +49,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Value("${encryption.argon2id.parallelism}")
     private int argon2idParallelism;
+
+    @Value("${change-email.expiration-minutes}")
+    private int emailChangeExpirationMn;
 
     private final EmailService emailService;
 
@@ -178,11 +183,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
+        user.setTimestampEmail(getCurrentTimestamp());
         user.setVerificationCode(generateVerificationCode());
-        emailService.sendEmail(oldEmail, user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_NOTIFICATION, new HashMap<>());
 
-        var dynamicLabels = Map.ofEntries(entry("VerificationCode", user.getVerificationCode()));
-        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_CODE, dynamicLabels);
+        var dynamicLabels = Map.ofEntries(entry("email", changeEmailDto.getEmail()));
+        emailService.sendEmail(oldEmail, user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_NOTIFICATION, dynamicLabels);
+
+        dynamicLabels = Map.ofEntries(entry("code", user.getVerificationCode()));
+        emailService.sendEmail(changeEmailDto.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_CODE, dynamicLabels);
         usersRepository.save(user);
     }
 
@@ -202,16 +210,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private static String generateVerificationCode() {
-        var verificationCode = new StringBuilder();
         var secureRandom = new SecureRandom();
-        var length = 12;
-
-        for (int i = 0; i < length; i++) {
-            verificationCode.append(secureRandom.nextInt(10));
-            if ((i + 1) % 4 == 0 && i < length - 1) verificationCode.append("-");
-        }
-
-        return verificationCode.toString();
+        return IntStream.range(0, 6)
+                .mapToObj(i -> String.valueOf(secureRandom.nextInt(10)))
+                .collect(Collectors.joining());
     }
 
 }
