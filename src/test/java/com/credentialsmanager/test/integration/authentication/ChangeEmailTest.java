@@ -116,6 +116,44 @@ class ChangeEmailTest extends ApiTest {
     }
 
     @Test
+    void testNewEmailAlreadyPresent() throws Exception {
+        var newEmail = "test2@test.com";
+        signUp(newEmail, PASSWORD);
+        confirmEmail(newEmail);
+
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        var changeEmailDto = new ChangeEmailDto();
+        changeEmailDto.setEmail(newEmail);
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
+
+        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testNewEmailEqualToThePreviousOne() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        var changeEmailDto = new ChangeEmailDto();
+        changeEmailDto.setEmail(EMAIL);
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
+
+        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testChangeEmail() throws Exception {
         var newEmail = "test2@test.com";
         signUp(EMAIL, PASSWORD);

@@ -169,6 +169,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
+        if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmail(changeEmailDto.getEmail()))
+            throw new BadRequestException(MessageEnum.ERROR_01);
+
         var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
 
