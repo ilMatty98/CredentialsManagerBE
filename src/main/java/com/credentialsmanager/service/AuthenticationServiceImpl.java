@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -177,8 +178,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
-        user.setEmail(changeEmailDto.getEmail());
-        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
+        user.setVerificationCode(generateVerificationCode());
+        emailService.sendEmail(oldEmail, user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_NOTIFICATION, new HashMap<>());
+
+        var dynamicLabels = Map.ofEntries(entry("VerificationCode", user.getVerificationCode()));
+        emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_CODE, dynamicLabels);
         usersRepository.save(user);
     }
 
@@ -196,4 +200,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
     }
+
+    private static String generateVerificationCode() {
+        var verificationCode = new StringBuilder();
+        var secureRandom = new SecureRandom();
+        var length = 12;
+
+        for (int i = 0; i < length; i++) {
+            verificationCode.append(secureRandom.nextInt(10));
+            if ((i + 1) % 4 == 0 && i < length - 1) verificationCode.append("-");
+        }
+
+        return verificationCode.toString();
+    }
+
 }
