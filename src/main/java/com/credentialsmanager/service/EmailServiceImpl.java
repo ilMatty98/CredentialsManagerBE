@@ -46,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
 
             emailSender.send(buildMail(emailFrom, email, subject, templateFiller));
         } catch (Exception e) {
-            log.warn(MessageEnum.ERROR_04.getMessage(email), e.getMessage());
+            log.warn(MessageEnum.ERROR_99.getMessage(email), e.getMessage());
         }
     }
 

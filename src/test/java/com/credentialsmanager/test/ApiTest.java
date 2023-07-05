@@ -2,6 +2,7 @@ package com.credentialsmanager.test;
 
 import com.credentialsmanager.CredentialsManagerBeApplication;
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.request.ChangeEmailDto;
 import com.credentialsmanager.dto.request.LogInDto;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.entity.User;
@@ -38,8 +39,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -167,6 +167,22 @@ public abstract class ApiTest extends ApiTestConstants {
         var user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         var mockHttpServletRequestBuilder = patch(CONFIRM_EMAIL_URL, email, user.getVerificationCode())
                 .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isOk());
+
+        return userRepository.findByEmail(email).orElseGet(Assertions::fail);
+    }
+
+    protected User changeEmail(String email, String password, String newEmail) throws Exception {
+        var changeEmailDto = new ChangeEmailDto();
+        changeEmailDto.setEmail(newEmail);
+        changeEmailDto.setMasterPasswordHash(password);
+
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());

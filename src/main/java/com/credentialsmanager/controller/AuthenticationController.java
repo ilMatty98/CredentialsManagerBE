@@ -69,7 +69,7 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "404", description = "Not found")})
     ResponseEntity<Object> deleteAccount(HttpServletRequest request);
 
-    @PatchMapping(CHANGE_EMAIL)
+    @PutMapping(CHANGE_EMAIL)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email successfully changed"),
             @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -78,6 +78,16 @@ public interface AuthenticationController {
     ResponseEntity<Object> changeEmail(@Parameter(description = "Dto to change email")
                                        @Valid @RequestBody ChangeEmailDto changeEmailDto,
                                        HttpServletRequest request);
+
+    @PutMapping(CONFIRM_CHANGE_EMAIL)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Email successfully changed"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    ResponseEntity<Object> confirmChangeEmail(@Parameter(description = "Dto to confirm change email")
+                                              @Valid @RequestBody ConfirmChangeEmailDto confirmChangeEmailDto,
+                                              HttpServletRequest request);
 
     @PutMapping(CHANGE_INFORMATION)
     @ApiResponses(value = {

@@ -77,6 +77,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
+    public ResponseEntity<Object> confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, HttpServletRequest request) {
+        return ControllerUtils.handleRequest(() -> {
+            authenticationService.confirmChangeEmail(confirmChangeEmailDto, tokenJwtService.getEmailFromToken(request));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        });
+    }
+
+    @Override
     public ResponseEntity<Object> changeInformation(ChangeInformationDto changeInformationDto, HttpServletRequest request) {
         return ControllerUtils.handleRequest(() -> {
             authenticationService.changeInformation(changeInformationDto, tokenJwtService.getEmailFromToken(request));

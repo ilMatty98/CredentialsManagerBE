@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ChangeEmailTest extends ApiTest {
 
     @Test
     void testWithoutToken() throws Exception {
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJsonString(new ChangeEmailDto()));
 
@@ -27,7 +27,7 @@ class ChangeEmailTest extends ApiTest {
     void testChangeEmailDtoEmpty() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(new ChangeEmailDto()));
@@ -45,7 +45,7 @@ class ChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail("aaaa");
         changeEmailDto.setMasterPasswordHash(PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeEmailDto));
@@ -64,7 +64,7 @@ class ChangeEmailTest extends ApiTest {
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .content(objectToJsonString(changeEmailDto));
@@ -86,7 +86,7 @@ class ChangeEmailTest extends ApiTest {
 
         var token = getTokenFromLogIn(EMAIL, PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
                 .content(objectToJsonString(changeEmailDto));
@@ -106,7 +106,7 @@ class ChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail("test2@test.com");
         changeEmailDto.setMasterPasswordHash(PASSWORD + ".");
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeEmailDto));
@@ -127,7 +127,7 @@ class ChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail(newEmail);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeEmailDto));
@@ -144,7 +144,7 @@ class ChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail(EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeEmailDto));
@@ -162,7 +162,7 @@ class ChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail(newEmail);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
 
-        var mockHttpServletRequestBuilder = patch(CHANGE_EMAIL_URL)
+        var mockHttpServletRequestBuilder = put(CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(changeEmailDto));
@@ -186,6 +186,8 @@ class ChangeEmailTest extends ApiTest {
             assertEquals(user.getPropic(), u.getPropic());
             assertEquals(UserStateEnum.VERIFIED, u.getState());
             assertNotNull(u.getVerificationCode());
+            assertEquals(newEmail, u.getNewEmail());
+            assertEquals(0, u.getAttempt());
         }, Assert::fail);
 
         //Check email

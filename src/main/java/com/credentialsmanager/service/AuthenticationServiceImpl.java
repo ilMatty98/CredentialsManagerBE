@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -53,6 +54,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${change-email.expiration-minutes}")
     private int emailChangeExpirationMn;
 
+    @Value("${change-email.attempts}")
+    private int emailChangeAttempts;
+
     private final EmailService emailService;
 
     private final TokenJwtService tokenJwtService;
@@ -65,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @SneakyThrows
     @Transactional
     public void signUp(SignUpDto signUpDto) {
-        if (usersRepository.existsByEmail(signUpDto.getEmail()))
+        if (usersRepository.existsByEmailOrNewEmail(signUpDto.getEmail()))
             throw new BadRequestException(MessageEnum.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
@@ -112,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean checkEmail(String email) {
-        return usersRepository.existsByEmail(email);
+        return usersRepository.existsByEmailOrNewEmail(email);
     }
 
     @Override
@@ -175,7 +179,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
-        if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmail(changeEmailDto.getEmail()))
+        if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmailOrNewEmail(changeEmailDto.getEmail()))
             throw new BadRequestException(MessageEnum.ERROR_01);
 
         var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
@@ -185,6 +189,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setTimestampEmail(getCurrentTimestamp());
         user.setVerificationCode(generateVerificationCode());
+        user.setNewEmail(changeEmailDto.getEmail());
+        user.setAttempt(0);
 
         var dynamicLabels = Map.ofEntries(entry("email", changeEmailDto.getEmail()));
         emailService.sendEmail(oldEmail, user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_NOTIFICATION, dynamicLabels);
@@ -192,6 +198,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         dynamicLabels = Map.ofEntries(entry("code", user.getVerificationCode()));
         emailService.sendEmail(changeEmailDto.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL_CODE, dynamicLabels);
         usersRepository.save(user);
+    }
+
+    @Override
+    public void confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, String oldEmail) {
+        var user = usersRepository.findByEmailAndNewEmailAndState(oldEmail, confirmChangeEmailDto.getEmail(), UserStateEnum.VERIFIED)
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+
+        checkPassword(user, confirmChangeEmailDto.getMasterPasswordHash());
+
+        MessageEnum messageError = null;
+        var currentTime = LocalDateTime.now();
+        var maximumTime = user.getTimestampEmail().toLocalDateTime().plusMinutes(emailChangeExpirationMn);
+
+        if (currentTime.isAfter(maximumTime)) { //Time out
+            messageError = MessageEnum.ERROR_08;
+        } else if (user.getAttempt() >= emailChangeAttempts) {//The attempt limit has been reached
+            messageError = MessageEnum.ERROR_07;
+        } else if (!confirmChangeEmailDto.getVerificationCode().equals(user.getVerificationCode())) { //Incorrect verification code
+            user.setAttempt(user.getAttempt() + 1);
+            usersRepository.save(user);
+            throw new BadRequestException(MessageEnum.ERROR_09);
+        } else {    //Ok
+            user.setEmail(user.getNewEmail());
+            emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
+        }
+
+        user.setVerificationCode(null);
+        user.setNewEmail(null);
+        user.setAttempt(null);
+        usersRepository.save(user);
+
+        if (messageError != null) throw new BadRequestException(messageError);
     }
 
     @Override
@@ -215,5 +253,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .mapToObj(i -> String.valueOf(secureRandom.nextInt(10)))
                 .collect(Collectors.joining());
     }
-
 }

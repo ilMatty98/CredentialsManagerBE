@@ -11,9 +11,13 @@ public enum MessageEnum {
     ERROR_01(1, "Email already registered"),
     ERROR_02(2, "Invalid credentials"),
     ERROR_03(3, "Invalid Token Jwt"),
-    ERROR_04(-1, "Error sending email to %s"),
-    ERROR_05(4, "User not found"),
-    ERROR_06(5, "Unconfirmed email");
+    ERROR_04(4, "Emails don't match"),
+    ERROR_05(5, "User not found"),
+    ERROR_06(6, "Unconfirmed email"),
+    ERROR_07(7, "The attempt limit has been reached"),
+    ERROR_08(8, "The maximum time limit has been exceeded"),
+    ERROR_09(9, "Incorrect verification code"),
+    ERROR_99(-1, "Error sending email to %s");
 
     private final int errorCode;
     private final String label;

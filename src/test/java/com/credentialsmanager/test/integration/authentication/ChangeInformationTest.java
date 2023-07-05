@@ -187,6 +187,8 @@ class ChangeInformationTest extends ApiTest {
                     assertEquals(changeInformationDto.getPropic(), u.getPropic());
                     assertEquals(user.getState(), u.getState());
                     assertNull(u.getVerificationCode());
+                    assertNull(u.getNewEmail());
+                    assertNull(u.getAttempt());
                 }, Assertions::fail);
     }
 }

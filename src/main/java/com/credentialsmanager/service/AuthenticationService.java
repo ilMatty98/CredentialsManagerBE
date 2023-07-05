@@ -26,5 +26,7 @@ public interface AuthenticationService {
 
     void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail);
 
+    void confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, String oldEmail);
+
     void changeInformation(ChangeInformationDto changeInformationDto, String email);
 }

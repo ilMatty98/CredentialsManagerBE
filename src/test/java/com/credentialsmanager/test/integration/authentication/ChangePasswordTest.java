@@ -164,6 +164,7 @@ class ChangePasswordTest extends ApiTest {
                     assertNotNull(u.getHash());
                     assertEquals(changePasswordDto.getProtectedSymmetricKey(), authenticationMapper.base64DecodingString(u.getProtectedSymmetricKey()));
                     assertEquals(changePasswordDto.getInitializationVector(), authenticationMapper.base64DecodingString(u.getInitializationVector()));
+                    assertTrue(u.getTimestampPassword().after(user.getTimestampPassword()));
                     assertNotNull(u.getTimestampCreation());
                     assertNotNull(u.getTimestampLastAccess());
                     assertNotNull(u.getTimestampPassword());
@@ -173,7 +174,8 @@ class ChangePasswordTest extends ApiTest {
                     assertEquals(user.getPropic(), u.getPropic());
                     assertEquals(UserStateEnum.VERIFIED, u.getState());
                     assertNull(u.getVerificationCode());
-                    assertTrue(u.getTimestampPassword().after(user.getTimestampPassword()));
+                    assertNull(u.getNewEmail());
+                    assertNull(u.getAttempt());
                 }, Assertions::fail);
 
         //Check email

@@ -59,4 +59,10 @@ public class User {
 
     @Column(name = "verification_code", length = 36)
     private String verificationCode;
+
+    @Column(name = "attempt")
+    private Integer attempt;
+
+    @Column(name = "new_email", length = 100, unique = true)
+    private String newEmail;
 }

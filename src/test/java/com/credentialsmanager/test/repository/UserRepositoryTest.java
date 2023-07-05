@@ -26,6 +26,17 @@ class UserRepositoryTest extends ApiTest {
     }
 
     @Test
+    void testExistsByEmailOrNewEmail() throws Exception {
+        assertFalse(userRepository.existsByEmailOrNewEmail(EMAIL));
+        var user = signUp(EMAIL, PASSWORD);
+        assertTrue(userRepository.existsByEmailOrNewEmail(EMAIL));
+
+        user.setNewEmail(EMAIL + "2");
+        userRepository.save(user);
+        assertTrue(userRepository.existsByEmailOrNewEmail(user.getNewEmail()));
+    }
+
+    @Test
     void testFindByEmail() throws Exception {
         assertFalse(userRepository.findByEmail(EMAIL).isPresent());
         var user = signUp(EMAIL, PASSWORD);
@@ -44,6 +55,22 @@ class UserRepositoryTest extends ApiTest {
         userRepository.save(user);
 
         checkUser((userRepository) -> userRepository.findByEmailAndState(EMAIL, UserStateEnum.VERIFIED), user);
+    }
+
+    @Test
+    void findByEmailAndNewEmailAndState() throws Exception {
+        var newEmail = EMAIL + ".";
+        var user = signUp(EMAIL, PASSWORD);
+        user.setState(UserStateEnum.UNVERIFIED);
+        user.setNewEmail(newEmail);
+        userRepository.save(user);
+
+        assertFalse(userRepository.findByEmailAndNewEmailAndState(EMAIL, newEmail, UserStateEnum.VERIFIED).isPresent());
+
+        user.setState(UserStateEnum.VERIFIED);
+        userRepository.save(user);
+
+        checkUser((userRepository) -> userRepository.findByEmailAndNewEmailAndState(EMAIL, newEmail, UserStateEnum.VERIFIED), user);
     }
 
     @Test

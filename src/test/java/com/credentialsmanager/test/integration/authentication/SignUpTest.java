@@ -227,6 +227,8 @@ class SignUpTest extends ApiTest {
                     assertEquals(signUp.getPropic(), user.getPropic());
                     assertEquals(UserStateEnum.UNVERIFIED, user.getState());
                     assertNotNull(user.getVerificationCode());
+                    assertNull(user.getNewEmail());
+                    assertNull(user.getAttempt());
                 }, Assertions::fail);
 
         //Check email

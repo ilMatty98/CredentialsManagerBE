@@ -58,6 +58,8 @@ class ConfirmEmailTest extends ApiTest {
             assertEquals(user.getPropic(), u.getPropic());
             assertEquals(UserStateEnum.VERIFIED, u.getState());
             assertNull(u.getVerificationCode());
+            assertNull(u.getNewEmail());
+            assertNull(u.getAttempt());
         }, Assert::fail);
     }
 

@@ -7,6 +7,7 @@ import static com.credentialsmanager.constants.UrlConstants.*;
 @NoArgsConstructor
 public abstract class ApiTestConstants {
 
+    protected static final String CONFIRM_CHANGE_EMAIL_URL = BASE_PATH_AUTHENTICATION + CONFIRM_CHANGE_EMAIL;
     protected static final String CHANGE_INFORMATION_URL = BASE_PATH_AUTHENTICATION + CHANGE_INFORMATION;
     protected static final String CHANGE_PASSWORD_URL = BASE_PATH_AUTHENTICATION + CHANGE_PASSWORD;
     protected static final String DELETE_ACCOUNT_URL = BASE_PATH_AUTHENTICATION + DELETE_ACCOUNT;
