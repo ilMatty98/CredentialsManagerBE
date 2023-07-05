@@ -2,7 +2,6 @@ package com.credentialsmanager.service;
 
 import com.credentialsmanager.dto.request.*;
 import com.credentialsmanager.dto.response.AccessDto;
-import com.credentialsmanager.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +20,6 @@ public interface AuthenticationService {
     void sendHint(String email);
 
     void deleteAccount(String email);
-
-    void checkPassword(User user, String masterPasswordHash);
 
     void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail);
 

@@ -120,6 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void confirmEmail(String email, String code) {
         var user = usersRepository.findByEmailAndVerificationCode(email, code)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
@@ -130,6 +131,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void changePassword(ChangePasswordDto changePasswordDto, String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
@@ -158,6 +160,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void deleteAccount(String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
@@ -167,17 +170,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void checkPassword(User user, String masterPasswordHash) {
-        var storedHash = Base64.getDecoder().decode(user.getHash());
-        var salt = Base64.getDecoder().decode(user.getSalt());
-        var currentHash = AuthenticationUtils.generateArgon2id(masterPasswordHash, salt,
-                argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
-
-        if (!Arrays.equals(storedHash, currentHash))
-            throw new UnauthorizedException(MessageEnum.ERROR_02);
-    }
-
-    @Override
+    @Transactional
     public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
         if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmailOrNewEmail(changeEmailDto.getEmail()))
             throw new BadRequestException(MessageEnum.ERROR_01);
@@ -201,6 +194,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional(dontRollbackOn = BadRequestException.class)
     public void confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, String oldEmail) {
         var user = usersRepository.findByEmailAndNewEmailAndState(oldEmail, confirmChangeEmailDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
@@ -233,6 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void changeInformation(ChangeInformationDto changeInformationDto, String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
@@ -245,6 +240,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static Timestamp getCurrentTimestamp() {
         return Timestamp.from(Instant.now());
+    }
+
+    private void checkPassword(User user, String masterPasswordHash) {
+        var storedHash = Base64.getDecoder().decode(user.getHash());
+        var salt = Base64.getDecoder().decode(user.getSalt());
+        var currentHash = AuthenticationUtils.generateArgon2id(masterPasswordHash, salt,
+                argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
+
+        if (!Arrays.equals(storedHash, currentHash))
+            throw new UnauthorizedException(MessageEnum.ERROR_02);
     }
 
     private static String generateVerificationCode() {
