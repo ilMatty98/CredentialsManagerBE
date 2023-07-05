@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
 
         if (UserStateEnum.UNVERIFIED.equals(user.getState()))
-            throw new UnauthorizedException(MessageEnum.ERROR_06);
+            throw new UnauthorizedException(MessageEnum.ERROR_04);
 
         checkPassword(user, logInDto.getMasterPasswordHash());
 
@@ -122,7 +122,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void confirmEmail(String email, String code) {
         var user = usersRepository.findByEmailAndVerificationCode(email, code)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         user.setState(UserStateEnum.VERIFIED);
         user.setVerificationCode(null);
@@ -132,7 +132,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto, String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
         var hash = AuthenticationUtils.generateArgon2id(changePasswordDto.getMasterPasswordHash(), salt, argon2idSize,
@@ -151,7 +151,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendHint(String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         var dynamicLabels = Map.ofEntries(entry("hint_value", user.getHint()));
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.SEND_HINT, dynamicLabels);
@@ -160,7 +160,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void deleteAccount(String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         usersRepository.delete(user);
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.DELETE_USER, new HashMap<>());
@@ -183,7 +183,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadRequestException(MessageEnum.ERROR_01);
 
         var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         checkPassword(user, changeEmailDto.getMasterPasswordHash());
 
@@ -203,7 +203,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, String oldEmail) {
         var user = usersRepository.findByEmailAndNewEmailAndState(oldEmail, confirmChangeEmailDto.getEmail(), UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         checkPassword(user, confirmChangeEmailDto.getMasterPasswordHash());
 
@@ -212,13 +212,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var maximumTime = user.getTimestampEmail().toLocalDateTime().plusMinutes(emailChangeExpirationMn);
 
         if (currentTime.isAfter(maximumTime)) { //Time out
-            messageError = MessageEnum.ERROR_08;
+            messageError = MessageEnum.ERROR_06;
         } else if (user.getAttempt() >= emailChangeAttempts) {//The attempt limit has been reached
-            messageError = MessageEnum.ERROR_07;
+            messageError = MessageEnum.ERROR_05;
         } else if (!confirmChangeEmailDto.getVerificationCode().equals(user.getVerificationCode())) { //Incorrect verification code
             user.setAttempt(user.getAttempt() + 1);
             usersRepository.save(user);
-            throw new BadRequestException(MessageEnum.ERROR_09);
+            throw new BadRequestException(MessageEnum.ERROR_07);
         } else {    //Ok
             user.setEmail(user.getNewEmail());
             emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
@@ -235,7 +235,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void changeInformation(ChangeInformationDto changeInformationDto, String email) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
-                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_05));
+                .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
         user.setHint(changeInformationDto.getHint());
         user.setLanguage(changeInformationDto.getLanguage());

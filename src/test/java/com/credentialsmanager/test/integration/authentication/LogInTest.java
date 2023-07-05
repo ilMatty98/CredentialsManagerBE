@@ -154,7 +154,7 @@ class LogInTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_06.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_04.getLabel()));
     }
 
     @Test

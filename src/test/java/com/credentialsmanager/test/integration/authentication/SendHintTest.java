@@ -38,7 +38,7 @@ class SendHintTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_05.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_03.getLabel()));
     }
 
     @Test
@@ -55,7 +55,7 @@ class SendHintTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_05.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_03.getLabel()));
     }
 
     @Test

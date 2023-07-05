@@ -80,7 +80,7 @@ class ConfirmChangeEmailTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_05.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_03.getLabel()));
     }
 
     @Test
@@ -124,7 +124,7 @@ class ConfirmChangeEmailTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_08.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_06.getLabel()));
 
         checkUser(user, EMAIL, null, null, null);
     }
@@ -149,7 +149,7 @@ class ConfirmChangeEmailTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_07.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_05.getLabel()));
 
         checkUser(user, EMAIL, null, null, null);
     }
@@ -172,7 +172,7 @@ class ConfirmChangeEmailTest extends ApiTest {
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_09.getLabel()));
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_07.getLabel()));
 
         checkUser(user, EMAIL, user.getVerificationCode(), NEW_EMAIL, 1);
     }
