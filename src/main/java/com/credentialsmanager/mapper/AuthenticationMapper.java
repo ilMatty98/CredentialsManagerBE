@@ -1,6 +1,5 @@
 package com.credentialsmanager.mapper;
 
-import com.credentialsmanager.configuration.mapper.AppMapperConfig;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.dto.response.AccessDto;
@@ -13,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.UUID;
 
-@Mapper(config = AppMapperConfig.class)
+@Mapper(componentModel = "spring")
 public interface AuthenticationMapper {
 
     @Mapping(target = "hint", source = "signUpDto.hint")
