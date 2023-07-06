@@ -218,6 +218,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadRequestException(MessageEnum.ERROR_07);
         } else {    //Ok
             user.setEmail(user.getNewEmail());
+            user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getProtectedSymmetricKey()));
+            user.setInitializationVector(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getInitializationVector()));
             emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
         }
 
