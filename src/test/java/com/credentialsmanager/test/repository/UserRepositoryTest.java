@@ -26,17 +26,6 @@ class UserRepositoryTest extends ApiTest {
     }
 
     @Test
-    void testExistsByEmailOrNewEmail() throws Exception {
-        assertFalse(userRepository.existsByEmailOrNewEmail(EMAIL));
-        var user = signUp(EMAIL, PASSWORD);
-        assertTrue(userRepository.existsByEmailOrNewEmail(EMAIL));
-
-        user.setNewEmail(EMAIL + "2");
-        userRepository.save(user);
-        assertTrue(userRepository.existsByEmailOrNewEmail(user.getNewEmail()));
-    }
-
-    @Test
     void testFindByEmail() throws Exception {
         assertFalse(userRepository.findByEmail(EMAIL).isPresent());
         var user = signUp(EMAIL, PASSWORD);

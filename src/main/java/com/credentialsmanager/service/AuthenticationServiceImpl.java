@@ -69,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @SneakyThrows
     @Transactional
     public void signUp(SignUpDto signUpDto) {
-        if (usersRepository.existsByEmailOrNewEmail(signUpDto.getEmail()))
+        if (usersRepository.existsByEmail(signUpDto.getEmail()))
             throw new BadRequestException(MessageEnum.ERROR_01);
 
         var salt = AuthenticationUtils.generateSalt(saltSize);
@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean checkEmail(String email) {
-        return usersRepository.existsByEmailOrNewEmail(email);
+        return usersRepository.existsByEmail(email);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail) {
-        if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmailOrNewEmail(changeEmailDto.getEmail()))
+        if (oldEmail.equals(changeEmailDto.getEmail()) || usersRepository.existsByEmail(changeEmailDto.getEmail()))
             throw new BadRequestException(MessageEnum.ERROR_01);
 
         var user = usersRepository.findByEmailAndState(oldEmail, UserStateEnum.VERIFIED)
@@ -196,6 +196,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional(dontRollbackOn = BadRequestException.class)
     public void confirmChangeEmail(ConfirmChangeEmailDto confirmChangeEmailDto, String oldEmail) {
+        if (usersRepository.existsByEmail(confirmChangeEmailDto.getEmail()))
+            throw new BadRequestException(MessageEnum.ERROR_01);
+
         var user = usersRepository.findByEmailAndNewEmailAndState(oldEmail, confirmChangeEmailDto.getEmail(), UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 

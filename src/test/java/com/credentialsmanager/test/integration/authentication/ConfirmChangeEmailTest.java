@@ -63,13 +63,36 @@ class ConfirmChangeEmailTest extends ApiTest {
     }
 
     @Test
+    void testNewEmailAlreadyExist() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+        changeEmail(EMAIL, PASSWORD, NEW_EMAIL);
+
+        signUp(EMAIL + "a", PASSWORD);
+
+        var changeEmailDto = new ConfirmChangeEmailDto();
+        changeEmailDto.setEmail(EMAIL + "a");
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setVerificationCode("asd");
+
+        var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(MESSAGE).value(MessageEnum.ERROR_01.getLabel()));
+    }
+
+    @Test
     void testUserNotFound() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
         changeEmail(EMAIL, PASSWORD, NEW_EMAIL);
 
         var changeEmailDto = new ConfirmChangeEmailDto();
-        changeEmailDto.setEmail(EMAIL);
+        changeEmailDto.setEmail(NEW_EMAIL + "a");
         changeEmailDto.setMasterPasswordHash(PASSWORD);
         changeEmailDto.setVerificationCode("asd");
 
