@@ -61,16 +61,16 @@ class TokenJwtServiceTest extends ApiTest {
     @Test
     void testWithoutAuthorizationHeaders() {
         var exception = assertThrows(UnauthorizedException.class, () -> tokenJwtService.getEmailFromToken(request));
-        assertEquals(MessageEnum.ERROR_02.getMessage(), exception.getMessage());
-        assertEquals(MessageEnum.ERROR_02.getErrorCode(), exception.getCodeMessage());
+        assertEquals(MessageEnum.ERROR_08.getMessage(), exception.getMessage());
+        assertEquals(MessageEnum.ERROR_08.getErrorCode(), exception.getCodeMessage());
     }
 
     @Test
     void testTokenNotStartsWithBearer() {
         request.addHeader("Authorization", "FakeBearer ");
         var exception = assertThrows(UnauthorizedException.class, () -> tokenJwtService.getEmailFromToken(request));
-        assertEquals(MessageEnum.ERROR_02.getMessage(), exception.getMessage());
-        assertEquals(MessageEnum.ERROR_02.getErrorCode(), exception.getCodeMessage());
+        assertEquals(MessageEnum.ERROR_08.getMessage(), exception.getMessage());
+        assertEquals(MessageEnum.ERROR_08.getErrorCode(), exception.getCodeMessage());
     }
 
     @Test

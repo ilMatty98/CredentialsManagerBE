@@ -15,6 +15,7 @@ public enum MessageEnum {
     ERROR_05(5, "The attempt limit has been reached"),
     ERROR_06(6, "The maximum time limit has been exceeded"),
     ERROR_07(7, "Incorrect verification code"),
+    ERROR_08(8, "Invalid jwt token"),
     ERROR_99(-1, "Error sending email to %s");
 
     private final int errorCode;

@@ -116,13 +116,13 @@ public class TokenJwtServiceImpl implements TokenJwtService {
                 return getEmailFromToken(claims);
             }
         }
-        throw new UnauthorizedException(MessageEnum.ERROR_02);
+        throw new UnauthorizedException(MessageEnum.ERROR_08);
     }
 
     private static String getEmailFromToken(Claims claims) {
         return Optional.ofNullable(claims)
                 .map(c -> c.get(TokenClaimEnum.EMAIL.getLabel()))
                 .map(Object::toString)
-                .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_02));
+                .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_08));
     }
 }
