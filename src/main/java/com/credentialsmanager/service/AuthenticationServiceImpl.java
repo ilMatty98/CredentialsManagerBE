@@ -136,15 +136,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
 
+        checkPassword(user, changePasswordDto.getCurrentMasterPasswordHash());
+
         var salt = AuthenticationUtils.generateSalt(saltSize);
-        var hash = AuthenticationUtils.generateArgon2id(changePasswordDto.getMasterPasswordHash(), salt, argon2idSize,
+        var hash = AuthenticationUtils.generateArgon2id(changePasswordDto.getNewMasterPasswordHash(), salt, argon2idSize,
                 argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
         user.setTimestampPassword(getCurrentTimestamp());
         user.setSalt(authenticationMapper.base64Encoding(salt));
         user.setHash(authenticationMapper.base64Encoding(hash));
-        user.setInitializationVector(authenticationMapper.base64EncodingString(changePasswordDto.getInitializationVector()));
-        user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(changePasswordDto.getProtectedSymmetricKey()));
+        user.setInitializationVector(authenticationMapper.base64EncodingString(changePasswordDto.getNewInitializationVector()));
+        user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(changePasswordDto.getNewProtectedSymmetricKey()));
 
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_PSW, new HashMap<>());
         usersRepository.save(user);
@@ -217,9 +219,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             usersRepository.save(user);
             throw new BadRequestException(MessageEnum.ERROR_07);
         } else {    //Ok
+            var salt = AuthenticationUtils.generateSalt(saltSize);
+            var hash = AuthenticationUtils.generateArgon2id(confirmChangeEmailDto.getNewMasterPasswordHash(), salt,
+                    argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
+
             user.setEmail(user.getNewEmail());
-            user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getProtectedSymmetricKey()));
-            user.setInitializationVector(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getInitializationVector()));
+            user.setSalt(authenticationMapper.base64Encoding(salt));
+            user.setHash(authenticationMapper.base64Encoding(hash));
+            user.setInitializationVector(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getNewInitializationVector()));
+            user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString(confirmChangeEmailDto.getNewProtectedSymmetricKey()));
             emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.CHANGE_EMAIL, new HashMap<>());
         }
 
@@ -253,8 +261,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var currentHash = AuthenticationUtils.generateArgon2id(masterPasswordHash, salt,
                 argon2idSize, argon2idIterations, argon2idMemoryKB, argon2idParallelism);
 
-        if (!Arrays.equals(storedHash, currentHash))
-            throw new UnauthorizedException(MessageEnum.ERROR_02);
+        if (!Arrays.equals(storedHash, currentHash)) throw new UnauthorizedException(MessageEnum.ERROR_02);
     }
 
     private static String generateVerificationCode() {

@@ -12,10 +12,13 @@ public class ConfirmChangeEmailDto extends ChangeEmailDto {
     @NotBlank(message = "VerificationCode cannot be blank")
     private String verificationCode;
 
-    @NotBlank(message = "ProtectedSymmetricKey cannot be blank")
-    private String protectedSymmetricKey;
+    @NotBlank(message = "NewMasterPasswordHash cannot be blank")
+    private String newMasterPasswordHash;
 
-    @NotBlank(message = "InitializationVector cannot be blank")
-    private String initializationVector;
+    @NotBlank(message = "NewProtectedSymmetricKey cannot be blank")
+    private String newProtectedSymmetricKey;
+
+    @NotBlank(message = "NewInitializationVector cannot be blank")
+    private String newInitializationVector;
 
 }

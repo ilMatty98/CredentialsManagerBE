@@ -6,12 +6,15 @@ import lombok.Data;
 @Data
 public class ChangePasswordDto {
 
-    @NotBlank(message = "MasterPasswordHash cannot be blank")
-    private String masterPasswordHash;
+    @NotBlank(message = "CurrentMasterPasswordHash cannot be blank")
+    private String currentMasterPasswordHash;
+
+    @NotBlank(message = "NewMasterPasswordHash cannot be blank")
+    private String newMasterPasswordHash;
 
     @NotBlank(message = "ProtectedSymmetricKey cannot be blank")
-    private String protectedSymmetricKey;
+    private String newProtectedSymmetricKey;
 
     @NotBlank(message = "InitializationVector cannot be blank")
-    private String initializationVector;
+    private String newInitializationVector;
 }

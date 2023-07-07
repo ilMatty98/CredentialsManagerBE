@@ -46,7 +46,7 @@ class ChangePasswordTest extends ApiTest {
         confirmEmail(EMAIL);
 
         var changePasswordDto = fillObject(new ChangePasswordDto());
-        changePasswordDto.setMasterPasswordHash(null);
+        changePasswordDto.setNewMasterPasswordHash(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
@@ -63,7 +63,7 @@ class ChangePasswordTest extends ApiTest {
         confirmEmail(EMAIL);
 
         var changePasswordDto = fillObject(new ChangePasswordDto());
-        changePasswordDto.setProtectedSymmetricKey(null);
+        changePasswordDto.setNewProtectedSymmetricKey(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
@@ -80,7 +80,7 @@ class ChangePasswordTest extends ApiTest {
         confirmEmail(EMAIL);
 
         var changePasswordDto = fillObject(new ChangePasswordDto());
-        changePasswordDto.setInitializationVector(null);
+        changePasswordDto.setNewInitializationVector(null);
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
@@ -97,9 +97,9 @@ class ChangePasswordTest extends ApiTest {
         user = confirmEmail(EMAIL);
 
         var changePasswordDto = fillObject(new ChangePasswordDto());
-        changePasswordDto.setMasterPasswordHash("new password");
-        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changePasswordDto.setInitializationVector("new initializationVector");
+        changePasswordDto.setNewMasterPasswordHash("new password");
+        changePasswordDto.setNewProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setNewInitializationVector("new initializationVector");
 
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.ROLE.getLabel(), user.getState());
@@ -120,9 +120,9 @@ class ChangePasswordTest extends ApiTest {
         user = confirmEmail(EMAIL);
 
         var changePasswordDto = fillObject(new ChangePasswordDto());
-        changePasswordDto.setMasterPasswordHash("new password");
-        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changePasswordDto.setInitializationVector("new initializationVector");
+        changePasswordDto.setNewMasterPasswordHash("new password");
+        changePasswordDto.setNewProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setNewInitializationVector("new initializationVector");
 
         var claims = new HashMap<String, Object>();
         claims.put(TokenClaimEnum.EMAIL.getLabel(), EMAIL + ".");
@@ -139,14 +139,35 @@ class ChangePasswordTest extends ApiTest {
     }
 
     @Test
+    void testCheckPasswordFailed() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var changePasswordDto = fillObject(new ChangePasswordDto());
+        changePasswordDto.setCurrentMasterPasswordHash(PASSWORD + "1");
+        changePasswordDto.setNewMasterPasswordHash("new password");
+        changePasswordDto.setNewProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setNewInitializationVector("new initializationVector");
+
+        var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(changePasswordDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testChangePassword() throws Exception {
         signUp(EMAIL, PASSWORD);
         final var user = confirmEmail(EMAIL);
 
         var changePasswordDto = new ChangePasswordDto();
-        changePasswordDto.setMasterPasswordHash("new password");
-        changePasswordDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changePasswordDto.setInitializationVector("new initializationVector");
+        changePasswordDto.setCurrentMasterPasswordHash(PASSWORD);
+        changePasswordDto.setNewMasterPasswordHash("new password");
+        changePasswordDto.setNewProtectedSymmetricKey("new protectedSymmetricKey");
+        changePasswordDto.setNewInitializationVector("new initializationVector");
 
         var mockHttpServletRequestBuilder = put(CHANGE_PASSWORD_URL)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
@@ -162,8 +183,8 @@ class ChangePasswordTest extends ApiTest {
                     assertEquals(user.getEmail(), u.getEmail());
                     assertNotNull(u.getSalt());
                     assertNotNull(u.getHash());
-                    assertEquals(changePasswordDto.getProtectedSymmetricKey(), authenticationMapper.base64DecodingString(u.getProtectedSymmetricKey()));
-                    assertEquals(changePasswordDto.getInitializationVector(), authenticationMapper.base64DecodingString(u.getInitializationVector()));
+                    assertEquals(changePasswordDto.getNewProtectedSymmetricKey(), authenticationMapper.base64DecodingString(u.getProtectedSymmetricKey()));
+                    assertEquals(changePasswordDto.getNewInitializationVector(), authenticationMapper.base64DecodingString(u.getInitializationVector()));
                     assertTrue(u.getTimestampPassword().after(user.getTimestampPassword()));
                     assertNotNull(u.getTimestampCreation());
                     assertNotNull(u.getTimestampLastAccess());
@@ -188,5 +209,7 @@ class ChangePasswordTest extends ApiTest {
         assertEquals(emailFrom, email.getFrom()[0].toString());
         assertEquals(user.getEmail(), email.getAllRecipients()[0].toString());
         assertEquals("Password changed!", email.getSubject());
+
+        assertNotNull(getTokenFromLogIn(EMAIL, "new password"));
     }
 }

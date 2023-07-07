@@ -35,10 +35,53 @@ class ConfirmChangeEmailTest extends ApiTest {
     void testConfirmChangeEmailDtoEmpty() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
+
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
                 .content(objectToJsonString(new ConfirmChangeEmailDto()));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testEmailNull() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var changeEmailDto = new ConfirmChangeEmailDto();
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
+
+        var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testMasterPasswordHashNull() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var changeEmailDto = new ConfirmChangeEmailDto();
+        changeEmailDto.setEmail(EMAIL);
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
+
+        var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isBadRequest());
@@ -52,6 +95,9 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,14 +109,16 @@ class ConfirmChangeEmailTest extends ApiTest {
     }
 
     @Test
-    void testProtectedSymmetricKeyNull() throws Exception {
+    void testNewMasterPasswordHashNull() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setInitializationVector("iv");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -82,14 +130,37 @@ class ConfirmChangeEmailTest extends ApiTest {
     }
 
     @Test
-    void testInitializationVectorNull() throws Exception {
+    void testNewProtectedSymmetricKeyNull() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setProtectedSymmetricKey("pr");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewInitializationVector("iv");
+
+        var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(changeEmailDto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testNewInitializationVectorNull() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var changeEmailDto = new ConfirmChangeEmailDto();
+        changeEmailDto.setEmail(EMAIL);
+        changeEmailDto.setMasterPasswordHash(PASSWORD);
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,9 +182,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(EMAIL + "a");
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,9 +206,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(NEW_EMAIL + "a");
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,9 +230,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(NEW_EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD + "a");
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -182,9 +256,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(NEW_EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -199,7 +274,7 @@ class ConfirmChangeEmailTest extends ApiTest {
     }
 
     @Test
-    void testlimitAttemps() throws Exception {
+    void testLimitAttempts() throws Exception {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
         var user = changeEmail(EMAIL, PASSWORD, NEW_EMAIL);
@@ -209,9 +284,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(NEW_EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -234,9 +310,10 @@ class ConfirmChangeEmailTest extends ApiTest {
         var changeEmailDto = new ConfirmChangeEmailDto();
         changeEmailDto.setEmail(NEW_EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
-        changeEmailDto.setVerificationCode("asd");
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setVerificationCode("vc");
+        changeEmailDto.setNewMasterPasswordHash("mp");
+        changeEmailDto.setNewProtectedSymmetricKey("ps");
+        changeEmailDto.setNewInitializationVector("iv");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -260,8 +337,9 @@ class ConfirmChangeEmailTest extends ApiTest {
         changeEmailDto.setEmail(NEW_EMAIL);
         changeEmailDto.setMasterPasswordHash(PASSWORD);
         changeEmailDto.setVerificationCode(user.getVerificationCode());
-        changeEmailDto.setProtectedSymmetricKey("new protectedSymmetricKey");
-        changeEmailDto.setInitializationVector("new initializationVector");
+        changeEmailDto.setNewMasterPasswordHash("new masterPasswordHash");
+        changeEmailDto.setNewProtectedSymmetricKey("new protectedSymmetricKey");
+        changeEmailDto.setNewInitializationVector("new initializationVector");
 
         var mockHttpServletRequestBuilder = put(CONFIRM_CHANGE_EMAIL_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -271,11 +349,14 @@ class ConfirmChangeEmailTest extends ApiTest {
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
 
+        var u = userRepository.findByEmail(NEW_EMAIL).get();
+        user.setSalt(u.getSalt());
+        user.setHash(u.getHash());
         user.setProtectedSymmetricKey(authenticationMapper.base64EncodingString("new protectedSymmetricKey"));
         user.setInitializationVector(authenticationMapper.base64EncodingString("new initializationVector"));
         checkUser(user, NEW_EMAIL, null, null, null);
 
-        assertNotNull(getTokenFromLogIn(NEW_EMAIL, PASSWORD));
+        assertNotNull(getTokenFromLogIn(NEW_EMAIL, "new masterPasswordHash"));
 
         //Check email
         var receivedMessages = greenMail.getReceivedMessages();
@@ -310,6 +391,5 @@ class ConfirmChangeEmailTest extends ApiTest {
             assertEquals(attempt, u.getAttempt());
         }, Assert::fail);
     }
-
 
 }
