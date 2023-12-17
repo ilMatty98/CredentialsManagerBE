@@ -100,7 +100,7 @@ public class TokenJwtServiceImpl implements TokenJwtService {
     public String getPublicKey() {
         var keyFactory = KeyFactory.getInstance(ALGORITHM);
         var keySpec = keyFactory.getKeySpec(publicKey, X509EncodedKeySpec.class);
-        byte[] encodedKey = keySpec.getEncoded();
+        var encodedKey = keySpec.getEncoded();
         return Base64.getEncoder().encodeToString(encodedKey);
     }
 
@@ -113,16 +113,12 @@ public class TokenJwtServiceImpl implements TokenJwtService {
             if (claims != null && !claims.isEmpty() &&
                     UserStateEnum.VERIFIED.name().equals(claims.get(TokenClaimEnum.ROLE.getLabel()))) {
                 request.setAttribute(TokenClaimEnum.CLAIMS.getLabel(), claims);
-                return getEmailFromToken(claims);
+                return Optional.of(claims)
+                        .map(c -> c.get(TokenClaimEnum.EMAIL.getLabel()))
+                        .map(Object::toString)
+                        .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_08));
             }
         }
         throw new UnauthorizedException(MessageEnum.ERROR_08);
-    }
-
-    private static String getEmailFromToken(Claims claims) {
-        return Optional.ofNullable(claims)
-                .map(c -> c.get(TokenClaimEnum.EMAIL.getLabel()))
-                .map(Object::toString)
-                .orElseThrow(() -> new UnauthorizedException(MessageEnum.ERROR_08));
     }
 }
