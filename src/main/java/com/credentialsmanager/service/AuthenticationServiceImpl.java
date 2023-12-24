@@ -163,9 +163,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public void deleteAccount(String email) {
+    public void deleteAccount(String email, DeleteDto deleteDto) {
         var user = usersRepository.findByEmailAndState(email, UserStateEnum.VERIFIED)
                 .orElseThrow(() -> new NotFoundException(MessageEnum.ERROR_03));
+
+        checkPassword(user, deleteDto.getMasterPasswordHash());
 
         usersRepository.delete(user);
         emailService.sendEmail(user.getEmail(), user.getLanguage(), EmailTypeEnum.DELETE_USER, new HashMap<>());

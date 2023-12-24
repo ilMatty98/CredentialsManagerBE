@@ -19,7 +19,7 @@ public interface AuthenticationService {
 
     void sendHint(String email);
 
-    void deleteAccount(String email);
+    void deleteAccount(String email, DeleteDto deleteDto);
 
     void changeEmail(ChangeEmailDto changeEmailDto, String oldEmail);
 

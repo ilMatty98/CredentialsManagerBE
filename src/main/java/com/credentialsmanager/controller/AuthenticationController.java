@@ -67,7 +67,9 @@ public interface AuthenticationController {
             @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")})
-    ResponseEntity<Object> deleteAccount(HttpServletRequest request);
+    ResponseEntity<Object> deleteAccount(@Parameter(description = "Dto to delete account")
+                                         @Valid @RequestBody DeleteDto deleteDto,
+                                         HttpServletRequest request);
 
     @PutMapping(CHANGE_EMAIL)
     @ApiResponses(value = {

@@ -1,6 +1,7 @@
 package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
+import com.credentialsmanager.dto.request.DeleteDto;
 import com.credentialsmanager.test.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -14,8 +15,12 @@ class DeleteAccountTest extends ApiTest {
 
     @Test
     void testWithoutToken() throws Exception {
+        var dto = new DeleteDto();
+        dto.setMasterPasswordHash("AAA");
+
         var mockHttpServletRequestBuilder = delete(DELETE_ACCOUNT_URL)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJsonString(dto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isUnauthorized());
@@ -30,9 +35,13 @@ class DeleteAccountTest extends ApiTest {
         user.setEmail(EMAIL + ".");
         userRepository.save(user);
 
+        var dto = new DeleteDto();
+        dto.setMasterPasswordHash("AAA");
+
         var mockHttpServletRequestBuilder = delete(DELETE_ACCOUNT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token);
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
+                .content(objectToJsonString(dto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
@@ -47,12 +56,33 @@ class DeleteAccountTest extends ApiTest {
         user.setState(UserStateEnum.UNVERIFIED);
         userRepository.save(user);
 
+        var dto = new DeleteDto();
+        dto.setMasterPasswordHash("AAA");
+
         var mockHttpServletRequestBuilder = delete(DELETE_ACCOUNT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token);
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + token)
+                .content(objectToJsonString(dto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testIncorrectPassword() throws Exception {
+        signUp(EMAIL, PASSWORD);
+        confirmEmail(EMAIL);
+
+        var dto = new DeleteDto();
+        dto.setMasterPasswordHash(PASSWORD + "A");
+
+        var mockHttpServletRequestBuilder = delete(DELETE_ACCOUNT_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(dto));
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -60,9 +90,13 @@ class DeleteAccountTest extends ApiTest {
         signUp(EMAIL, PASSWORD);
         confirmEmail(EMAIL);
 
+        var dto = new DeleteDto();
+        dto.setMasterPasswordHash(PASSWORD);
+
         var mockHttpServletRequestBuilder = delete(DELETE_ACCOUNT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD));
+                .header(AUTH_HEADER_NAME, AUTH_HEADER_PREFIX + getTokenFromLogIn(EMAIL, PASSWORD))
+                .content(objectToJsonString(dto));
 
         mockMvc.perform(mockHttpServletRequestBuilder)
                 .andExpect(status().isOk());
