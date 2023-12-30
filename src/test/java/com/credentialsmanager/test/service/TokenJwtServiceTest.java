@@ -2,7 +2,7 @@ package com.credentialsmanager.test.service;
 
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.exception.UnauthorizedException;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TokenJwtServiceTest extends ApiTest {
+class TokenJwtServiceTest extends CredentialsManagerTests {
 
     private MockHttpServletRequest request;
 

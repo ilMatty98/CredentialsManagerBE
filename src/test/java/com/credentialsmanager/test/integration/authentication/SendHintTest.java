@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class SendHintTest extends ApiTest {
+class SendHintTest extends CredentialsManagerTests {
 
     @Test
     void testWithoutHeader() throws Exception {

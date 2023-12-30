@@ -1,6 +1,6 @@
 package com.credentialsmanager.test.utils;
 
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
@@ -9,7 +9,7 @@ import static com.credentialsmanager.utils.AuthenticationUtils.generateArgon2id;
 import static com.credentialsmanager.utils.AuthenticationUtils.generateSalt;
 import static org.junit.Assert.*;
 
-class AuthenticationUtilsTest extends ApiTest {
+class AuthenticationUtilsTest extends CredentialsManagerTests {
 
     @Test
     void testGenerateSalt() {

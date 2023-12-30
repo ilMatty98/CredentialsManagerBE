@@ -4,7 +4,7 @@ import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.ConfirmChangeEmailDto;
 import com.credentialsmanager.entity.User;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ConfirmChangeEmailTest extends ApiTest {
+class ConfirmChangeEmailTest extends CredentialsManagerTests {
 
     private static final String NEW_EMAIL = "new" + EMAIL;
 

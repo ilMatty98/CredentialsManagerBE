@@ -3,7 +3,7 @@ package com.credentialsmanager.test.integration.authentication;
 import com.credentialsmanager.constants.MessageEnum;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.LogInDto;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class LogInTest extends ApiTest {
+class LogInTest extends CredentialsManagerTests {
 
     @Test
     void testLogInDtoEmpty() throws Exception {

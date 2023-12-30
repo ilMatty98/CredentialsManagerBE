@@ -1,7 +1,7 @@
 package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ConfirmEmailTest extends ApiTest {
+class ConfirmEmailTest extends CredentialsManagerTests {
 
     @Test
     void testEmailNotFound() throws Exception {

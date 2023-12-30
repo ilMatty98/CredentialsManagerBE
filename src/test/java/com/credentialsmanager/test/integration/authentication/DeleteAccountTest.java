@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.DeleteDto;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class DeleteAccountTest extends ApiTest {
+class DeleteAccountTest extends CredentialsManagerTests {
 
     @Test
     void testWithoutToken() throws Exception {

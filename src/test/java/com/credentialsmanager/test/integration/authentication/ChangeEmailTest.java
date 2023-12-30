@@ -2,7 +2,7 @@ package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.ChangeEmailDto;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ChangeEmailTest extends ApiTest {
+class ChangeEmailTest extends CredentialsManagerTests {
 
     @Test
     void testWithoutToken() throws Exception {

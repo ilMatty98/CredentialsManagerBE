@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-public class CredentialsManagerBeApplication {
+public class CredentialsManager {
 
     public static void main(String[] args) {
-        SpringApplication.run(CredentialsManagerBeApplication.class, args);
+        SpringApplication.run(CredentialsManager.class, args);
     }
 
 }

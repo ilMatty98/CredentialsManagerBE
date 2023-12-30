@@ -1,6 +1,6 @@
 package com.credentialsmanager.test;
 
-import com.credentialsmanager.CredentialsManagerBeApplication;
+import com.credentialsmanager.CredentialsManager;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.ChangeEmailDto;
 import com.credentialsmanager.dto.request.LogInDto;
@@ -46,8 +46,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = CredentialsManagerBeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class ApiTest extends ApiTestConstants {
+@SpringBootTest(classes = CredentialsManager.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public abstract class CredentialsManagerTests extends ApiTestConstants {
 
     @Value("${token.expiration-minutes}")
     protected long tokenExpiration;

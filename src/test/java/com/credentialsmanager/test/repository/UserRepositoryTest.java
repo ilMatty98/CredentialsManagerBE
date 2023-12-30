@@ -3,7 +3,7 @@ package com.credentialsmanager.test.repository;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.entity.User;
 import com.credentialsmanager.repository.UserRepository;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class UserRepositoryTest extends ApiTest {
+class UserRepositoryTest extends CredentialsManagerTests {
 
     private static final String EMAIL = "email@email.it";
 

@@ -1,7 +1,7 @@
 package com.credentialsmanager.test.integration.authentication;
 
 import com.credentialsmanager.dto.request.SignUpDto;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class CheckEmailTest extends ApiTest {
+class CheckEmailTest extends CredentialsManagerTests {
     private static final String IT = "IT";
 
     @Test

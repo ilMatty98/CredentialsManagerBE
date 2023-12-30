@@ -3,7 +3,7 @@ package com.credentialsmanager.test.mapper;
 import com.credentialsmanager.constants.UserStateEnum;
 import com.credentialsmanager.dto.request.SignUpDto;
 import com.credentialsmanager.entity.User;
-import com.credentialsmanager.test.ApiTest;
+import com.credentialsmanager.test.CredentialsManagerTests;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ import java.util.Base64;
 
 import static org.junit.Assert.*;
 
-class AuthenticationMapperTest extends ApiTest {
+class AuthenticationMapperTest extends CredentialsManagerTests {
 
     @Test
     void testNewUser() {
