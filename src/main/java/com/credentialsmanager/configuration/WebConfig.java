@@ -45,7 +45,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addMapping(BASE_PATH_AUTHENTICATION + CHANGE_PASSWORD)
                 .allowedOriginPatterns(endpointFe)
-                .allowedMethods(HttpMethod.POST.name())
+                .allowedMethods(HttpMethod.PUT.name())
                 .allowedHeaders("*")
                 .allowCredentials(false); // Without cookie
 
