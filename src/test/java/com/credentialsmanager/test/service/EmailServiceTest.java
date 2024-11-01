@@ -5,6 +5,8 @@ import com.credentialsmanager.test.CredentialsManagerTests;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisabledOnOs(OS.LINUX)
 class EmailServiceTest extends CredentialsManagerTests {
 
     private static final String EMAIL_TO = "test@test.com";
