@@ -33,11 +33,17 @@ jobs:
       - name: Run tests with Maven
         run: mvn clean test
 
-      - name: Generate Jacoco Report
-        run: mvn verify jacoco:report
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@<action version>
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: 'https://sonarcloud.io/'
 
-      - name: Upload Jacoco Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: target/site/jacoco
+#      - name: Generate Jacoco Report
+#        run: mvn verify jacoco:report
+#
+#      - name: Upload Jacoco Coverage Report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: jacoco-report
+#          path: target/site/jacoco
