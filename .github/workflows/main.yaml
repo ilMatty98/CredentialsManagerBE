@@ -38,3 +38,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: 'https://sonarcloud.io/'
+          SONAR_PROJECT_KEY: 'ilMatty98_CredentialsManagerBE'
+          SONAR_ORGANIZATION: 'ilmatty98'
+          SONAR_JAVA_BINARIES: 'target/classes'
+          SONAR_COVERAGE_EXCLUSIONS: '**/test/**/*'
