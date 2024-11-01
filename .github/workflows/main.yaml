@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run tests with Maven
-        run: mvn clean test
+        run: mvn clean verify jacoco:report
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
