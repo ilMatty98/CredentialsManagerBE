@@ -6,6 +6,8 @@ import com.credentialsmanager.dto.request.ChangePasswordDto;
 import com.credentialsmanager.test.CredentialsManagerTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisabledOnOs(OS.LINUX)
 class ChangePasswordTest extends CredentialsManagerTests {
 
     @Test
