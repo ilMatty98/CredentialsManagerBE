@@ -72,7 +72,7 @@ public abstract class CredentialsManagerTests extends ApiTestConstants {
 
     protected static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
 
-    private static Random random;
+    private static final Random random = new Random();
 
     @BeforeEach
     void startGreenEmail() {
