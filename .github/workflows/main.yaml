@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    if: startsWith(github.head_ref, 'svil/')
+    if: startsWith(github.head_ref, 'dev/')
     runs-on: ubuntu-latest
 
     steps:
