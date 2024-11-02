@@ -72,6 +72,8 @@ public abstract class CredentialsManagerTests extends ApiTestConstants {
 
     protected static GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
 
+    private static Random random;
+
     @BeforeEach
     void startGreenEmail() {
         greenMail.start();
@@ -91,7 +93,7 @@ public abstract class CredentialsManagerTests extends ApiTestConstants {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
 
-        return new Random().ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(length)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
@@ -111,7 +113,6 @@ public abstract class CredentialsManagerTests extends ApiTestConstants {
     @SneakyThrows
     private static void fillObject(Object object, Class<?> clazz) {
         var fields = clazz.getDeclaredFields();
-        var random = new Random();
         for (Field field : fields) {
             field.setAccessible(true);
             if (field.getType() == int.class) {
