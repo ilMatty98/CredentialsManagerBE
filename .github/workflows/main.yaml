@@ -1,15 +1,16 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
 
 jobs:
   build:
+    if: startsWith(github.head_ref, 'svil/')
     runs-on: ubuntu-latest
 
     steps:
