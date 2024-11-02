@@ -46,7 +46,7 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.branch.name=master
             -Dsonar.java.binaries=target/classes
-            -Dsonar.coverage.exclusions=**/test/**/*,**/test/*
+            -Dsonar.coverage.exclusions=src/test/**
 
       - name: Wait for SonarQube Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@master
