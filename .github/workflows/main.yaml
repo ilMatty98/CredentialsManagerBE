@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev/**
     types:
       - opened
       - synchronize
@@ -43,5 +44,13 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.branch.name=master
             -Dsonar.java.binaries=target/classes
             -Dsonar.coverage.exclusions=**/test/**/*
+            -Dsonar.exclusions=**/test/**/*
+
+      - name: Wait for SonarQube Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
