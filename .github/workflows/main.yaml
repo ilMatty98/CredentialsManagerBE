@@ -64,6 +64,8 @@ jobs:
 
       - name: Commit version change
         run: |
+          git config --global user.email "${{ secrets.GIT_HUB_EMAIL }}"
+          git config --global user.name "${{ secrets.GIT_HUB_NAME }}"
           git add pom.xml
           git commit -m "Upgrade version"
 
