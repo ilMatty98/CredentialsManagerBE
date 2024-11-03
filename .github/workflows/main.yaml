@@ -9,7 +9,7 @@ on:
       - synchronize  # Run the workflow when a pull request is updated
 
 permissions:
-  contents: write
+  contents: write # Allows to write to the repository
 
 jobs:
   build:
@@ -32,6 +32,7 @@ jobs:
           distribution: 'oracle'
           java-version: '17'
 
+      # Step to determine which part of the version to update based on the starting branch
       - name: Determine version bump
         id: version_bump
         run: |
@@ -43,7 +44,8 @@ jobs:
             echo "bump_type=patch" >> $GITHUB_ENV
           fi
 
-      - name: Bump version in pom.xml
+      # Step to upgrade the version in pom.xml
+      - name: Upgrade version in pom.xml
         run: |
           # Extract current version from pom.xml
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -61,11 +63,11 @@ jobs:
 
           # Update version in pom.xml
           mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
-
         env:
           bump_type: ${{ env.bump_type }}
 
-      - name: Commit version change
+      # Step to upgrade the repository
+      - name: Commit & Push version change
         run: |
           git config --global user.email "${{ secrets.GIT_HUB_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_HUB_NAME }}"
@@ -75,7 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}  # Token for authentication
 
-      # Use caching to save Maven dependencies
+      # Step to caching to save Maven dependencies
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -84,7 +86,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-  # Fallback key based on OS only
 
-      # Run tests with Maven and generate a coverage report with Jacoco
+      # Step to run tests with Maven and generate a coverage report with Jacoco
       - name: Run tests with Maven
         run: mvn clean verify jacoco:report
 
