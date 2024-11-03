@@ -36,16 +36,23 @@ jobs:
       - name: Determine version bump
         id: version_bump
         run: |
-          if [[ "${{ github.head_ref }}" == develop/* ]]; then
-            echo "bump_type=major" >> $GITHUB_ENV
-          elif [[ "${{ github.head_ref }}" == feature/* ]]; then
-            echo "bump_type=minor" >> $GITHUB_ENV
-          elif [[ "${{ github.head_ref }}" == fix/* ]]; then
-            echo "bump_type=patch" >> $GITHUB_ENV
-          fi
+          case "${{ github.event.action }}" in
+            opened)
+              case "${{ github.head_ref }}" in
+                develop/*) echo "bump_type=major" >> $GITHUB_ENV ;;
+                feature/*) echo "bump_type=minor" >> $GITHUB_ENV ;;
+                fix/*) echo "bump_type=patch" >> $GITHUB_ENV ;;
+                *) echo "bump_type=none" >> $GITHUB_ENV ;;  # Fallback if no match
+              esac
+              ;;
+            *)
+              echo "bump_type=none" >> $GITHUB_ENV  # If not opened, set to none
+              ;;
+          esac
 
       # Step to upgrade the version in pom.xml
       - name: Upgrade version in pom.xml
+        if: env.bump_type != 'none'  # Execute this step only if bump_type is not 'none'
         run: |
           # Extract current version from pom.xml
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -68,6 +75,7 @@ jobs:
 
       # Step to upgrade the repository
       - name: Commit & Push version change
+        if: env.bump_type != 'none'  # Execute this step only if bump_type is not 'none'
         run: |
           git config --global user.email "${{ secrets.GIT_HUB_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_HUB_NAME }}"
