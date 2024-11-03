@@ -4,14 +4,16 @@ on:
   pull_request:
     branches:
       - main
-      - dev/**
     types:
       - opened
       - synchronize
 
 jobs:
   build:
-    if: startsWith(github.head_ref, 'dev/')
+    if: |
+      startsWith(github.head_ref, 'develop/') ||
+      startsWith(github.head_ref, 'feature/') ||
+      startsWith(github.head_ref, 'fix/')
     runs-on: ubuntu-latest
 
     steps:
