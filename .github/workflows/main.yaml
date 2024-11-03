@@ -70,20 +70,25 @@ jobs:
 
           # Update version in pom.xml
           mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+
+          # Export the new version as an environment variable
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
         env:
-          bump_type: ${{ env.bump_type }}
+          NEW_VERSION: ${{ env.new_version }}
 
       # Step to upgrade the repository
-      - name: Commit & Push version change
+      - name: Commit pom.xml, generate tag and Push
         if: env.bump_type != 'none'  # Execute this step only if bump_type is not 'none'
         run: |
           git config --global user.email "${{ secrets.GIT_HUB_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_HUB_NAME }}"
           git add pom.xml
           git commit -m "Upgrade version"
-          git push -f origin HEAD:${{ github.head_ref }}
+          git tag "v$NEW_VERSION"
+          git push -f origin HEAD:${{ github.head_ref }} --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}  # Token for authentication
+          NEW_VERSION: ${{ env.NEW_VERSION }}  # The new version calculated earlier
 
       # Step to caching to save Maven dependencies
       - name: Cache Maven dependencies
