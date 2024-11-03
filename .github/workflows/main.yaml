@@ -8,6 +8,9 @@ on:
       - opened  # Run the workflow when a pull request is opened
       - synchronize  # Run the workflow when a pull request is updated
 
+permissions:
+  contents: write
+
 jobs:
   build:
     # Condition to run the job: only if the source branch starts with 'develop/', 'feature/', or 'fix/'
