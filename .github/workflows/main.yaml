@@ -1,4 +1,4 @@
-name: Java Graalvm 17 CI with Maven  # Name of the workflow
+name: Java Oracle 17 CI with Maven  # Name of the workflow
 
 on:
   pull_request:  # Trigger the workflow on pull requests
@@ -24,7 +24,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3  # Step to install the Java Development Kit (JDK)
         with:
-          distribution: 'graalvm'  # Specify the JDK distribution
+          distribution: 'oracle'  # Specify the JDK distribution
           java-version: '17'  # Specify the Java version to use (17)
 
       - name: Determine version bump
