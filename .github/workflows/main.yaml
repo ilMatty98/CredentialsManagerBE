@@ -1,4 +1,4 @@
-name: Java CI with Maven  # Name of the workflow
+name: Java Graalvm 17 CI with Maven  # Name of the workflow
 
 on:
   pull_request:  # Trigger the workflow on pull requests
@@ -26,6 +26,39 @@ jobs:
         with:
           distribution: 'graalvm'  # Specify the JDK distribution
           java-version: '17'  # Specify the Java version to use (17)
+
+      - name: Determine version bump
+        id: version_bump
+        run: |
+          if [[ "${{ github.head_ref }}" == develop/* ]]; then
+            echo "bump_type=major" >> $GITHUB_ENV
+          elif [[ "${{ github.head_ref }}" == feature/* ]]; then
+            echo "bump_type=minor" >> $GITHUB_ENV
+          elif [[ "${{ github.head_ref }}" == fix/* ]]; then
+            echo "bump_type=patch" >> $GITHUB_ENV
+          fi
+
+      - name: Bump version in pom.xml
+        run: |
+          # Extract current version from pom.xml
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          # Split the version into major, minor, and patch
+          IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+
+          # Increment version based on bump type
+          if [ "$bump_type" == "major" ]; then
+            NEW_VERSION=$((major + 1)).0.0
+          elif [ "$bump_type" == "minor" ]; then
+            NEW_VERSION=$major.$((minor + 1)).0
+          else
+            NEW_VERSION=$major.$minor.$((patch + 1))
+          fi
+
+          # Update version in pom.xml
+          mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+
+        env:
+          bump_type: ${{ env.bump_type }}
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3  # Use caching to save Maven dependencies
