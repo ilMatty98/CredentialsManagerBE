@@ -11,9 +11,9 @@ on:
 jobs:
   build:
     if: |
-      startsWith(github.head_ref, 'dev/') ||
+      startsWith(github.head_ref, 'develop/') ||
       startsWith(github.head_ref, 'feature/') ||
-      startsWith(github.head_ref, 'hotfix/')
+      startsWith(github.head_ref, 'fix/')
     runs-on: ubuntu-latest
 
     steps:
