@@ -85,7 +85,7 @@ jobs:
           git add pom.xml
           git commit -m "Upgrade version"
           git tag "v$NEW_VERSION"
-          git push -f origin HEAD:${{ github.head_ref }} --tags
+          git push -f origin HEAD:refs/heads/${{ github.head_ref }} --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}  # Token for authentication
           NEW_VERSION: ${{ env.NEW_VERSION }}  # The new version calculated earlier
